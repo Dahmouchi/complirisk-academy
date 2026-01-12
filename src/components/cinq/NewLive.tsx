@@ -37,7 +37,7 @@ export default function Lives() {
         <Link href="/dashboard">
           <Button variant="ghost" className="gap-2 mb-6">
             <ArrowLeft className="h-4 w-4" />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Button>
         </Link>
         {!isUnlocked ? (
@@ -56,7 +56,7 @@ export default function Lives() {
             {/* Inscription steps */}
             <div className="mb-12">
               <h2 className="text-2xl font-bold text-foreground mb-2">
-                Comment s'inscrire?
+                Comment s&apos;inscrire?
               </h2>
               <p className="text-muted-foreground mb-6">
                 Suivez ces étapes simples pour accéder aux cours live

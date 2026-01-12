@@ -61,7 +61,7 @@ export const Footer = () => {
                 placeholder="Votre adresse email"
                 className="bg-background/10 border-background/20 text-background placeholder:text-background/50 min-w-[250px]"
               />
-              <Button variant="hero">S'abonner</Button>
+              <Button variant="hero">S&apos;abonner</Button>
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export const Footer = () => {
                 Politique de confidentialité
               </a>
               <a href="#" className="hover:text-primary transition-colors">
-                Conditions d'utilisation
+                Conditions d&apos;utilisation
               </a>
             </div>
           </div>

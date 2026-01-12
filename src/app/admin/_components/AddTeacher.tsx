@@ -175,8 +175,8 @@ export function CreateTeacherDialog({
             Créer un Nouvel Enseignant
           </DialogTitle>
           <DialogDescription>
-            Remplissez les informations de l'enseignant et sélectionnez les
-            matières qu'il enseignera.
+            Remplissez les informations de l&apos;enseignant et sélectionnez les
+            matières qu&apos;il enseignera.
           </DialogDescription>
         </DialogHeader>
 
@@ -369,7 +369,7 @@ export function CreateTeacherDialog({
             ) : (
               <>
                 <UserPlus className="h-4 w-4 mr-2" />
-                Créer l'Enseignant
+                Créer l&apos;enseignant
               </>
             )}
           </Button>

@@ -134,7 +134,7 @@ export function LiveCard({ room, isTeacher, userId }: LiveCardProps) {
             onClick={() => router.push(`/teacher/dashboard/live/${room.id}`)}
           >
             <Video className="mr-2 h-4 w-4" />
-            Revoir l'enregistrement
+            Revoir l&apos;enregistrement
           </Button>
         ) : null}
       </CardFooter>

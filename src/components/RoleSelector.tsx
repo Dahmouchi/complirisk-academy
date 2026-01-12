@@ -60,7 +60,7 @@ export const RoleSelector = ({ onSelectRole }: RoleSelectorProps) => {
             </div>
 
             <h2 className="font-display text-2xl font-bold mb-2 text-foreground">
-              I'm a Teacher
+              I&apos;m a Teacher
             </h2>
 
             <p className="text-muted-foreground mb-6">
@@ -103,7 +103,7 @@ export const RoleSelector = ({ onSelectRole }: RoleSelectorProps) => {
             </div>
 
             <h2 className="font-display text-2xl font-bold mb-2 text-foreground">
-              I'm a Student
+              I&apos;m a Student
             </h2>
 
             <p className="text-muted-foreground mb-6">

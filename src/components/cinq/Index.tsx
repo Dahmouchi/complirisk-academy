@@ -183,8 +183,8 @@ const IndexCinq = ({ matieres, user }: any) => {
                         Aucune session disponible
                       </h3>
                       <p className="text-muted-foreground">
-                        Il n'y a pas de sessions live pour le moment. Revenez
-                        plus tard !
+                        Il n&apos;y a pas de sessions live pour le moment.
+                        Revenez plus tard !
                       </p>
                     </div>
                   )}

@@ -694,7 +694,7 @@ export async function startLiveSession(liveRoomId: string) {
       LIVEKIT_API_KEY,
       LIVEKIT_API_SECRET
     );
-    let roomName = room.livekitRoom!;
+    const roomName = room.livekitRoom!;
     const existingEgresses = await egressClient.listEgress({ roomName });
     if (
       existingEgresses.length > 0 &&

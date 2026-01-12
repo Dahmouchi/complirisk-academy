@@ -24,8 +24,8 @@ export const CTASection = () => {
           className="text-center max-w-3xl mx-auto px-4"
         >
           <h2 className="heading-lg text-primary-foreground mb-6">
-            Vous N'avez Pas Besoin de Voir Tout l'Escalier, Faites Juste le
-            Premier Pas
+            Vous N&apos;avez Pas Besoin de Voir Tout l&apos;Escalier, Faites
+            Juste le Premier Pas
           </h2>
           <p className="text-primary-foreground/80 text-lg mb-10 max-w-2xl mx-auto">
             Rejoignez notre plateforme et accédez à tous les cours de vos

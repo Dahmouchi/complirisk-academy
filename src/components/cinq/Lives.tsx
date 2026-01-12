@@ -238,7 +238,7 @@ export default function StudentLivesPage() {
                   Aucun live disponible
                 </h3>
                 <p className="text-muted-foreground text-center">
-                  Il n'y a pas de sessions programmées pour le moment.
+                  Il n&apos;y a pas de sessions programmées pour le moment.
                   <br />
                   Revenez plus tard !
                 </p>
@@ -268,7 +268,7 @@ export default function StudentLivesPage() {
                   Aucun live en cours
                 </h3>
                 <p className="text-muted-foreground">
-                  Il n'y a pas de session en direct pour le moment
+                  Il n&apos;y a pas de session en direct pour le moment
                 </p>
               </CardContent>
             </Card>
@@ -296,7 +296,7 @@ export default function StudentLivesPage() {
                   Aucun live programmé
                 </h3>
                 <p className="text-muted-foreground">
-                  Il n'y a pas de session programmée pour le moment
+                  Il n&apos;y a pas de session programmée pour le moment
                 </p>
               </CardContent>
             </Card>

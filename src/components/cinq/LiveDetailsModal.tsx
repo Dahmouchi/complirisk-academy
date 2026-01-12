@@ -222,7 +222,7 @@ export function LiveDetailsModal({
                     size="lg"
                   >
                     <Bell className="h-5 w-5" />
-                    M'inscrire au Live
+                    M&apos;inscrire au Live
                   </Button>
                 )}
               </>

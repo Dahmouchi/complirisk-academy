@@ -17,14 +17,14 @@ const egressClient = new EgressClient(
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const liveRoomId = params.id;
+  const liveRoomId = (await params).id;
 
   // 1. Verify ownership
   const room = await prisma.liveRoom.findUnique({

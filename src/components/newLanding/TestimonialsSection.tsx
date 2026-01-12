@@ -86,7 +86,7 @@ export const TestimonialsSection = () => {
             <Quote className="w-12 h-12 text-primary/20 mx-auto mb-6" />
 
             <p className="text-lg md:text-xl text-foreground mb-6 leading-relaxed">
-              "{testimonials[activeIndex].content}"
+              {testimonials[activeIndex].content}
             </p>
 
             <div className="flex items-center justify-center gap-1 mb-4">

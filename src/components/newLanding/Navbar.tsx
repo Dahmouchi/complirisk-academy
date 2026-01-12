@@ -91,7 +91,7 @@ export const Navbar = () => {
                   size="sm"
                   onClick={() => router.push("/login")}
                 >
-                  S'inscrire
+                  S&apos;inscrire
                 </Button>
               </>
             )}
@@ -133,7 +133,7 @@ export const Navbar = () => {
                   Connexion
                 </Button>
                 <Button variant="hero" className="w-full justify-center">
-                  S'inscrire
+                  S&apos;inscrire
                 </Button>
               </li>
             </ul>

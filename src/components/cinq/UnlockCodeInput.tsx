@@ -65,10 +65,12 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Lock className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle className="text-xl">Entrez votre code d'accès</CardTitle>
+        <CardTitle className="text-xl">
+          Entrez votre code d&apos;accès
+        </CardTitle>
         <CardDescription>
           Après avoir effectué le paiement et envoyé le reçu via WhatsApp, vous
-          recevrez un code d'accès de l'administrateur.
+          recevrez un code d&apos;accès de l&apos;administrateur.
         </CardDescription>
       </CardHeader>
       <CardContent>
