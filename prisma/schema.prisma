@@ -24,6 +24,7 @@ enum LiveStatus {
   SCHEDULED
   LIVE
   ENDED
+  CANCELLED
 }
 
 model NotesGlobal {
@@ -226,23 +227,74 @@ model Flashcard {
 }
 
 model LiveRoom {
-  id        String     @id @default(cuid())
-  name      String
-  type      LiveType   @default(YOUTUBE)
-  status    LiveStatus @default(DRAFT)
-  teacherId String
-  // Adjust relation to match your User model name/field
-  teacher   User       @relation(fields: [teacherId], references: [id])
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  image       String?
+  type        LiveType   @default(LIVEKIT)
+  status      LiveStatus @default(DRAFT)
+  teacherId   String
+  teacher     User       @relation(fields: [teacherId], references: [id], onDelete: Cascade)
 
-  // Platform-specific fields (nullable depending on type)
+  subjectId String?
+  subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  gradeId String?
+  grade   Grade?  @relation(fields: [gradeId], references: [id])
+
+  // Platform-specific fields
   youtubeVideoId String?
-  livekitRoom    String?
+  livekitRoom    String? @unique
   jitsiRoom      String?
 
-  startsAt  DateTime?
-  endedAt   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  egressId        String?
+  recordingStatus String?
+  recordingUrl    String?
+
+  // Metadata
+  maxParticipants  Int?    @default(100)
+  recordingEnabled Boolean @default(true)
+  chatEnabled      Boolean @default(true)
+
+  startsAt DateTime?
+  endedAt  DateTime?
+  duration Int? // Duration in minutes
+
+  participants LiveRoomParticipant[]
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  liveCredentials LiveCredentials[]
+
+  @@index([teacherId])
+  @@index([subjectId])
+  @@index([status])
+}
+
+model LiveCredentials {
+  id         String   @id @default(cuid())
+  liveRoomId String
+  liveRoom   LiveRoom @relation(fields: [liveRoomId], references: [id], onDelete: Cascade)
+
+  token    String
+  url      String
+  roomName String
+}
+
+model LiveRoomParticipant {
+  id         String   @id @default(cuid())
+  liveRoomId String
+  liveRoom   LiveRoom @relation(fields: [liveRoomId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  joinedAt DateTime  @default(now())
+  leftAt   DateTime?
+
+  @@unique([liveRoomId, userId])
+  @@index([liveRoomId])
+  @@index([userId])
 }
 
 model Niveau {
@@ -266,53 +318,56 @@ model CourseProgress {
 }
 
 model Grade {
-  id       String    @id @default(cuid())
-  handler  String    @unique // short readable identifier (e.g. "fractions-course")
-  name     String // "CE1", "2AC", "1Bac"...
-  niveauId String
-  niveau   Niveau    @relation(fields: [niveauId], references: [id], onDelete: Cascade)
-  users    User[]
-  subjects Subject[]
+  id        String     @id @default(cuid())
+  handler   String     @unique // short readable identifier (e.g. "fractions-course")
+  name      String // "CE1", "2AC", "1Bac"...
+  niveauId  String
+  niveau    Niveau     @relation(fields: [niveauId], references: [id], onDelete: Cascade)
+  users     User[]
+  subjects  Subject[]
+  liveRooms LiveRoom[]
 }
 
 model Subject {
-  id          String   @id @default(cuid())
-  handler     String   @unique // short readable identifier (e.g. "fractions-course")
+  id          String           @id @default(cuid())
+  handler     String           @unique // short readable identifier (e.g. "fractions-course")
   name        String
   description String?
   color       String
   gradeId     String
-  grade       Grade    @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  grade       Grade            @relation(fields: [gradeId], references: [id], onDelete: Cascade)
   courses     Course[]
+  teachers    TeacherSubject[]
+  liveRooms   LiveRoom[]
 }
 
 model CourseChatNotification {
-  id        String   @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   messageId String
   message   CourseChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  
-  userId    String
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  isRead    Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  isRead    Boolean   @default(false)
   readAt    DateTime?
-  createdAt DateTime @default(now())
-  
+  createdAt DateTime  @default(now())
+
   @@unique([messageId, userId])
   @@index([userId, isRead])
 }
 
 model CourseChatMessageRead {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
   messageId String
   message   CourseChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
-  userId    String
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  readAt    DateTime @default(now())
+  readAt DateTime @default(now())
 
   @@unique([messageId, userId])
   @@index([userId])
@@ -320,21 +375,21 @@ model CourseChatMessageRead {
 }
 
 model CourseChatMessage {
-  id        String   @id @default(cuid())
-  content   String
+  id      String @id @default(cuid())
+  content String
 
-  parentId  String?
-  parent    CourseChatMessage? @relation("MessageReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   CourseChatMessage[] @relation("MessageReplies")
+  parentId String?
+  parent   CourseChatMessage?  @relation("MessageReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  CourseChatMessage[] @relation("MessageReplies")
 
-  courseId  String
-  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  senderId  String
-  sender    User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   reads         CourseChatMessageRead[]
-  notifications CourseChatNotification[]  // ✅ ADDED THIS!
+  notifications CourseChatNotification[] // ✅ ADDED THIS!
 
   createdAt DateTime @default(now())
 
@@ -345,15 +400,15 @@ model CourseChatMessage {
 }
 
 model Course {
-  id         String           @id @default(cuid())
+  id         String              @id @default(cuid())
   title      String
   content    String?
   videoUrl   String?
   coverImage String?
-  handler    String           @unique
+  handler    String              @unique
   index      Int
   subjectId  String
-  subject    Subject          @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject    Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   documents  Document[]
   quizzes    Quiz[]
   progress   CourseProgress[]
@@ -364,6 +419,7 @@ model Course {
 
   @@index([index])
 }
+
 model Document {
   id       String @id @default(cuid())
   name     String
@@ -435,6 +491,7 @@ model User {
   age              Int?
   totalTimeSpent   Int?       @default(0) // Total time spent on the platform in seconds
   password         String?
+  universite       String?
   prenom           String?
   qrSecret         String?
   role             Role       @default(USER)
@@ -449,23 +506,39 @@ model User {
   lastLoginDate    DateTime?
 
   // Relations
-  gradeId        String?
-  grade          Grade?           @relation(fields: [gradeId], references: [id])
-  registerCode   RegisterCode?
-  liveRooms      LiveRoom[]
-  courseProgress CourseProgress[] // 👈 Progress relation
-  accounts       Account[]
-  quizResult     QuizResult[]
-  Authenticator  Authenticator[]
-  sessions       Session[]
-  notes          Note[]
-  activities     UserActivity[]
-  badges         EarnedBadge[]
-  notesGlobal    NotesGlobal[]
-  
-  messages            CourseChatMessage[]       // existing
-  chatReads           CourseChatMessageRead[]    // ✅ ADD THIS
-  chatNotifications   CourseChatNotification[]  // ✅ ADD THIS
+  gradeId              String?
+  grade                Grade?                @relation(fields: [gradeId], references: [id])
+  registerCode         RegisterCode?
+  courseProgress       CourseProgress[] // 👈 Progress relation
+  accounts             Account[]
+  quizResult           QuizResult[]
+  Authenticator        Authenticator[]
+  sessions             Session[]
+  notes                Note[]
+  activities           UserActivity[]
+  badges               EarnedBadge[]
+  notesGlobal          NotesGlobal[]
+  liveRooms            LiveRoom[]
+  liveRoomParticipants LiveRoomParticipant[]
+
+  messages          CourseChatMessage[] // existing
+  chatReads         CourseChatMessageRead[] // ✅ ADD THIS
+  chatNotifications CourseChatNotification[] // ✅ ADD THIS
+  teacherSubjects   TeacherSubject[]
+}
+
+model TeacherSubject {
+  id        String   @id @default(cuid())
+  teacherId String
+  subjectId String
+  createdAt DateTime @default(now())
+
+  teacher User    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, subjectId])
+  @@index([teacherId])
+  @@index([subjectId])
 }
 
 model Account {

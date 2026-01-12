@@ -93,17 +93,12 @@ const Header = ({ visible }: { visible: any }) => {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full pb-16 transition-all duration-300 ${
+      className={`fixed top-0 z-50 w-full transition-all bg-white duration-300 ${
         sticky ? "shadow-lg lg:py-5" : "shadow-none py-4"
       }`}
     >
       {/* Background Image */}
       <div className="absolute -top-8 inset-0 z-0 overflow-hidden">
-        <img
-          src="/nav.png"
-          className="w-full h-full object-cover"
-          alt="Header background"
-        />
         {/* Optional overlay if you need to darken the background */}
         <div className="absolute inset-0 bg-opacity-20"></div>
       </div>
@@ -114,8 +109,8 @@ const Header = ({ visible }: { visible: any }) => {
           <div className="container mx-auto lg:max-w-screen-xl md:max-w-screen-md flex items-center justify-between px-4">
             <img
               onClick={() => router.push("/")}
-              src="/enita/enitaLogo.jpeg"
-              className="h-auto w-30 lg:w-40 cursor-pointer"
+              src="/cinq/logoH.png"
+              className="h-auto w-20 lg:w-20 cursor-pointer"
               alt=""
             />
             {visible === true && (

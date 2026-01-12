@@ -16,7 +16,7 @@ export function FloatingNotesButton({ userId }: { userId: string }) {
         className={cn(
           "fixed right-0 lg:top-1/2 top-5/6 -translate-y-1/2 z-50",
           "flex items-center gap-2 px-3 py-4",
-          "bg-purple-600  text-white",
+          "bg-primary  text-white",
           "rounded-l-2xl shadow-medium",
           "transition-all duration-300 ease-out",
           "hover:pr-5 hover:shadow-lg",
@@ -31,7 +31,7 @@ export function FloatingNotesButton({ userId }: { userId: string }) {
         <span className="font-semibold text-sm tracking-wide">Notes</span>
 
         {/* Glow Effect */}
-        <div className="absolute inset-0 rounded-l-2xl bg-purple-600 animate-pulse-glow -z-10" />
+        <div className="absolute inset-0 rounded-l-2xl bg-primary animate-pulse-glow -z-10" />
       </button>
 
       {/* Notes Sheet */}

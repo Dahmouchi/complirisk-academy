@@ -37,7 +37,7 @@ export default async function AdminLayout({
         userName={user?.name || ""}
         userAvatar={user?.image || ""}
       />
-      <div className="bg-[#fbfbf8] lg:pb-0 pb-12">{children}</div>
+      <div className="bg-white lg:pb-0 pb-12">{children}</div>
       <FloatingNotesButton userId={session.user.id} />
       <BadgeNotification />
     </div>

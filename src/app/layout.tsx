@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
-  title: "Enita",
-  description: "Welcome to Enita website",
+  title: "Cinq-Cinq",
+  description: "Welcome to Cinq-Cinq website",
 };
 export default function RootLayout({
   children,

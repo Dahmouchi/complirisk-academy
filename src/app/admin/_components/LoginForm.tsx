@@ -71,7 +71,7 @@ const LoginForm = () => {
         <div className="pb-8">
           <div className="mt-5 w-full flex items-center justify-center ">
             <Link href="/" className="lg:flex">
-              <img src="/enita/enitaLogo.jpeg" alt="" className="w-56 h-auto" />
+              <img src="/cinq/logoH.png" alt="" className="w-26 h-auto" />
             </Link>
           </div>
           <div className="w-full flex items-center justify-center mt-4">

@@ -116,7 +116,7 @@ const AuthForm = () => {
               <div className=" bg-gradient-to-r rounded-xl flex items-center justify-center mx-auto mb-4">
                 <img
                   onClick={() => redirect("/")}
-                  src="/enita/enitaLogo.jpeg"
+                  src="/cinq/logoH.png"
                   alt=""
                   className="w-52 h-auto cursor-pointer"
                 />{" "}

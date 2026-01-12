@@ -129,7 +129,6 @@ export async function updateClientProfile1(
     };
     study: {
       niveau: string;
-      codeInscription: string;
     };
   }
 ) {
@@ -162,40 +161,17 @@ export async function updateClientProfile2(
     study: {
       gradeId: string;
       niveau: string;
-      codeInscription: string;
+      universiteId: string;
     };
   }
 ) {
   try {
-    const code = await prisma.registerCode.findUnique({
-      where: { code: formData.study.codeInscription },
-    });
-
-    if (!code) {
-      throw new Error("Le code d'inscription est invalide.");
-    }
-
-    if (code.isUsed) {
-      throw new Error("Ce code a déjà été utilisé.");
-    }
-
-    // Update the RegisterCode to mark it used and link it to the user
-    await prisma.registerCode.update({
-      where: { code: formData.study.codeInscription },
-      data: {
-        isUsed: true,
-        usedAt: new Date(),
-        user: {
-          connect: { id },
-        },
-      },
-    });
-
     // Update the user with the new info
     const updatedUser = await prisma.user.update({
       where: { id },
       data: {
         gradeId: formData.study.gradeId,
+        universite: formData.study.universiteId,
         emailVerified: new Date(),
         StatutUser: "verified",
         step: 2,
@@ -224,6 +200,7 @@ export async function getStudentById() {
             },
           },
           badges: true,
+          registerCode: true,
           grade: {
             include: {
               niveau: true,
@@ -251,9 +228,74 @@ export async function getStudentById() {
   }
 }
 
+export async function getStudentRegister() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (session) {
+      const client = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        include: {
+          registerCode: true,
+        },
+      });
+      if (client?.registerCode) {
+        return true;
+      }
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching client:", error);
+    return null;
+  }
+}
+export async function UnlockedLive(code: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (session) {
+      const codeRegister = await prisma.registerCode.findUnique({
+        where: { code },
+      });
+      if (!codeRegister) {
+        return {
+          success: false,
+          message: "Code non trouvé",
+        };
+      } else if (codeRegister.isUsed) {
+        return {
+          success: false,
+          message: "Code déjà utilisé",
+        };
+      } else {
+        const client = await prisma.user.findFirst({
+          where: { id: session.user.id },
+        });
+        await prisma.registerCode.update({
+          where: { code: codeRegister.code },
+          data: {
+            isUsed: true,
+            usedAt: new Date(),
+            user: {
+              connect: { id: client?.id },
+            },
+          },
+        });
+        return {
+          success: true,
+          message: "Code utilisé avec succès",
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching client:", error);
+    return {
+      success: false,
+      message: "Une erreur est survenue",
+    };
+  }
+}
 export async function getDashboardUsers() {
   const users = await prisma.user.findMany({
-    where: { archive: false },
+    where: { archive: false, role: "USER" },
     include: {
       grade: {
         include: {

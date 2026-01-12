@@ -70,12 +70,8 @@ export const StudentHeader = ({
             transition={{ type: "spring", stiffness: 400 }}
             onClick={() => navigate.push("/dashboard")}
           >
-            <div className="relative h-10 w-auto rounded-xl bg-gradient-to-br from-blue-600 to-blue-600/60 flex items-center justify-center shadow-lg">
-              <img
-                src="/enita/enitaLogo.jpeg"
-                alt=""
-                className=" h-10 w-auto"
-              />
+            <div className="relative h-14 w-autoflex items-center justify-center ">
+              <img src="/cinq/logoH.png" alt="" className=" h-14 w-auto" />
             </div>
           </motion.div>
 

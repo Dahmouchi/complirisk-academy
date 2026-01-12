@@ -2,6 +2,8 @@ import Link from "next/link";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { getDashboardUsers } from "@/actions/client";
+import { CreateTeacherDialog } from "../../_components/AddTeacher";
+import { getAvailableSubjects } from "@/actions/teacher";
 
 async function getUsers(): Promise<any[]> {
   const data = await getDashboardUsers();
@@ -19,7 +21,7 @@ const Users = async () => {
             Utilisateurs
           </h1>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <Link
             href="/admin/dashboard/users/archive"
             className="text-sm text-blue-600 hover:underline"

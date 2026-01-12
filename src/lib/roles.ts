@@ -1,1 +1,1 @@
-export const isTeacher = (user?: { role?: string }) => user?.role === "ADMIN";
+export const isTeacher = (user?: { role?: string }) => user?.role === "TEACHER";

@@ -54,7 +54,8 @@
   /* Background gradient - soft sky to grassy green */
   --color-bg1: rgb(232, 240, 159); /* light sky blue */
   --color-bg2: rgb(174, 168, 248); /* soft grass green */
-
+  --radius-card: 20px;
+  --shadow-card-hover: 0 4px 14px 0 hsl(var(--shadow-primary) / 0.35);
   /* Accent colors - playful & nature inspired */
   --color1: 255, 183, 3; /* warm sunny yellow */
   --color2: 255, 138, 128; /* coral pink */
@@ -73,7 +74,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(87% 0.18 95);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -198,7 +199,63 @@
     gap: 1rem;
   }
 }
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
 
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+.container-custom {
+  max-width: 1280px;
+  margin-inline: auto;
+}
 /* In your global CSS */
 
 /* Ensure sections don't have pointer events when not active */
@@ -231,8 +288,62 @@ section.active {
   position: relative; /* or absolute/fixed if needed */
   z-index: 9999; /* higher than other sections */
 }
+@layer components {
+  .section-padding {
+    @apply py-8 md:py-12 px-4 md:px-8;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .heading-xl {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold leading-tight;
+  }
+
+  .heading-lg {
+    @apply text-3xl md:text-4xl font-bold leading-tight;
+  }
+
+  .heading-md {
+    @apply text-2xl md:text-3xl font-semibold;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .btn-shadow {
+    box-shadow: 0 4px 14px 0 hsl(var(--shadow-primary) / 0.35);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--hero-bg)) 0%,
+      hsl(var(--background)) 100%
+    );
+  }
+}
 
 @layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
   @keyframes border {
     0% {
       border-color: rgb(255, 255, 255);
@@ -702,4 +813,31 @@ section.active {
   .section-title-gap-sm {
     gap: 1rem;
   }
+}
+
+/* Styles LiveKit personnalisés */
+.lk-room-container {
+  --lk-bg: hsl(var(--background));
+  --lk-fg: hsl(var(--foreground));
+  --lk-control-bg: hsl(var(--card));
+  --lk-control-hover-bg: hsl(var(--accent));
+}
+
+.lk-control-bar {
+  background: hsl(var(--card)) !important;
+  border-top: 1px solid hsl(var(--border)) !important;
+}
+
+.lk-button {
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+}
+
+.lk-button:hover {
+  background: hsl(var(--accent)) !important;
+}
+
+.lk-button.lk-button-danger {
+  background: hsl(var(--destructive)) !important;
+  color: hsl(var(--destructive-foreground)) !important;
 }

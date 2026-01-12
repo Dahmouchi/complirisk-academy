@@ -34,7 +34,7 @@ const HeaderSubject = (user: any) => {
           <div className="flex items-center justify-between py-4 pb-8">
             <img
               onClick={() => router.push("/dashboard")}
-              src="/enita/enitaLogo.jpeg"
+              src="/cinq/logoH.png"
               className="h-auto w-30 lg:w-40 cursor-pointer"
               alt=""
             />

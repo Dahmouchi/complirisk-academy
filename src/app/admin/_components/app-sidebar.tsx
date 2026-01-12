@@ -86,13 +86,13 @@ const datas = {
       icon: BookText,
     },
     {
-      title: "Landing Page",
-      url: "/admin/dashboard/landing",
-      icon: Boxes,
-    },
-    {
       title: "Utilisateurs",
       url: "/admin/dashboard/users",
+      icon: Users,
+    },
+    {
+      title: "Enseignants",
+      url: "/admin/dashboard/teacher",
       icon: Users,
     },
 
@@ -113,14 +113,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
       className="bg-white dark:bg-slate-800 p-2 flex flex-col items-center justify-center bg "
     >
-      <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-center rounded-t-xl ">
+      <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-start rounded-t-xl ">
         <Image
-          src={`${
-            state === "expanded" ? "/enita/enitaLogo.jpeg" : "/logo.png"
-          }`}
+          src={`${state === "expanded" ? "/cinq/logoH.png" : "/logo.png"}`}
           alt="logo"
-          width={state === "expanded" ? 300 : 500}
-          height={state === "expanded" ? 200 : 500}
+          width={state === "expanded" ? 100 : 100}
+          height={state === "expanded" ? 100 : 100}
         />
       </SidebarHeader>
       <SidebarContent className="dark:bg-slate-900 pl-0 bg-white rounded-b-xl mt-3">

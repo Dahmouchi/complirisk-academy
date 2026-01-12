@@ -37,8 +37,8 @@ interface PersonalInfo {
 
 interface StudyInfo {
   gradeId: string;
+  universiteId: string;
   niveau: string;
-  codeInscription: string;
 }
 
 interface FormData {
@@ -73,7 +73,7 @@ const InputField = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+      <label className=" text-sm font-semibold text-gray-700 flex items-center gap-2">
         <Icon className="h-4 w-4 text-blue-500" />
         {label} {required && <span className="text-red-500">*</span>}
       </label>
@@ -188,7 +188,7 @@ const ProgressIndicator = ({
         {/* Ligne de progression */}
         <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 rounded-full -z-10">
           <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+            className="h-full bg-gradient-to-r from-primary to-primary rounded-full"
             initial={{ width: "0%" }}
             animate={{ width: `${(currentStep / (totalSteps - 1)) * 100}%` }}
             transition={{ duration: 0.5 }}
@@ -202,7 +202,7 @@ const ProgressIndicator = ({
                 index < currentStep
                   ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg shadow-green-500/50"
                   : index === currentStep
-                  ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50"
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
                   : "bg-white border-2 border-gray-300 text-gray-400"
               }`}
               initial={{ scale: 0.8 }}
@@ -258,7 +258,7 @@ const PersonalInfoStep = ({
     >
       {/* En-tête avec illustration */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent mb-2">
           Bienvenue !
         </h2>
         <p className="text-gray-600">Commençons par vos informations de base</p>
@@ -317,7 +317,37 @@ const StudyInfoStep = ({
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-
+  const universitesMarocaines = [
+    { value: "um5", label: "Université Mohammed V de Rabat" },
+    { value: "uh2c", label: "Université Hassan II de Casablanca" },
+    { value: "usmba", label: "Université Sidi Mohamed Ben Abdellah de Fès" },
+    { value: "uca", label: "Université Cadi Ayyad de Marrakech" },
+    { value: "uiz", label: "Université Ibn Zohr d'Agadir" },
+    { value: "uit", label: "Université Ibn Tofail de Kénitra" },
+    { value: "uae", label: "Université Abdelmalek Essaâdi de Tétouan" },
+    { value: "ump", label: "Université Moulay Ismail de Meknès" },
+    { value: "uh1", label: "Université Hassan 1er de Settat" },
+    { value: "ucam", label: "Université Chouaib Doukkali d'El Jadida" },
+    { value: "uma", label: "Université Mohammed Premier d'Oujda" },
+    { value: "usms", label: "Université Sultan Moulay Slimane de Béni Mellal" },
+    {
+      value: "uiz-es",
+      label: "Université Ibn Zohr - École Supérieure de Technologie",
+    },
+    { value: "umi", label: "Université Mundiapolis de Casablanca (Privée)" },
+    { value: "uir", label: "Université Internationale de Rabat (Privée)" },
+    { value: "um6p", label: "Université Mohammed VI Polytechnique - UM6P" },
+    {
+      value: "um6ss",
+      label: "Université Mohammed VI des Sciences de la Santé",
+    },
+    { value: "ueuromed", label: "Université Euromed de Fès (Privée)" },
+    {
+      value: "uilcs",
+      label: "Université Internationale de Casablanca (Privée)",
+    },
+    { value: "autre", label: "Autre université" },
+  ];
   useEffect(() => {
     const fetchNiveaux = async () => {
       try {
@@ -355,7 +385,7 @@ const StudyInfoStep = ({
       className="space-y-6"
     >
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent mb-2">
           Votre Parcours
         </h2>
         <p className="text-gray-600">
@@ -368,11 +398,28 @@ const StudyInfoStep = ({
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-            className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full"
+            className="w-12 h-12 border-4 border-blue-200 border-t-primary rounded-full"
           />
         </div>
       ) : (
         <>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <SelectField
+              label="Université"
+              value={data.universiteId}
+              onChange={(value) => onChange({ ...data, universiteId: value })}
+              options={universitesMarocaines}
+              placeholder="Sélectionnez votre université"
+              icon={School} // ou utilisez GraduationCap de lucide-react
+              error={errors.universiteId}
+              required
+            />
+          </motion.div>
           <SelectField
             label="Niveau d'étude"
             value={data.niveau}
@@ -408,38 +455,6 @@ const StudyInfoStep = ({
               </motion.div>
             )}
           </AnimatePresence>
-
-          <InputField
-            label="Code d'inscription"
-            value={data.codeInscription}
-            onChange={(value) => onChange({ ...data, codeInscription: value })}
-            placeholder="Ex: 01234567"
-            icon={IdCard}
-            error={errors.codeInscription}
-            required
-          />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-100 rounded-2xl p-4"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Award className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-1">
-                  Code d&apos;inscription
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Utilisez le code qui vous a été fourni lors de votre
-                  inscription à l&apos;établissement.
-                </p>
-              </div>
-            </div>
-          </motion.div>
         </>
       )}
     </motion.div>
@@ -519,7 +534,6 @@ const ConfirmationStep = ({ data }: { data: FormData }) => {
               value: niveauLabels[data.study.niveau] || data.study.niveau,
               icon: GraduationCap,
             },
-            { label: "Code", value: data.study.codeInscription, icon: IdCard },
           ].map((item, index) => (
             <motion.div
               key={index}
@@ -559,7 +573,7 @@ const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(session?.user.step || 0);
   const [formData, setFormData] = useState<FormData>({
     personal: { nom: "", prenom: "", phone: "" },
-    study: { niveau: "", gradeId: "", codeInscription: "" },
+    study: { niveau: "", gradeId: "", universiteId: "" },
   });
   const [errors, setErrors] = useState<{
     personal: Partial<PersonalInfo>;
@@ -582,7 +596,7 @@ const MultiStepForm = () => {
                 prenom: res.prenom || "",
                 phone: res.phone?.toString() || "",
               },
-              study: { gradeId: "", niveau: "", codeInscription: "" },
+              study: { gradeId: "", niveau: "", universiteId: "" },
             });
           }
         }
@@ -606,10 +620,8 @@ const MultiStepForm = () => {
   const validateStudyInfo = (data: StudyInfo): Partial<StudyInfo> => {
     const errors: Partial<StudyInfo> = {};
     if (!data.niveau) errors.niveau = "Le niveau d'étude est requis";
-    if (!data.codeInscription.trim())
-      errors.codeInscription = "Le code d'inscription est requis";
-    else if (data.codeInscription.length < 6)
-      errors.codeInscription = "Le code doit contenir au moins 6 caractères";
+    if (!data.gradeId) errors.gradeId = "La classe est requise";
+    if (!data.universiteId) errors.universiteId = "L'université est requise";
     return errors;
   };
 
@@ -662,7 +674,7 @@ const MultiStepForm = () => {
     <div
       className="min-h-screen relative overflow-hidden"
       style={{
-        backgroundImage: `url("/Board.png")`,
+        backgroundImage: `url("/enita/bg-paper.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -691,7 +703,7 @@ const MultiStepForm = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12"
+          className="bg-white/95 backdrop-blur-xl rounded-sm shadow-2xl p-8 md:p-12"
         >
           {currentStep < 2 && (
             <ProgressIndicator currentStep={currentStep} totalSteps={2} />
@@ -749,11 +761,11 @@ const MultiStepForm = () => {
 
               <motion.button
                 onClick={nextStep}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3.5 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
+                className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
                 whileHover={{ scale: 1.05, x: 5 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <span className="relative flex items-center gap-2">
                   {currentStep === 1 ? "Terminer" : "Suivant"}
                   <ChevronRight className="w-5 h-5" />

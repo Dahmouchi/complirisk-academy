@@ -215,7 +215,7 @@ const MagicNotesButton = ({
             }</h1>
              <img
              
-              src="/enita/enitaLogo.jpeg"
+              src="/cinq/logoH.png"
               class="imgg"
               alt=""
             />
