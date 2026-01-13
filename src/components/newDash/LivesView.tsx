@@ -47,7 +47,8 @@ const steps = [
     number: 4,
     icon: KeyRound,
     title: "Recevoir le code",
-    description: "L'administrateur vous enverra un code d'accès unique.",
+    description:
+      "L&apos;administrateur vous enverra un code d&apos;accès unique.",
   },
   {
     number: 5,
@@ -159,7 +160,7 @@ const LivesView = ({
   const handleWhatsApp = () => {
     const phoneNumber = "212600000000"; // Replace with actual number
     const message = encodeURIComponent(
-      "Bonjour, je souhaite m'inscrire au plan Pro. Voici mon reçu de paiement:"
+      "Bonjour, je souhaite m&apos;inscrire au plan Pro. Voici mon reçu de paiement:"
     );
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
@@ -183,7 +184,7 @@ const LivesView = ({
                   className="bg-card/10 backdrop-blur-sm h-full relative rounded-2xl p-6 border border-primary-foreground/20"
                   style={{
                     backgroundImage:
-                      "url('https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg')",
+                      "url(&apos;https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg&apos;)",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -281,7 +282,7 @@ const LivesView = ({
                   onClick={() => onTabChange("courses")}
                   className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  ← Retour à l'accueil
+                  ← Retour à l&apos;accueil
                 </button>
               </div>
             </div>

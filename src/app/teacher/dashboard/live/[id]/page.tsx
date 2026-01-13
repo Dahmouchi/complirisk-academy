@@ -103,11 +103,6 @@ export default function LiveRoomPage() {
 
   const hasFetched = useRef(false);
 
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
-
   // Fetch credentials on mount - ONLY ONCE
   useEffect(() => {
     if (hasFetched.current) return;
@@ -141,7 +136,7 @@ export default function LiveRoomPage() {
   }, [params.id]); // Only depend on params.id
 
   const handleEndLive = useCallback(async () => {
-    if (!isTeacher) return;
+    if (!isTeacher || !session?.user?.id) return;
 
     const confirmed = window.confirm(
       "Êtes-vous sûr de vouloir terminer ce live ? Tous les participants seront déconnectés."
@@ -150,7 +145,7 @@ export default function LiveRoomPage() {
     if (!confirmed) return;
 
     try {
-      const result = await endLiveRoom(params.id as string, session?.user.id);
+      const result = await endLiveRoom(params.id as string, session.user.id);
       if (result.success) {
         toast.success("La session a été terminée avec succès");
         router.push("/teacher/dashboard/live");
@@ -160,7 +155,7 @@ export default function LiveRoomPage() {
     } catch (error) {
       toast.error("Impossible de terminer le live");
     }
-  }, [isTeacher, params.id, session?.user.id, router]);
+  }, [isTeacher, params.id, session?.user?.id, router]);
 
   const handleStart = useCallback(async () => {
     const res = await startLiveSession(params.id as string);
@@ -175,6 +170,12 @@ export default function LiveRoomPage() {
       toast.error(res.error);
     }
   }, [params.id]);
+
+  // Check session after all hooks
+  if (!session) {
+    router.push("/login");
+    return null;
+  }
 
   // 1. Loading State
   if (isInitialLoad || status === "LOADING") {
@@ -191,7 +192,7 @@ export default function LiveRoomPage() {
     return (
       <div className="h-screen flex items-center justify-center flex-col gap-4">
         <AlertCircle className="h-12 w-12 text-red-500" />
-        <p className="text-lg font-medium">Erreur d'accès</p>
+        <p className="text-lg font-medium">Erreur d&apos;accès</p>
         <Button onClick={() => router.back()}>Retour</Button>
       </div>
     );
@@ -218,7 +219,7 @@ export default function LiveRoomPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Prêt à commencer ?</h2>
           <p className="text-muted-foreground">
-            Votre session n'a pas encore commencé.
+            Votre session n&apos;a pas encore commencé.
           </p>
         </div>
         <Button size="lg" onClick={handleStart} className="gap-2">

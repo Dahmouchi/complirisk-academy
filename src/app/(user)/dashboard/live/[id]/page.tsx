@@ -102,11 +102,11 @@ export default function StudentLiveRoomPage() {
       <div className="min-h-screen flex items-center justify-center flex-col gap-4 px-4 text-center">
         <AlertCircle className="h-16 w-16 text-red-500 mb-2" />
         <h2 className="text-2xl font-bold">
-          Impossible d'accéder à cette session
+          Impossible d&apos;accéder à cette session
         </h2>
         <p className="text-muted-foreground max-w-md">
-          Soit la session a été annulée, soit vous n'avez pas les droits
-          d'accès.
+          Soit la session a été annulée, soit vous n&apos;avez pas les droits
+          d&apos;accès.
         </p>
         <Button onClick={() => router.push("/dashboard")} className="mt-4">
           Retour au Tableau de bord
@@ -128,7 +128,7 @@ export default function StudentLiveRoomPage() {
             En attente du professeur...
           </h2>
           <p className="text-lg text-slate-600">
-            Cette session n'a pas encore commencé. Veuillez patienter.
+            Cette session n&apos;a pas encore commencé. Veuillez patienter.
           </p>
         </div>
         <Button
@@ -230,7 +230,7 @@ export default function StudentLiveRoomPage() {
         <Video className="h-12 w-12 text-slate-400 mb-4" />
         <h2 className="text-2xl font-bold">Session Terminée</h2>
         <p className="text-muted-foreground mt-2">
-          L'enregistrement sera bientôt disponible.
+          L&apos;enregistrement sera bientôt disponible.
         </p>
         <Button className="mt-6" onClick={() => router.push("/dashboard")}>
           Retour au Dashboard

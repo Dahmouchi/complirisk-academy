@@ -64,7 +64,7 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className=" space-y-3 w-full">
           <label className="text-sm font-medium text-center w-full  text-foreground">
-            Entrez votre code d'accès
+            Entrez votre code d&apos;accès
           </label>
           <div className="flex flex-col justify-center items-center gap-3 mt-3">
             <Input
