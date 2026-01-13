@@ -64,7 +64,7 @@ export const StudentHeader = ({
       {/* Top Header */}
       <div className="flex bg-[#fbfaf6] items-center justify-between px-6 py-4  border-b border-gray-400/40 ">
         {/* Logo */}
-        <div className="relative h-14 w-autoflex items-center justify-center ">
+        <div className="relative h-14 w-autoflex items-center justify-center">
           <img src="/cinq/logoH.png" alt="" className=" h-10 w-auto" />
         </div>
 

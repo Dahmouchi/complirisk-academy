@@ -39,7 +39,6 @@ function verifyWebhook(
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("Webhook received");
     const apiKey = process.env.LIVEKIT_API_KEY;
     const apiSecret = process.env.LIVEKIT_API_SECRET;
 
@@ -51,6 +50,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.text();
+    console.log("Webhook received", body);
     const header = req.headers.get("livekit-webhook-authorization");
 
     // 1. Verify the signature (Security check)
