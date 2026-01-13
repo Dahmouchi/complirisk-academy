@@ -174,7 +174,7 @@ export async function startLiveRoom(liveRoomId: string, teacherId: string) {
   }
 }
 
-export async function endLiveRoom(liveRoomId: string, teacherId: string) {
+export async function endLiveRoomm(liveRoomId: string, teacherId: string) {
   try {
     const liveRoom = await prisma.liveRoom.findUnique({
       where: { id: liveRoomId },
@@ -211,7 +211,45 @@ export async function endLiveRoom(liveRoomId: string, teacherId: string) {
     };
   }
 }
+export async function endLiveRoom(liveRoomId: string, teacherId: string) {
+  try {
+    const liveRoom = await prisma.liveRoom.findUnique({
+      where: { id: liveRoomId },
+    });
 
+    if (!liveRoom || liveRoom.teacherId !== teacherId) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    // Optional: Delete the room on LiveKit server to save resources
+    // Note: This also triggers the recording to stop cleanly
+    if (process.env.LIVEKIT_URL) {
+      const { RoomServiceClient } = await import("livekit-server-sdk");
+      const roomService = new RoomServiceClient(
+        process.env.LIVEKIT_URL,
+        process.env.LIVEKIT_API_KEY!,
+        process.env.LIVEKIT_API_SECRET!
+      );
+
+      await roomService.deleteRoom(liveRoom.livekitRoom!);
+    }
+
+    // Update status in DB
+    await prisma.liveRoom.update({
+      where: { id: liveRoomId },
+      data: {
+        status: "ENDED",
+        endedAt: new Date(),
+        recordingStatus: "PROCESSING", // We set this to PROCESSING. Webhook will set to COMPLETED.
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error ending live room:", error);
+    return { success: false, error: "Error ending session" };
+  }
+}
 export async function getLiveTokens(liveRoomId: string, userId: string) {
   try {
     const [liveRoom, user] = await Promise.all([

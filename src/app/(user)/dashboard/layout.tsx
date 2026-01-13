@@ -9,8 +9,6 @@ import { FloatingNotesButton } from "../_components/notes/FloatingNotesButton";
 import { BadgeNotification } from "../_components/BadgNotification";
 import { StudentHeader } from "@/components/student/StudentHeader";
 import { getStudentById } from "@/actions/client";
-import { signOut } from "next-auth/react";
-import { toast } from "react-toastify";
 
 export default async function AdminLayout({
   children,
@@ -31,13 +29,14 @@ export default async function AdminLayout({
   const user = await getStudentById();
 
   return (
-    <div>
+    <div className="h-screen overflow-hidden flex flex-col">
       <Timer user={session.user} />
       <StudentHeader
-        userName={user?.name || ""}
+        userName={`${user?.name} ${user?.prenom}` || ""}
         userAvatar={user?.image || ""}
+        userEmail={user?.email || ""}
       />
-      <div className="bg-white lg:pb-0 pb-12">{children}</div>
+      <div className="bg-[#fbfaf6] flex-1 overflow-hidden">{children}</div>
       <FloatingNotesButton userId={session.user.id} />
       <BadgeNotification />
     </div>

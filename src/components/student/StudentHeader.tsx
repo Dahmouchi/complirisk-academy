@@ -8,6 +8,10 @@ import {
   Home,
   BookOpen,
   GraduationCap,
+  LayoutGrid,
+  Laptop,
+  CheckCircle,
+  Users,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,6 +30,7 @@ import { toast } from "react-toastify";
 interface StudentHeaderProps {
   userName?: string;
   userAvatar?: string;
+  userEmail?: string;
 }
 
 const mobileNavItems = [
@@ -38,6 +43,7 @@ const mobileNavItems = [
 export const StudentHeader = ({
   userName = "Étudiant",
   userAvatar,
+  userEmail,
 }: StudentHeaderProps) => {
   const navigate = useRouter();
   const location = usePathname();
@@ -56,94 +62,103 @@ export const StudentHeader = ({
   return (
     <>
       {/* Top Header */}
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 w-full border-b border-gray-400/40 backdrop-blur supports-[backdrop-filter]:bg-background/60 bg-white"
-      >
-        <div className="flex h-16 items-center justify-between px-4 md:px-6">
-          {/* Logo */}
-          <motion.div
-            className="flex items-center gap-3 cursor-pointer"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 400 }}
-            onClick={() => navigate.push("/dashboard")}
-          >
-            <div className="relative h-14 w-autoflex items-center justify-center ">
-              <img src="/cinq/logoH.png" alt="" className=" h-14 w-auto" />
-            </div>
-          </motion.div>
+      <div className="flex bg-[#fbfaf6] items-center justify-between px-6 py-4  border-b border-gray-400/40 ">
+        {/* Logo */}
+        <div className="relative h-14 w-autoflex items-center justify-center ">
+          <img src="/cinq/logoH.png" alt="" className=" h-10 w-auto" />
+        </div>
 
-          {/* User Profile - Hidden on mobile */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center  gap-2 px-2 hover:bg-muted/50"
-              >
+        {/* Center Navigation */}
+        <nav className=" lg:flex hidden items-center gap-2 bg-card rounded-full px-2 py-2 card-shadow">
+          <div className="flex items-center gap-2 bg-secondary rounded-full px-4 py-2">
+            <GraduationCap className="w-4 h-4" />
+            <span className="text-sm font-medium">Learning Plan</span>
+          </div>
+
+          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+            <Users className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+            <CheckCircle className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+            <Laptop className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+            <LayoutGrid className="w-5 h-5 text-muted-foreground" />
+          </button>
+        </nav>
+
+        {/* User Profile */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex items-center  gap-2 px-2 hover:bg-muted/50"
+            >
+              <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
                 <div className="relative">
                   {!userAvatar && (
                     <div className="absolute top-0 right-0 z-50 bg-red-500 rounded-full w-2 h-2" />
                   )}
-                  <Avatar className="h-8 w-8 border-2 border-blue-600/20">
+                  <Avatar className="w-10 h-10 border-2 border-gray-200">
                     <AvatarImage src={userAvatar} alt={userName} />
-                    <AvatarFallback className="bg-blue-600/10 text-blue-600 text-sm font-medium">
-                      {initials}
-                    </AvatarFallback>
+                    <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                 </div>
-                <span className="hidden md:inline-block text-sm font-medium">
-                  {userName}
-                </span>
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <div className="flex items-center gap-2 p-2">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={userAvatar} alt={userName} />
-                  <AvatarFallback className="bg-blue-600/10 text-blue-600">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{userName}</span>
-                  <span className="text-xs text-muted-foreground">
-                    Étudiant
-                  </span>
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-semibold"> {userName}</p>
+                  <p className="text-xs text-muted-foreground">Étudiant</p>
                 </div>
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
               </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer relative"
-                onClick={() => navigate.push("/dashboard/profile")}
-              >
-                {!userAvatar && (
-                  <div className="absolute top-0 right-0 z-50 bg-red-500 rounded-full w-2 h-2" />
-                )}
-                <User className="mr-2 h-4 w-4" />
-                <span>Mon profil</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => navigate.push("/dashboard/profile")}
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Paramètres</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer text-destructive focus:text-destructive"
-                onClick={handleLogout}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Se déconnecter</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </motion.header>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 rounded-2xl">
+            <div className="flex items-center gap-2 p-2">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={userAvatar} alt={userName} />
+                <AvatarFallback className="bg-blue-600/10 text-blue-600">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{userName}</span>
+                <span className="text-xs text-muted-foreground">Étudiant</span>
+              </div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer relative"
+              onClick={() => navigate.push("/dashboard/profile")}
+            >
+              {!userAvatar && (
+                <div className="absolute top-0 right-0 z-50 bg-red-500 rounded-full w-2 h-2" />
+              )}
+              <User className="mr-2 h-4 w-4" />
+              <span>Mon profil</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => navigate.push("/dashboard/profile")}
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Paramètres</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer text-destructive focus:text-destructive"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Se déconnecter</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Mobile Bottom Navigation */}
       <motion.nav

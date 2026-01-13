@@ -1,13 +1,10 @@
-/* eslint-disable @next/next/no-sync-scripts */
-import React from "react";
-import MyBar from "../../_components/myBar/Mybar";
+import { getStudentById } from "@/actions/client";
+import IndexNewDash from "@/components/newDash/Dashboard";
 
-const Pgge = () => {
-  return (
-    <div>
-     <MyBar />
-    </div>
-  );
-};
-
-export default Pgge;
+export default async function Page() {
+  const user = await getStudentById();
+  if (!user) {
+    return <div className="text-center">User not found</div>;
+  }
+  return <IndexNewDash matieres={user.grade?.subjects} user={user} />;
+}

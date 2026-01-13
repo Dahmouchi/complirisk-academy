@@ -10,6 +10,7 @@ import { LogOut, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { signOut, useSession } from "next-auth/react";
+import { updateStudentPicture } from "@/actions/student";
 
 const Teacher = ({ user }: any) => {
   const [loading, setLoading] = useState(false);
@@ -69,18 +70,19 @@ const Teacher = ({ user }: any) => {
       <main className="container-custom mx-auto px-4 md:px-8 py-6 space-y-6">
         {/* Profile Header */}
         <ProfileHeader
+          user={user}
           name={formattedName}
           role="Instructeur"
           department="Département Génie Civil"
         />
 
         {/* Quick Actions */}
-        <section>
+        <div>
           <h3 className="text-lg font-semibold text-foreground mb-4">
             Actions rapides
           </h3>
           <QuickActions />
-        </section>
+        </div>
 
         {/* Analytics */}
         <section>

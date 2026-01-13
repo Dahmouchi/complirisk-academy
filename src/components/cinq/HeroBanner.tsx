@@ -8,9 +8,9 @@ import { useRouter } from "next/navigation";
 export function HeroBanner() {
   const router = useRouter();
   return (
-    <div className="relative overflow-hidden rounded-2xl mt-4">
-      <div className="mx-auto py-4 relative z-10">
-        <div className="grid md:grid-cols-6 gap-8 items-center">
+    <div className="relative overflow-hidden rounded-2xl">
+      <div className="mx-auto  relative z-10">
+        <div className="">
           {/* Left content */}
           <div className="relative text-primary-foreground bg-blue-600 p-8 rounded-2xl space-y-6 col-span-4">
             {/* Background image - removed z-index */}
@@ -64,7 +64,7 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* Right content - Stats card */}
+          {/* Right content - Stats card
           <div className="hidden md:block h-full col-span-2">
             <div
               className="bg-card/10 backdrop-blur-sm h-full relative rounded-2xl p-6 border border-primary-foreground/20"
@@ -75,7 +75,6 @@ export function HeroBanner() {
                 backgroundPosition: "center",
               }}
             >
-              {/* Background overlay - removed z-index */}
               <div className="absolute inset-0 w-full h-full rounded-2xl top-0 left-0 bg-black/50 opacity-50 pointer-events-none"></div>
 
               <div className="relative z-10">
@@ -123,7 +122,7 @@ export function HeroBanner() {
                 </Button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

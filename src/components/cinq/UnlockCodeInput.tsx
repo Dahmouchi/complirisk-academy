@@ -60,44 +60,50 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
   }
 
   return (
-    <Card className="border-primary/20 bg-card">
-      <CardHeader className="text-center">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-          <Lock className="h-8 w-8 text-primary" />
-        </div>
-        <CardTitle className="text-xl">
-          Entrez votre code d&apos;accès
-        </CardTitle>
-        <CardDescription>
-          Après avoir effectué le paiement et envoyé le reçu via WhatsApp, vous
-          recevrez un code d&apos;accès de l&apos;administrateur.
-        </CardDescription>
-      </CardHeader>
+    <Card className="border-primary/20 bg-card rounded-2xl">
       <CardContent>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-3"
-        >
-          <Input
-            type="text"
-            placeholder="Entrez le code d'accès..."
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="flex-1 text-center text-lg tracking-widest uppercase"
-            maxLength={12}
-          />
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 gap-2"
-          >
-            {isLoading ? (
-              <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Unlock className="h-4 w-4" />
-            )}
-            Déverrouiller
-          </Button>
+        <form onSubmit={handleSubmit} className=" space-y-3 w-full">
+          <label className="text-sm font-medium text-center w-full  text-foreground">
+            Entrez votre code d'accès
+          </label>
+          <div className="flex flex-col justify-center items-center gap-3 mt-3">
+            <Input
+              type="text"
+              placeholder="-XXXX-"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="flex-1 bg-card py-4  border-primary border-2 text-center rounded-full font-mono text-lg tracking-widest"
+              maxLength={12}
+            />
+            <button
+              disabled={isLoading}
+              className="relative w-full bg-blue-600 text-white font-medium text-[17px] px-4 py-[0.35em] pl-5 h-[2.8em] rounded-full flex items-center overflow-hidden cursor-pointer shadow-[inset_0_0_1.6em_-0.6em_#714da6] group"
+            >
+              <span className="mr-10 flex items-center justify-center gap-2">
+                {isLoading ? (
+                  <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Unlock className="h-4 w-4" />
+                )}{" "}
+                Déverrouiller
+              </span>
+              <div className="absolute right-[0.3em] bg-primary h-[2.2em] w-[2.2em] rounded-full flex items-center justify-center transition-all duration-300 group-hover:w-[calc(100%-0.6em)] shadow-[0.1em_0.1em_0.6em_0.2em_#7b52b9] active:scale-95">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width={24}
+                  height={24}
+                  className="w-[1.1em] transition-transform duration-300 text-[#7b52b9] group-hover:translate-x-[0.1em]"
+                >
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path
+                    fill="currentColor"
+                    d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                  />
+                </svg>
+              </div>
+            </button>
+          </div>
         </form>
       </CardContent>
     </Card>

@@ -13,11 +13,11 @@ const page = async () => {
   //const stats = await getStudentDashboardStats(user.id);
 
   return (
-    <div className="lg:px-16 px-2">
+    <>
       <IndexCinq matieres={user.grade?.subjects} user={user} />
       {/*<ModernStudentSpace user = {user} quizzes = {quizzes.data}/>
       <StudentDashboard user={user} quizzes={quizzes.data} stats={stats} />*/}
-    </div>
+    </>
   );
 };
 
