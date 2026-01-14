@@ -1,129 +1,99 @@
-// app/api/livekit/webhook/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { WebhookEvent } from "livekit-server-sdk";
-import crypto from "crypto";
+import { WebhookReceiver } from "livekit-server-sdk";
 import prisma from "@/lib/prisma";
 
-// Helper function to verify the LiveKit signature
-function verifyWebhook(
-  body: string,
-  header: string | null,
-  apiKey: string | undefined,
-  apiSecret: string | undefined
-): boolean {
-  if (!header || !apiKey || !apiSecret) return false;
-
-  const authParts = header.split(", ");
-  const auth: Record<string, string> = {};
-
-  for (const part of authParts) {
-    const [key, value] = part.split("=");
-    auth[key] = value.substring(1, value.length - 1);
-  }
-
-  if (auth.t === undefined || auth.s === undefined) return false;
-
-  const now = Math.floor(Date.now() / 1000);
-  if (Math.abs(now - parseInt(auth.t)) > 5 * 60) {
-    return false;
-  }
-
-  const sig = crypto
-    .createHmac("sha256", apiSecret)
-    .update(`${auth.t}.${auth.s}`)
-    .digest("hex");
-
-  return sig === auth.s;
-}
+/**
+ * Initialisation du récepteur de Webhook LiveKit.
+ * Assurez-vous que LIVEKIT_API_KEY et LIVEKIT_API_SECRET sont définis dans votre .env
+ */
+const receiver = new WebhookReceiver(
+  process.env.LIVEKIT_API_KEY!,
+  process.env.LIVEKIT_API_SECRET!
+);
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = process.env.LIVEKIT_API_KEY;
-    const apiSecret = process.env.LIVEKIT_API_SECRET;
+    // 1. Récupération du corps brut et du header d'autorisation
+    const body = await req.text();
 
-    if (!apiKey || !apiSecret) {
+    // LiveKit peut envoyer l'autorisation via 'Authorization' ou 'livekit-webhook-authorization'
+    const header =
+      req.headers.get("Authorization") ||
+      req.headers.get("livekit-webhook-authorization");
+
+    if (!header) {
+      console.error("Webhook LiveKit : Header d'autorisation manquant");
       return NextResponse.json(
-        { error: "Server config error" },
-        { status: 500 }
+        { error: "No authorization header" },
+        { status: 401 }
       );
     }
 
-    const body = await req.text();
-    console.log("Webhook received", body);
-    // We keep the raw body log in case we need to debug structure again
-    // console.log("Webhook received", body);
-    const header = req.headers.get("livekit-webhook-authorization");
+    // 2. Validation de la signature et parsing de l'événement
+    // Cette méthode lève une erreur si la signature est invalide
+    const event = await receiver.receive(body, header);
 
-    // 1. Verify the signature
-    const isVerified = verifyWebhook(body, header, apiKey, apiSecret);
-    if (!isVerified) {
-      console.error("Invalid LiveKit Signature");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-    }
+    console.log(`Événement LiveKit reçu : ${event.event}`);
 
-    // 2. Parse the Event
-    const event = WebhookEvent.fromJson(JSON.parse(body));
+    // 3. Traitement spécifique de l'événement "egress_ended"
+    if (event.event === "egress_ended" && event.egressInfo) {
+      const info = event.egressInfo;
+      const egressId = info.egressId;
+      const roomName = info.roomName;
 
-    if (!event.egressInfo)
-      return NextResponse.json({ error: "Invalid event" }, { status: 400 });
-    // 3. Check if this is an Egress Ended event (Recording finished)
-    if (event.event === "egress_ended") {
-      // FIX 1: Use 'egressInfo.egressId' instead of 'event.id'
-      // 'event.id' is the ID of the webhook message itself.
-      // 'egressInfo.egressId' matches what we stored in the database when we started recording.
-      const egressId = event.egressInfo.egressId;
-
-      console.log(`Webhook received for Egress ID: ${egressId}`);
-
-      // FIX 2: Extract the URL correctly from your JSON structure
-      // Based on your JSON: "fileResults": [{ "location": "https://..." }]
-      let videoUrl = null;
-
-      if (
-        event.egressInfo.fileResults &&
-        event.egressInfo.fileResults.length > 0
-      ) {
-        videoUrl = event.egressInfo.fileResults[0].location;
-      }
-      // Fallback for older versions or single file structure
-      else if (event.egressInfo.fileResults) {
-        videoUrl = event.egressInfo.fileResults[0].location;
-      }
+      /**
+       * Extraction de l'URL de la vidéo.
+       * On utilise 'as any' pour éviter l'erreur TypeScript sur la propriété 'file'
+       * qui est présente dans le JSON mais pas toujours dans les types stricts du SDK.
+       */
+      const videoUrl =
+        info.fileResults?.[0]?.location || (info as any).file?.location;
 
       if (videoUrl) {
-        console.log(`Recording URL found: ${videoUrl}`);
+        console.log(
+          `URL de vidéo extraite : ${videoUrl} pour la room : ${roomName}`
+        );
 
-        // 4. Update Database
-        const updatedRoom = await prisma.liveRoom.updateMany({
+        // 4. Mise à jour de la base de données Prisma
+        // On utilise updateMany pour être sûr de trouver l'entrée via roomName ou egressId
+        const updateResult = await prisma.liveRoom.updateMany({
           where: {
-            egressId: egressId, // This matches the ID stored in startLiveSession
+            OR: [{ livekitRoom: roomName }, { egressId: egressId }],
           },
           data: {
-            recordingUrl: videoUrl, // FIX 3: Use the actual URL, not createdAt
+            recordingUrl: videoUrl,
             recordingStatus: "COMPLETED",
             status: "ENDED",
             endedAt: new Date(),
           },
         });
 
-        if (updatedRoom.count > 0) {
-          console.log("Database updated successfully.");
+        if (updateResult.count > 0) {
+          console.log(
+            `Succès : ${updateResult.count} session(s) mise(s) à jour.`
+          );
         } else {
           console.warn(
-            `No room found with egressId: ${egressId}. Check if it matches startLiveSession ID.`
+            `Attention : Aucune session trouvée dans la DB pour ${roomName} / ${egressId}`
           );
         }
       } else {
         console.warn(
-          "Egress event received but no URL found in payload.",
-          JSON.stringify(event.egressInfo)
+          "Événement egress_ended reçu mais aucune URL de fichier trouvée dans le payload."
         );
       }
     }
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Webhook error:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    // Toujours répondre avec un succès 200 à LiveKit pour accuser réception
+    return NextResponse.json({ received: true });
+  } catch (error: any) {
+    console.error(
+      "Erreur lors du traitement du Webhook LiveKit :",
+      error.message
+    );
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
   }
 }
