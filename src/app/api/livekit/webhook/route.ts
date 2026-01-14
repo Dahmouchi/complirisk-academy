@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.text();
+    console.log("Webhook received", body);
     // We keep the raw body log in case we need to debug structure again
     // console.log("Webhook received", body);
     const header = req.headers.get("livekit-webhook-authorization");
