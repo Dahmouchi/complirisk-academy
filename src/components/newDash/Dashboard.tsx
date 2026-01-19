@@ -53,11 +53,19 @@ const IndexNewDash = ({ matieres, user }: any) => {
     }
   };
   return (
-    <div className="h-screen overflow-hidden">
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Left Sidebar */}
-        <aside className="w-20 border-r border-border hidden lg:block">
-          <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+    <div className="min-h-screen overflow-hidden pb-[50px]">
+      {/* Mobile Navigation - Rendered separately */}
+      <div className="md:hidden">
+        <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
+      {/* Left Sidebar */}
+      <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 ">
+        {/* Left Sidebar - Desktop only */}
+        <aside className="w-20 border-r border-border hidden md:block">
+          <div className="h-full">
+            <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
         </aside>
 
         {/* Main Content */}
@@ -74,7 +82,6 @@ const IndexNewDash = ({ matieres, user }: any) => {
             user={user}
             onTabChange={setActiveTab}
             loading={loading}
-            
           />
         )}
 

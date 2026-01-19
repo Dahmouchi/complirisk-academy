@@ -59,7 +59,7 @@ const RecentCourses = () => {
         {courses.map((course) => (
           <div
             key={course.id}
-            className="flex items-center gap-4 p-4 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-sm transition-all cursor-pointer group"
+            className="flex items-center gap-4 p-4 rounded-[8px] border border-border/50 hover:border-primary/30 hover:shadow-sm transition-all cursor-pointer group"
           >
             <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <BookOpen className="h-6 w-6 text-primary" />

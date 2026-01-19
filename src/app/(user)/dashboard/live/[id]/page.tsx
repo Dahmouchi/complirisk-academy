@@ -145,7 +145,7 @@ export default function StudentLiveRoomPage() {
   // 4. Live State - Simple VideoConference View
   if (status === "LIVE" && token && roomName) {
     return (
-      <div className="min-h-screen w-full bg-slate-900">
+      <div className="h-full overflow-y-scroll w-full ">
         {/* Header */}
         <div className="h-14 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white">
           <div className="flex items-center gap-4">
@@ -177,6 +177,7 @@ export default function StudentLiveRoomPage() {
             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
             connect={true}
             audio={true}
+            screen={false}
             video={false} // Students don't share video
             onDisconnected={() => {
               console.log("Student disconnected");
@@ -205,7 +206,7 @@ export default function StudentLiveRoomPage() {
           </Button>
         </div>
 
-        <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-slate-700">
+        <div className="w-full aspect-video bg-black rounded-[8px] overflow-hidden shadow-2xl border border-slate-700">
           <video
             controls
             className="w-full h-full"

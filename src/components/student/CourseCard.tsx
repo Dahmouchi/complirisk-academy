@@ -25,7 +25,7 @@ export const CourseCard = ({
       transition={{ duration: 0.4, delay }}
       whileHover={{ y: -4 }}
       onClick={onClick}
-      className="group relative overflow-hidden rounded-xl bg-card border border-border/50 cursor-pointer shadow-md hover:shadow-lg transition-all"
+      className="group relative overflow-hidden rounded-[8px] bg-card border border-border/50 cursor-pointer shadow-md hover:shadow-lg transition-all"
     >
       {/* Cover image or gradient */}
       <div className="relative h-32 overflow-hidden">

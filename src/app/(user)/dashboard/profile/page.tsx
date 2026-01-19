@@ -12,7 +12,7 @@ const page = async () => {
   }
   const stats = await getStudentDashboardStats(user.id);
   return (
-    <div className="">
+    <div className="overflow-y-scroll h-[calc(100vh-80px)]">
       <StudentProfile user={user} stats={stats} />
     </div>
   );

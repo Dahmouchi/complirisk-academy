@@ -3,6 +3,7 @@ import { getStudentById } from "@/actions/client";
 import { getQuizzesGroupedByMatiere } from "@/actions/quizResults";
 import { getStudentDashboardStats } from "@/actions/student";
 import IndexCinq from "@/components/cinq/Index";
+import IndexNewDash from "@/components/newDash/Dashboard";
 
 const page = async () => {
   const user = await getStudentById();
@@ -14,8 +15,9 @@ const page = async () => {
 
   return (
     <>
-      <IndexCinq matieres={user.grade?.subjects} user={user} />
-      {/*<ModernStudentSpace user = {user} quizzes = {quizzes.data}/>
+      <IndexNewDash matieres={user.grade?.subjects} user={user} />
+      {/*<IndexCinq matieres={user.grade?.subjects} user={user} />
+      <ModernStudentSpace user = {user} quizzes = {quizzes.data}/>
       <StudentDashboard user={user} quizzes={quizzes.data} stats={stats} />*/}
     </>
   );

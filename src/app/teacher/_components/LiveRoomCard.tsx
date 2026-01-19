@@ -21,13 +21,16 @@ interface LiveRoom {
   id: string;
   name: string;
   status: string;
+  recordingStatus: string;
+  description: string | null;
   startsAt: Date | null;
   teacherId: string;
+  image: string | null;
   subject: { name: string; color: string } | null;
 }
 
 interface LiveCardProps {
-  room: LiveRoom;
+  room: any;
   isTeacher: boolean;
   userId: string; // Current logged-in user ID
 }
@@ -70,7 +73,7 @@ export function LiveCard({ room, isTeacher, userId }: LiveCardProps) {
       className="group hover:shadow-lg transition-shadow duration-300 cursor-pointer border-l-4"
       style={{ borderLeftColor: room.subject?.color || "#ccc" }}
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="">
         <div className="flex justify-between items-start">
           <Badge variant="outline" className={getStatusColor()}>
             {room.status}
@@ -82,17 +85,25 @@ export function LiveCard({ room, isTeacher, userId }: LiveCardProps) {
             </div>
           )}
         </div>
-        <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+        <CardTitle className="text-lg group-hover:text-blue-600 transition-colors line-clamp-1">
           {room.name}
         </CardTitle>
         <p className="text-sm text-muted-foreground">{room.subject?.name}</p>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="mt-0">
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            {room.startsAt ? "Scheduled" : "TBD"}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1">
+              <img
+                src={`${room.image}`}
+                className="w-[120px] h-[60px] rounded-[8px]"
+                alt=""
+              />
+            </div>
+            <div className=" col-span-2">
+              <p className="text-xs line-clamp-2">{room.description}</p>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -128,14 +139,38 @@ export function LiveCard({ room, isTeacher, userId }: LiveCardProps) {
             Rejoindre le Live
           </Button>
         ) : room.status === "ENDED" ? (
-          <Button
-            className="w-full"
-            variant="secondary"
-            onClick={() => router.push(`/teacher/dashboard/live/${room.id}`)}
-          >
-            <Video className="mr-2 h-4 w-4" />
-            Revoir l&apos;enregistrement
-          </Button>
+          <div className="w-full">
+            {room.recordingStatus === "COMPLETED" ? (
+              <div className="w-full flex items-center">
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-full"
+                  onClick={() =>
+                    router.push(`/dashboard/live/${room.id}/replay`)
+                  }
+                >
+                  Voir le replay
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push(`/dashboard/live/${room.id}`)}
+                  title="Voir détails"
+                >
+                  <Video className="h-5 w-5" />
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                disabled
+                className="flex-1 rounded-full"
+              >
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                in progress
+              </Button>
+            )}
+          </div>
         ) : null}
       </CardFooter>
     </Card>

@@ -31,19 +31,25 @@ export const ChatPanel = ({ isTeacher }: ChatPanelProps) => {
       try {
         const parsed = JSON.parse(new TextDecoder().decode(message.payload));
         // Avoid duplicates
-        setMessages(prev => {
-          const exists = prev.some(m => m.timestamp === parsed.timestamp && m.sender === parsed.sender);
+        setMessages((prev) => {
+          const exists = prev.some(
+            (m) =>
+              m.timestamp === parsed.timestamp && m.sender === parsed.sender
+          );
           if (exists) return prev;
-          return [...prev, {
-            id: `${Date.now()}-${Math.random()}`,
-            sender: parsed.sender,
-            message: parsed.message,
-            timestamp: parsed.timestamp,
-            isTeacher: parsed.isTeacher,
-          }];
+          return [
+            ...prev,
+            {
+              id: `${Date.now()}-${Math.random()}`,
+              sender: parsed.sender,
+              message: parsed.message,
+              timestamp: parsed.timestamp,
+              isTeacher: parsed.isTeacher,
+            },
+          ];
         });
       } catch (error) {
-        console.error('Failed to parse chat message:', error);
+        console.error("Failed to parse chat message:", error);
       }
     }
   }, [message]);
@@ -58,7 +64,7 @@ export const ChatPanel = ({ isTeacher }: ChatPanelProps) => {
     if (!newMessage.trim() || !send) return;
 
     const messageData = {
-      sender: localParticipant.name || 'Anonymous',
+      sender: localParticipant.name || "Anonymous",
       message: newMessage.trim(),
       timestamp: Date.now(),
       isTeacher,
@@ -67,23 +73,26 @@ export const ChatPanel = ({ isTeacher }: ChatPanelProps) => {
     const encoder = new TextEncoder();
     send(encoder.encode(JSON.stringify(messageData)), { reliable: true });
 
-    setMessages(prev => [...prev, {
-      id: `${Date.now()}-local`,
-      ...messageData,
-    }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `${Date.now()}-local`,
+        ...messageData,
+      },
+    ]);
 
     setNewMessage("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
   return (
-    <div className="flex flex-col h-full bg-card rounded-xl border border-border overflow-hidden">
+    <div className="flex flex-col h-full bg-card rounded-[8px] border border-border overflow-hidden">
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-primary" />
@@ -102,17 +111,20 @@ export const ChatPanel = ({ isTeacher }: ChatPanelProps) => {
               <div
                 key={msg.id}
                 className={`flex flex-col ${
-                  msg.sender === localParticipant.name ? 'items-end' : 'items-start'
+                  msg.sender === localParticipant.name
+                    ? "items-end"
+                    : "items-start"
                 }`}
               >
                 <span className="text-xs font-medium text-muted-foreground mb-1">
-                  {msg.sender}{msg.isTeacher && ' (Teacher)'}
+                  {msg.sender}
+                  {msg.isTeacher && " (Teacher)"}
                 </span>
                 <div
                   className={`rounded-lg px-3 py-2 max-w-[85%] ${
                     msg.sender === localParticipant.name
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground"
                   }`}
                 >
                   <p className="text-sm break-words">{msg.message}</p>
@@ -132,7 +144,11 @@ export const ChatPanel = ({ isTeacher }: ChatPanelProps) => {
             placeholder="Type a message..."
             className="flex-1"
           />
-          <Button size="icon" onClick={sendMessage} disabled={!newMessage.trim()}>
+          <Button
+            size="icon"
+            onClick={sendMessage}
+            disabled={!newMessage.trim()}
+          >
             <Send className="w-4 h-4" />
           </Button>
         </div>

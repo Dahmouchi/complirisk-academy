@@ -97,7 +97,7 @@ export const AboutSection = () => {
                   transition={{ delay: 0.3 + index * 0.1 }}
                   className="flex gap-4"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-[8px] bg-accent flex items-center justify-center">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <div>

@@ -32,7 +32,7 @@ export default function StudentSubjects({ subjects, userName }: any) {
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-primary/10">
+            <div className="p-2 rounded-[8px] bg-primary/10">
               <BookOpen className="w-6 h-6 text-primary" />
             </div>
             <h1 className="text-3xl font-bold text-foreground font-display">

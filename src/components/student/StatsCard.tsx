@@ -34,7 +34,7 @@ export const StatsCard = ({
 
       <div className="relative z-10">
         <div
-          className={`inline-flex p-3 rounded-xl ${color} bg-opacity-10 mb-4`}
+          className={`inline-flex p-3 rounded-[8px] ${color} bg-opacity-10 mb-4`}
         >
           <Icon className={`w-6 h-6 text-white`} />
         </div>

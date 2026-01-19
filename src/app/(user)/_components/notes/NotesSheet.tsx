@@ -38,7 +38,7 @@ export function NotesSheet({ open, onOpenChange, userId }: NotesSheetProps) {
         <SheetHeader className="p-6 pb-4 border-b border-border/50 bg-card/50 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
+              <div className="p-2.5 rounded-[8px] bg-blue-500/10 text-blue-500">
                 <StickyNote className="h-5 w-5" />
               </div>
               <div>

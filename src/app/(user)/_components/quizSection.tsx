@@ -430,7 +430,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
                       </div>
 
                       {hasCompleted && (
-                        <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                        <div className="bg-gray-50 rounded-[8px] p-4 mb-4">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-700">
                               Meilleur score
@@ -461,7 +461,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
                     <button
                       onClick={() => startQuiz(quiz)}
                       className={`
-                        group/btn relative px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105
+                        group/btn relative px-6 py-3 rounded-[8px] font-semibold transition-all duration-200 transform hover:scale-105
                         ${
                           hasCompleted
                             ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-2 border-blue-200 hover:from-blue-100 hover:to-blue-200"
@@ -575,14 +575,14 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
           <div className="flex items-center justify-center space-x-4 gap-2">
             <button
               onClick={resetQuiz}
-              className="px-8 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold border-2 border-gray-200 hover:border-gray-300 flex items-center space-x-2"
+              className="px-8 py-3 bg-white text-gray-700 rounded-[8px] hover:bg-gray-50 transition-all duration-200 font-semibold border-2 border-gray-200 hover:border-gray-300 flex items-center space-x-2"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Retour aux quiz</span>
             </button>
             <button
               onClick={() => startQuiz(selectedQuiz)}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-[8px] hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Recommencer</span>
@@ -649,7 +649,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
                 key={option.id}
                 onClick={() => handleAnswerSelect(option.id)}
                 className={`
-                  group w-full text-left p-6 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02]
+                  group w-full text-left p-6 rounded-[8px] border-2 transition-all duration-300 transform hover:scale-[1.02]
                   ${
                     isSelected
                       ? "border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg"
@@ -686,7 +686,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
         <button
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0}
-          className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 text-gray-600 border-2 border-gray-300 rounded-xl hover:bg-white hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium sm:font-semibold"
+          className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 text-gray-600 border-2 border-gray-300 rounded-[8px] hover:bg-white hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium sm:font-semibold"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="hidden xs:inline">Précédent</span>
@@ -706,7 +706,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
           onClick={handleNextQuestion}
           disabled={!hasSelectedAnswer || isSubmitting}
           className={`
-      w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-medium sm:font-semibold transition-all duration-200 
+      w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 sm:px-6 sm:py-3 rounded-[8px] font-medium sm:font-semibold transition-all duration-200 
       disabled:opacity-50 disabled:cursor-not-allowed
       ${
         isLastQuestion

@@ -113,7 +113,7 @@ export default function Lives() {
               {liveCourses.slice(0, 4).map((course) => (
                 <div key={course.id} className="relative">
                   <CourseCard {...course} />
-                  <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
+                  <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] rounded-[8px] flex items-center justify-center">
                     <Badge variant="secondary" className="text-sm">
                       🔒 Verrouillé
                     </Badge>

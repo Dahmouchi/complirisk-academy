@@ -36,17 +36,23 @@ import { createLiveRoom } from "@/actions/live-room";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "react-toastify";
-import { FileUpload } from "@/app/admin/_components/courAddForm";
+import { FileUpload, QuizManager } from "@/app/admin/_components/courAddForm";
 
-interface Subject {
-  id: string;
-  name: string;
-  color: string;
+interface TeacherSubject {
+  subject: {
+    id: string;
+    name: string;
+    color: string;
+  };
+  grade: {
+    id: string;
+    name: string;
+  };
 }
 
 interface CreateLiveDialogProps {
   teacherId: string;
-  subjects: Subject[];
+  subjects: TeacherSubject[];
   trigger?: React.ReactNode;
 }
 
@@ -68,6 +74,7 @@ export function CreateLiveDialog({
     maxParticipants: "100",
     recordingEnabled: true,
     chatEnabled: true,
+    quizzes: [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -124,6 +131,7 @@ export function CreateLiveDialog({
         recordingEnabled: formData.recordingEnabled,
         chatEnabled: formData.chatEnabled,
         image: image,
+        quizzes: formData.quizzes,
       });
 
       if (result.success) {
@@ -151,6 +159,7 @@ export function CreateLiveDialog({
       maxParticipants: "100",
       recordingEnabled: true,
       chatEnabled: true,
+      quizzes: [],
     });
     setErrors({});
   };
@@ -165,7 +174,7 @@ export function CreateLiveDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
+      <DialogContent className="h-[90vh] min-w-[80vw] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Video className="h-5 w-5" />
@@ -223,14 +232,19 @@ export function CreateLiveDialog({
                 <SelectValue placeholder="Sélectionnez une matière" />
               </SelectTrigger>
               <SelectContent>
-                {subjects.map((subject) => (
-                  <SelectItem key={subject.id} value={subject.id}>
+                {subjects.map((ts) => (
+                  <SelectItem
+                    key={`${ts.subject.id}-${ts.grade.id}`}
+                    value={ts.subject.id}
+                  >
                     <div className="flex items-center gap-2">
                       <div
                         className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: subject.color }}
+                        style={{ backgroundColor: ts.subject.color }}
                       />
-                      {subject.name}
+                      <span>
+                        {ts.subject.name} - {ts.grade.name}
+                      </span>
                     </div>
                   </SelectItem>
                 ))}
@@ -361,6 +375,14 @@ export function CreateLiveDialog({
                 }
               />
             </div>
+          </div>
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <QuizManager
+              quizzes={formData.quizzes}
+              onQuizzesChange={(quizzes) =>
+                setFormData((prev: any) => ({ ...prev, quizzes }))
+              }
+            />
           </div>
         </form>
 

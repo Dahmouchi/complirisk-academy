@@ -63,6 +63,56 @@ model EarnedBadge {
   @@unique([userId, badgeId]) // user can earn it only once
 }
 
+model News {
+  id       String  @id @default(uuid())
+  title    String
+  content  String  @db.Text
+  excerpt  String? // Short summary for preview
+  imageUrl String?
+
+  // Priority: HIGH, MEDIUM, LOW
+  priority NewsPriority @default(MEDIUM)
+
+  // Published status
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+
+  // Link to grades (students of these grades can see it)
+  grades NewsGrade[]
+
+  // Author (admin or teacher)
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([published])
+  @@index([publishedAt])
+}
+
+// Junction table for News-Grade many-to-many relationship
+model NewsGrade {
+  id      String @id @default(uuid())
+  newsId  String
+  gradeId String
+
+  news  News  @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  grade Grade @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+
+  @@unique([newsId, gradeId])
+  @@index([newsId])
+  @@index([gradeId])
+}
+
+enum NewsPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
 model UserActivity {
   id     String @id @default(cuid())
   userId String
@@ -241,6 +291,7 @@ model LiveRoom {
 
   gradeId String?
   grade   Grade?  @relation(fields: [gradeId], references: [id])
+  quizzes Quiz[]
 
   // Platform-specific fields
   youtubeVideoId String?
@@ -318,14 +369,16 @@ model CourseProgress {
 }
 
 model Grade {
-  id        String     @id @default(cuid())
-  handler   String     @unique // short readable identifier (e.g. "fractions-course")
-  name      String // "CE1", "2AC", "1Bac"...
-  niveauId  String
-  niveau    Niveau     @relation(fields: [niveauId], references: [id], onDelete: Cascade)
-  users     User[]
-  subjects  Subject[]
-  liveRooms LiveRoom[]
+  id              String           @id @default(cuid())
+  handler         String           @unique // short readable identifier (e.g. "fractions-course")
+  name            String // "CE1", "2AC", "1Bac"...
+  niveauId        String
+  niveau          Niveau           @relation(fields: [niveauId], references: [id], onDelete: Cascade)
+  users           User[]
+  subjects        Subject[]
+  liveRooms       LiveRoom[]
+  teacherSubjects TeacherSubject[]
+  newsGrades      NewsGrade[]
 }
 
 model Subject {
@@ -431,10 +484,13 @@ model Document {
 model Quiz {
   id         String       @id @default(cuid())
   title      String
-  courseId   String
-  course     Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId   String?
+  course     Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
   questions  Question[]
   quizResult QuizResult[]
+
+  liveRoomId String?
+  liveRoom   LiveRoom? @relation(fields: [liveRoomId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -525,20 +581,24 @@ model User {
   chatReads         CourseChatMessageRead[] // ✅ ADD THIS
   chatNotifications CourseChatNotification[] // ✅ ADD THIS
   teacherSubjects   TeacherSubject[]
+  news              News[]
 }
 
 model TeacherSubject {
   id        String   @id @default(cuid())
   teacherId String
   subjectId String
+  gradeId   String
   createdAt DateTime @default(now())
 
   teacher User    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  grade   Grade   @relation(fields: [gradeId], references: [id], onDelete: Cascade)
 
-  @@unique([teacherId, subjectId])
+  @@unique([teacherId, subjectId, gradeId])
   @@index([teacherId])
   @@index([subjectId])
+  @@index([gradeId])
 }
 
 model Account {

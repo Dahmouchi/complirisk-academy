@@ -16,14 +16,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   UserPlus,
   Mail,
   Phone,
   Lock,
   User,
   BookOpen,
+  GraduationCap,
   X,
   Loader2,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { createTeacher } from "@/actions/teacher";
 import { toast } from "react-toastify";
@@ -32,20 +42,39 @@ interface Subject {
   id: string;
   name: string;
   color: string;
+  gradeId: string;
+}
+
+interface Grade {
+  id: string;
+  name: string;
+  subjects: Subject[];
+}
+
+interface GradeSubjectPair {
+  gradeId: string;
+  subjectId: string;
+  gradeName?: string;
+  subjectName?: string;
+  subjectColor?: string;
 }
 
 interface CreateTeacherDialogProps {
-  subjects: Subject[];
+  grades: Grade[];
   trigger?: React.ReactNode;
 }
 
 export function CreateTeacherDialog({
-  subjects,
+  grades,
   trigger,
 }: CreateTeacherDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [gradeSubjectPairs, setGradeSubjectPairs] = useState<
+    GradeSubjectPair[]
+  >([]);
+  const [selectedGrade, setSelectedGrade] = useState<string>("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -70,12 +99,58 @@ export function CreateTeacherDialog({
     }
   };
 
-  const toggleSubject = (subjectId: string) => {
-    setSelectedSubjects((prev) =>
-      prev.includes(subjectId)
-        ? prev.filter((id) => id !== subjectId)
-        : [...prev, subjectId]
+  const handleAddGradeSubject = () => {
+    if (!selectedGrade || !selectedSubject) {
+      toast.error("Veuillez sélectionner un niveau et une matière");
+      return;
+    }
+
+    // Check if this combination already exists
+    const exists = gradeSubjectPairs.some(
+      (pair) =>
+        pair.gradeId === selectedGrade && pair.subjectId === selectedSubject,
     );
+
+    if (exists) {
+      toast.error("Cette combinaison niveau-matière existe déjà");
+      return;
+    }
+
+    const grade = grades.find((g) => g.id === selectedGrade);
+    const subject = grade?.subjects.find((s) => s.id === selectedSubject);
+
+    if (grade && subject) {
+      setGradeSubjectPairs((prev) => [
+        ...prev,
+        {
+          gradeId: selectedGrade,
+          subjectId: selectedSubject,
+          gradeName: grade.name,
+          subjectName: subject.name,
+          subjectColor: subject.color,
+        },
+      ]);
+      setSelectedGrade("");
+      setSelectedSubject("");
+      // Clear any error for gradeSubjects
+      if (errors.gradeSubjects) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.gradeSubjects;
+          return newErrors;
+        });
+      }
+    }
+  };
+
+  const handleRemoveGradeSubject = (index: number) => {
+    setGradeSubjectPairs((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const getAvailableSubjects = () => {
+    if (!selectedGrade) return [];
+    const grade = grades.find((g) => g.id === selectedGrade);
+    return grade?.subjects || [];
   };
 
   const validateForm = () => {
@@ -102,8 +177,9 @@ export function CreateTeacherDialog({
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
     }
-    if (selectedSubjects.length === 0) {
-      newErrors.subjects = "Veuillez sélectionner au moins une matière";
+    if (gradeSubjectPairs.length === 0) {
+      newErrors.gradeSubjects =
+        "Veuillez ajouter au moins une combinaison niveau-matière";
     }
 
     setErrors(newErrors);
@@ -127,7 +203,10 @@ export function CreateTeacherDialog({
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
-        subjectIds: selectedSubjects,
+        gradeSubjects: gradeSubjectPairs.map((pair) => ({
+          gradeId: pair.gradeId,
+          subjectId: pair.subjectId,
+        })),
       });
 
       if (result.success) {
@@ -154,7 +233,9 @@ export function CreateTeacherDialog({
       password: "",
       confirmPassword: "",
     });
-    setSelectedSubjects([]);
+    setGradeSubjectPairs([]);
+    setSelectedGrade("");
+    setSelectedSubject("");
     setErrors({});
   };
 
@@ -168,7 +249,7 @@ export function CreateTeacherDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="min-w-[60vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <UserPlus className="h-5 w-5" />
@@ -176,7 +257,7 @@ export function CreateTeacherDialog({
           </DialogTitle>
           <DialogDescription>
             Remplissez les informations de l&apos;enseignant et sélectionnez les
-            matières qu&apos;il enseignera.
+            niveaux et matières qu&apos;il enseignera.
           </DialogDescription>
         </DialogHeader>
 
@@ -300,53 +381,140 @@ export function CreateTeacherDialog({
             </div>
           </div>
 
-          {/* Matières */}
+          {/* Grade and Subject Selection */}
           <div className="space-y-3">
             <Label className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
-              Matières enseignées <span className="text-red-500">*</span>
+              Niveaux et Matières <span className="text-red-500">*</span>
             </Label>
-            <div className="flex flex-wrap gap-2 p-4 border rounded-lg bg-muted/30">
-              {subjects.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  Aucune matière disponible
-                </p>
-              ) : (
-                subjects.map((subject) => (
-                  <Badge
-                    key={subject.id}
-                    variant={
-                      selectedSubjects.includes(subject.id)
-                        ? "default"
-                        : "outline"
-                    }
-                    className="cursor-pointer px-3 py-1.5 transition-all hover:scale-105"
-                    style={{
-                      backgroundColor: selectedSubjects.includes(subject.id)
-                        ? subject.color
-                        : "transparent",
-                      borderColor: subject.color,
-                      color: selectedSubjects.includes(subject.id)
-                        ? "white"
-                        : subject.color,
-                    }}
-                    onClick={() => toggleSubject(subject.id)}
-                  >
-                    {subject.name}
-                    {selectedSubjects.includes(subject.id) && (
-                      <X className="h-3 w-3 ml-1" />
-                    )}
-                  </Badge>
-                ))
-              )}
-            </div>
-            {errors.subjects && (
-              <p className="text-sm text-red-500">{errors.subjects}</p>
-            )}
-            {selectedSubjects.length > 0 && (
+
+            {/* Add Grade-Subject Pair */}
+            <div className="p-4 border rounded-lg bg-muted/30 space-y-3">
               <p className="text-sm text-muted-foreground">
-                {selectedSubjects.length} matière(s) sélectionnée(s)
+                Sélectionnez d&apos;abord le niveau, puis la matière
               </p>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="grade"
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <GraduationCap className="h-3 w-3" />
+                    Niveau
+                  </Label>
+                  <Select
+                    value={selectedGrade}
+                    onValueChange={(value) => {
+                      setSelectedGrade(value);
+                      setSelectedSubject(""); // Reset subject when grade changes
+                    }}
+                  >
+                    <SelectTrigger id="grade">
+                      <SelectValue placeholder="Choisir un niveau" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {grades.map((grade) => (
+                        <SelectItem key={grade.id} value={grade.id}>
+                          {grade.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="subject"
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <BookOpen className="h-3 w-3" />
+                    Matière
+                  </Label>
+                  <Select
+                    value={selectedSubject}
+                    onValueChange={setSelectedSubject}
+                    disabled={!selectedGrade}
+                  >
+                    <SelectTrigger id="subject">
+                      <SelectValue
+                        placeholder={
+                          selectedGrade
+                            ? "Choisir une matière"
+                            : "Sélectionnez d'abord un niveau"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAvailableSubjects().map((subject) => (
+                        <SelectItem key={subject.id} value={subject.id}>
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: subject.color }}
+                            />
+                            {subject.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddGradeSubject}
+                className="w-full"
+                disabled={!selectedGrade || !selectedSubject}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter cette combinaison
+              </Button>
+            </div>
+
+            {/* Display Added Pairs */}
+            {gradeSubjectPairs.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">
+                  Combinaisons ajoutées ({gradeSubjectPairs.length})
+                </p>
+                <div className="flex flex-wrap gap-2 p-3 border rounded-lg bg-background">
+                  {gradeSubjectPairs.map((pair, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="px-3 py-1.5 text-sm flex items-center gap-2"
+                      style={{
+                        borderColor: pair.subjectColor,
+                        borderWidth: "2px",
+                      }}
+                    >
+                      <GraduationCap className="h-3 w-3" />
+                      <span className="font-medium">{pair.gradeName}</span>
+                      <span className="text-muted-foreground">•</span>
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: pair.subjectColor }}
+                      />
+                      <span>{pair.subjectName}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveGradeSubject(index)}
+                        className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {errors.gradeSubjects && (
+              <p className="text-sm text-red-500">{errors.gradeSubjects}</p>
             )}
           </div>
         </form>

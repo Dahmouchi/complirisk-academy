@@ -10,7 +10,7 @@ const QuizzesPage = async () => {
   const quizzes = await getQuizzesGroupedByMatiere(user.id);
 
   return (
-    <div>
+    <div className="overflow-y-scroll h-[calc(100vh-80px)]">
       <StudentQuizzes quizzes={quizzes.data} user={user} />
     </div>
   );

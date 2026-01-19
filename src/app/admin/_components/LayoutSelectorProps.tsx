@@ -24,7 +24,7 @@ export const LayoutSelector = ({ value, onChange }: LayoutSelectorProps) => {
             type="button"
             onClick={() => onChange(layout.value)}
             className={cn(
-              "relative p-4 rounded-xl border-2 transition-all duration-300 text-left group",
+              "relative p-4 rounded-[8px] border-2 transition-all duration-300 text-left group",
               value === layout.value
                 ? "border-primary shadow-lg shadow-primary/20"
                 : "border-border hover:border-primary/50"

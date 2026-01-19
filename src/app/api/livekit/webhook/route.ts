@@ -3,94 +3,106 @@ import { WebhookReceiver } from "livekit-server-sdk";
 import prisma from "@/lib/prisma";
 
 /**
- * Initialisation du récepteur de Webhook LiveKit.
- * Assurez-vous que LIVEKIT_API_KEY et LIVEKIT_API_SECRET sont définis dans votre .env
+ * LiveKit Webhook Receiver
+ * Requires:
+ * - LIVEKIT_API_KEY
+ * - LIVEKIT_API_SECRET
  */
 const receiver = new WebhookReceiver(
   process.env.LIVEKIT_API_KEY!,
   process.env.LIVEKIT_API_SECRET!
 );
 
+/**
+ * Extract ONLY the S3 object key from a full S3 URL
+ * Example:
+ * https://bucket.s3.amazonaws.com/folder/video.mp4
+ * → folder/video.mp4
+ */
+function extractS3KeyFromUrl(url: string): string {
+  try {
+    const parsedUrl = new URL(url);
+    return decodeURIComponent(parsedUrl.pathname.replace(/^\/+/, ""));
+  } catch (error) {
+    console.error("Invalid S3 URL received:", url);
+    return "";
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    // 1. Récupération du corps brut et du header d'autorisation
+    // 1️⃣ Read RAW body (required for LiveKit signature validation)
     const body = await req.text();
 
-    // LiveKit peut envoyer l'autorisation via 'Authorization' ou 'livekit-webhook-authorization'
-    const header =
+    // 2️⃣ Read authorization header
+    const authHeader =
       req.headers.get("Authorization") ||
       req.headers.get("livekit-webhook-authorization");
 
-    if (!header) {
-      console.error("Webhook LiveKit : Header d'autorisation manquant");
+    if (!authHeader) {
+      console.error("LiveKit Webhook: Missing authorization header");
       return NextResponse.json(
-        { error: "No authorization header" },
+        { error: "Missing authorization header" },
         { status: 401 }
       );
     }
 
-    // 2. Validation de la signature et parsing de l'événement
-    // Cette méthode lève une erreur si la signature est invalide
-    const event = await receiver.receive(body, header);
+    // 3️⃣ Validate signature & parse event
+    const event = await receiver.receive(body, authHeader);
 
-    console.log(`Événement LiveKit reçu : ${event.event}`);
+    console.log("LiveKit event received:", event.event);
 
-    // 3. Traitement spécifique de l'événement "egress_ended"
+    // 4️⃣ Handle recording end
     if (event.event === "egress_ended" && event.egressInfo) {
       const info = event.egressInfo;
-      const egressId = info.egressId;
-      const roomName = info.roomName;
 
-      /**
-       * Extraction de l'URL de la vidéo.
-       * On utilise 'as any' pour éviter l'erreur TypeScript sur la propriété 'file'
-       * qui est présente dans le JSON mais pas toujours dans les types stricts du SDK.
-       */
+      const roomName = info.roomName;
+      const egressId = info.egressId;
+
+      // LiveKit sometimes exposes file location in different fields
       const videoUrl =
         info.fileResults?.[0]?.location || (info as any).file?.location;
 
-      if (videoUrl) {
-        console.log(
-          `URL de vidéo extraite : ${videoUrl} pour la room : ${roomName}`
-        );
+      if (!videoUrl) {
+        console.warn("Egress ended but no video URL found in payload");
+        return NextResponse.json({ received: true });
+      }
 
-        // 4. Mise à jour de la base de données Prisma
-        // On utilise updateMany pour être sûr de trouver l'entrée via roomName ou egressId
-        const updateResult = await prisma.liveRoom.updateMany({
-          where: {
-            OR: [{ livekitRoom: roomName }, { egressId: egressId }],
-          },
-          data: {
-            recordingUrl: videoUrl,
-            recordingStatus: "COMPLETED",
-            status: "ENDED",
-            endedAt: new Date(),
-          },
-        });
+      const s3Key = extractS3KeyFromUrl(videoUrl);
 
-        if (updateResult.count > 0) {
-          console.log(
-            `Succès : ${updateResult.count} session(s) mise(s) à jour.`
-          );
-        } else {
-          console.warn(
-            `Attention : Aucune session trouvée dans la DB pour ${roomName} / ${egressId}`
-          );
-        }
-      } else {
+      if (!s3Key) {
+        console.warn("Failed to extract S3 key from URL:", videoUrl);
+        return NextResponse.json({ received: true });
+      }
+
+      console.log(`Recording completed for room=${roomName}, key=${s3Key}`);
+
+      // 5️⃣ Update database
+      const updateResult = await prisma.liveRoom.updateMany({
+        where: {
+          OR: [{ livekitRoom: roomName }, { egressId }],
+        },
+        data: {
+          recordingUrl: s3Key, // ✅ ONLY S3 KEY
+          recordingStatus: "COMPLETED",
+          status: "ENDED",
+          endedAt: new Date(),
+        },
+      });
+
+      if (updateResult.count === 0) {
         console.warn(
-          "Événement egress_ended reçu mais aucune URL de fichier trouvée dans le payload."
+          `No LiveRoom found for room=${roomName} or egressId=${egressId}`
         );
+      } else {
+        console.log(`Updated ${updateResult.count} live session(s)`);
       }
     }
 
-    // Toujours répondre avec un succès 200 à LiveKit pour accuser réception
+    // 6️⃣ Always acknowledge LiveKit
     return NextResponse.json({ received: true });
   } catch (error: any) {
-    console.error(
-      "Erreur lors du traitement du Webhook LiveKit :",
-      error.message
-    );
+    console.error("LiveKit Webhook error:", error.message);
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
       { status: 500 }

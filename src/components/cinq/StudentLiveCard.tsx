@@ -29,12 +29,14 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface StudentLiveCardProps {
+  isProgrammed?: boolean;
   room: any;
   isRegistered?: boolean;
   userId: string;
 }
 
 export function StudentLiveCard({
+  isProgrammed,
   room,
   isRegistered,
   userId,
@@ -147,9 +149,11 @@ export function StudentLiveCard({
       </div>
 
       {/* Content Below Image */}
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid lg:grid-cols-5 grid-cols-1 gap-4">
         <div
-          className="col-span-2 w-full h-[15vh] rounded-2xl"
+          className={`lg:col-span-2 w-full rounded-2xl ${
+            isProgrammed ? "h-[25vh]" : "h-[15vh]"
+          }`}
           style={{
             backgroundImage: `url(${room.image})`,
             backgroundSize: "cover",
@@ -157,7 +161,7 @@ export function StudentLiveCard({
           }}
         ></div>
         {/* Room Title */}
-        <div className="col-span-3 gap-2 space-y-1">
+        <div className="lg:col-span-3 gap-2 space-y-1">
           {room.subject?.name && (
             <div className="">
               <Badge
@@ -234,7 +238,7 @@ export function StudentLiveCard({
           </div>
         ) : room.status === "ENDED" ? (
           <div className="flex gap-2">
-            {room.recordingStatus === "RECORDING" ? (
+            {room.recordingStatus === "COMPLETED" ? (
               <div className="w-full flex items-center">
                 <Button
                   variant="outline"

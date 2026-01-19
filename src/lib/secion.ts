@@ -113,7 +113,7 @@ export const THEME_STYLES = {
       glassmorphism: true,
       animations: "subtle",
       shadows: "elevated",
-      borderRadius: "rounded-xl",
+      borderRadius: "rounded-[8px]",
     },
   },
 

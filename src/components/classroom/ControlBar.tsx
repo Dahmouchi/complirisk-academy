@@ -100,7 +100,7 @@ export const ControlBar = ({
     >
       <div className="glass-card rounded-2xl p-3 flex items-center gap-2">
         {/* Room code */}
-        <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-xl mr-2">
+        <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-[8px] mr-2">
           <span className="text-xs text-muted-foreground">Room:</span>
           <span className="font-mono font-bold text-foreground tracking-wider">
             {roomCode}
@@ -125,7 +125,7 @@ export const ControlBar = ({
           size="icon-lg"
           onClick={toggleMicrophone}
           disabled={isTogglingMic}
-          className="rounded-xl"
+          className="rounded-[8px]"
         >
           {isMicEnabled ? (
             <Mic className="w-5 h-5" />
@@ -141,7 +141,7 @@ export const ControlBar = ({
             size="icon-lg"
             onClick={toggleCamera}
             disabled={isTogglingCamera}
-            className="rounded-xl"
+            className="rounded-[8px]"
           >
             {isCameraEnabled ? (
               <Video className="w-5 h-5" />
@@ -158,7 +158,7 @@ export const ControlBar = ({
             size="icon-lg"
             onClick={toggleScreenShare}
             disabled={isTogglingScreen}
-            className="rounded-xl"
+            className="rounded-[8px]"
           >
             {isScreenEnabled ? (
               <Monitor className="w-5 h-5" />
@@ -175,7 +175,7 @@ export const ControlBar = ({
           variant="destructive"
           size="icon-lg"
           onClick={onLeave}
-          className="rounded-xl"
+          className="rounded-[8px]"
         >
           <PhoneOff className="w-5 h-5" />
         </Button>

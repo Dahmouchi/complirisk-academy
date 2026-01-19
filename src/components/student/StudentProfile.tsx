@@ -257,7 +257,7 @@ export default function StudentProfile({ user, stats }: any) {
           <div
             className="h-32 md:h-48 rounded-2xl bg-gradient-to-r bg-cover bg-center from-blue-600 via-blue-600/80 to-blue-600/60 overflow-hidden relative"
             style={{
-              backgroundImage: `url(https://images.pexels.com/photos/834892/pexels-photo-834892.jpeg)`,
+              backgroundImage: `url(https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg)`,
             }}
           ></div>
 
@@ -463,7 +463,7 @@ export default function StudentProfile({ user, stats }: any) {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
-                      className="p-4 rounded-xl bg-muted/50 text-center"
+                      className="p-4 rounded-[8px] bg-muted/50 text-center"
                     >
                       <stat.icon
                         className={`h-6 w-6 mx-auto mb-2 ${stat.color}`}

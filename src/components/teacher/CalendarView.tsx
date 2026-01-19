@@ -35,7 +35,8 @@ const upcomingEvents = [
     date: addDays(today, 1),
     students: 32,
     icon: Users,
-    color: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
+    color:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
   },
   {
     id: 4,
@@ -55,18 +56,19 @@ const upcomingEvents = [
     date: addDays(today, 3),
     students: 20,
     icon: Video,
-    color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300",
+    color:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300",
   },
 ];
 
 const getTypeLabel = (type: string) => {
   switch (type) {
-    case 'class':
-      return 'Cours';
-    case 'deadline':
-      return 'Échéance';
-    case 'exam':
-      return 'Examen';
+    case "class":
+      return "Cours";
+    case "deadline":
+      return "Échéance";
+    case "exam":
+      return "Examen";
     default:
       return type;
   }
@@ -88,7 +90,7 @@ const CalendarView = () => {
         {upcomingEvents.map((event) => (
           <div
             key={event.id}
-            className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group"
+            className="flex items-center gap-4 p-3 rounded-[8px] bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group"
           >
             <div className={`p-2.5 rounded-lg ${event.color}`}>
               <event.icon className="h-4 w-4" />
@@ -110,7 +112,7 @@ const CalendarView = () => {
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">
-                {format(event.date, 'dd MMM', { locale: fr })}
+                {format(event.date, "dd MMM", { locale: fr })}
               </p>
               <Badge variant="secondary" className="text-xs mt-1">
                 {getTypeLabel(event.type)}

@@ -30,6 +30,7 @@ interface CreateLiveRoomInput {
   recordingEnabled?: boolean;
   chatEnabled?: boolean;
   image?: File | null;
+  quizzes?: any;
 }
 
 export async function createLiveRoom(data: CreateLiveRoomInput) {
@@ -98,7 +99,38 @@ export async function createLiveRoom(data: CreateLiveRoomInput) {
         },
       },
     });
+    if (data.quizzes?.length) {
+      for (const quizData of data.quizzes) {
+        const quiz = await prisma.quiz.create({
+          data: { title: quizData.title, liveRoomId: liveRoom.id },
+        });
 
+        if (quizData.questions?.length) {
+          for (const questionData of quizData.questions) {
+            const question = await prisma.question.create({
+              data: {
+                content: questionData.content,
+                quizId: quiz.id,
+                answer:
+                  questionData.options.find((opt: any) => opt.isCorrect)
+                    ?.text || "",
+              },
+            });
+
+            // Créer les options sans transaction (plus rapide)
+            if (questionData.options?.length) {
+              await prisma.option.createMany({
+                data: questionData.options.map((opt: any) => ({
+                  text: opt.text,
+                  isCorrect: opt.isCorrect,
+                  questionId: question.id,
+                })),
+              });
+            }
+          }
+        }
+      }
+    }
     revalidatePath("/dashboard/teacher/lives");
 
     return { success: true, liveRoom };
@@ -663,6 +695,7 @@ import {
   EncodedFileOutput,
 } from "livekit-server-sdk";
 import { NextResponse } from "next/server";
+import { getSignedVideoUrl } from "@/lib/aws/s3";
 // ... (keep your existing createLiveRoom action)
 
 export async function startLiveSession(liveRoomId: string) {
@@ -915,5 +948,71 @@ export async function getLiveToken(liveRoomId: string) {
   } catch (error) {
     console.error("Token Error:", error);
     return { success: false, error: "Server Error" };
+  }
+}
+
+export async function getLivesRegistred() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return { success: false, error: "Utilisateur non trouvé" };
+    }
+    const userGrad = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { gradeId: true },
+    });
+    const lives = await prisma.liveRoom.findMany({
+      where: {
+        gradeId: userGrad?.gradeId,
+        recordingStatus: "COMPLETED",
+      },
+      include: {
+        teacher: true,
+        subject: true,
+      },
+    });
+    return { success: true, lives };
+  } catch (error) {
+    console.error("Error getting lives:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des lives",
+    };
+  }
+}
+export async function getLiveReplay(id: string) {
+  try {
+    const live = await prisma.liveRoom.findUnique({
+      where: { id },
+      include: {
+        teacher: true,
+        subject: true,
+        quizzes: true,
+      },
+    });
+
+    if (!live) {
+      return { success: false, error: "Live introuvable" };
+    }
+
+    let signedRecordingUrl: string | null = null;
+
+    if (live.recordingUrl) {
+      signedRecordingUrl = await getSignedVideoUrl(live.recordingUrl);
+    }
+
+    return {
+      success: true,
+      live: {
+        ...live,
+        signedRecordingUrl, // ✅ TEMPORARY URL
+      },
+    };
+  } catch (error) {
+    console.error("Error getting live replay:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération du replay",
+    };
   }
 }

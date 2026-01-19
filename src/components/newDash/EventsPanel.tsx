@@ -1,45 +1,98 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import EventCard from "./EventCard";
+import { Loader2 } from "lucide-react";
+
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string | null;
+  imageUrl: string | null;
+  priority: "HIGH" | "MEDIUM" | "LOW";
+  published: boolean;
+  author: {
+    id: string;
+    name: string;
+    image: string;
+    prenom: string;
+    role: string;
+  };
+  publishedAt: string | null;
+  createdAt: string;
+}
 
 const EventsPanel = ({ registeredUser }: any) => {
-  const events = [
-    {
-      type: "webinar" as const,
-      title: "Medical Research",
-      description:
-        "Understanding medical research, critical appraisal skills, and applying evidence-based guidelines in practice",
-      date: "Tu, 25.03",
-      time: "12:30",
-      variant: "card" as const,
-      isLocked: false,
-    },
-    {
-      type: "lesson" as const,
-      title: "Healthcare Systems",
-      description:
-        "Overview of healthcare delivery systems, health policy, and their impact on patient care.",
-      date: "We, 26.03",
-      variant: "lavender" as const,
-      isLocked: true,
-    },
-    {
-      type: "task" as const,
-      title: "Global Health",
-      description:
-        "Examination of major global health issues, including infectious diseases, non-communicable diseases, and healthcare disparities.",
-      date: "Th, 27.03",
-      variant: "cream" as const,
-      isLocked: true,
-    },
-    {
-      type: "task" as const,
-      title: "Team Communication",
-      description:
-        "Importance of teamwork and communication among healthcare professionals for optimal patient outcomes.",
-      date: "Fr, 28.03",
-      variant: "mint" as const,
-      isLocked: false,
-    },
-  ];
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
+  const fetchNews = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/news");
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des actualités");
+      }
+      const data = await response.json();
+      setNews(data);
+    } catch (err) {
+      console.error("Error fetching news:", err);
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Map news priority to event type
+  const getEventType = (priority: string): "webinar" | "lesson" | "task" => {
+    switch (priority) {
+      case "HIGH":
+        return "webinar";
+      case "MEDIUM":
+        return "lesson";
+      default:
+        return "task";
+    }
+  };
+
+  // Map priority to variant color
+  const getVariant = (
+    index: number,
+  ): "mint" | "lavender" | "cream" | "card" => {
+    const variants = ["card", "lavender", "cream", "mint"] as const;
+    return variants[index % variants.length];
+  };
+
+  // Format date
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const days = ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"];
+    const months = [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+    ];
+    const dayName = days[date.getDay()];
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = months[date.getMonth()];
+
+    return `${dayName}, ${day}.${month}`;
+  };
 
   return (
     <div className="bg-card rounded-3xl p-6 card-shadow h-full flex flex-col">
@@ -48,18 +101,36 @@ const EventsPanel = ({ registeredUser }: any) => {
       </h2>
 
       <div className="space-y-4 flex-1 overflow-auto pr-2">
-        {events.map((event, index) => (
-          <EventCard
-            key={index}
-            type={event.type}
-            title={event.title}
-            description={event.description}
-            date={event.date}
-            time={event.time}
-            variant={event.variant}
-            isLocked={!registeredUser}
-          />
-        ))}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-sm text-muted-foreground">{error}</p>
+          </div>
+        ) : news.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-sm text-muted-foreground">
+              Aucune actualité disponible pour le moment
+            </p>
+          </div>
+        ) : (
+          news.map((item, index) => (
+            <EventCard
+              key={item.id}
+              type={getEventType(item.priority)}
+              title={item.title}
+              author={item.author.name}
+              image={item.author.image}
+              role={item.author.role}
+              description={item.excerpt || item.content}
+              date={formatDate(item.publishedAt || item.createdAt)}
+              variant={getVariant(index)}
+              isLocked={!registeredUser}
+            />
+          ))
+        )}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const VimeoPlayer = dynamic(
 
 const VimeoTest = (params: any) => {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl">
+    <div className="bg-white dark:bg-slate-900 rounded-[8px]">
       <VimeoPlayer
         url={params.videoUrl} // Replace with actual video URL
         thumbnail={params.imageUrl || ""}

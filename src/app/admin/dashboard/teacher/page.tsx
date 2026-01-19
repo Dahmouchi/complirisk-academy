@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getDashboardUsers } from "@/actions/client";
 import { CreateTeacherDialog } from "../../_components/AddTeacher";
-import { getAvailableSubjects, getTeachers } from "@/actions/teacher";
+import { getGrades, getTeachers } from "@/actions/teacher";
 import { DataTable } from "../users/data-table";
 import { columns } from "../users/columns";
 
@@ -12,7 +12,7 @@ async function getUsers(): Promise<any[]> {
 
 const Users = async () => {
   const users: any[] = await getUsers();
-  const subjects = await getAvailableSubjects();
+  const grades = await getGrades();
   console.log(users);
   return (
     <>
@@ -29,7 +29,7 @@ const Users = async () => {
           >
             Voir les utilisateurs archivés
           </Link>
-          <CreateTeacherDialog subjects={subjects} />
+          <CreateTeacherDialog grades={grades} />
         </div>
       </header>
       <main>

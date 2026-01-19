@@ -4,13 +4,18 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcrypt";
 
+interface GradeSubjectPair {
+  gradeId: string;
+  subjectId: string;
+}
+
 interface CreateTeacherInput {
   nom: string;
   prenom: string;
   email: string;
   phone: string;
   password: string;
-  subjectIds: string[];
+  gradeSubjects: GradeSubjectPair[];
 }
 
 export async function createTeacher(data: CreateTeacherInput) {
@@ -42,8 +47,9 @@ export async function createTeacher(data: CreateTeacherInput) {
         statut: true,
         emailVerified: new Date(),
         teacherSubjects: {
-          create: data.subjectIds.map((subjectId) => ({
-            subjectId,
+          create: data.gradeSubjects.map((gs) => ({
+            subjectId: gs.subjectId,
+            gradeId: gs.gradeId,
           })),
         },
       },
@@ -51,6 +57,7 @@ export async function createTeacher(data: CreateTeacherInput) {
         teacherSubjects: {
           include: {
             subject: true,
+            grade: true,
           },
         },
       },
@@ -123,6 +130,29 @@ export async function getAvailableSubjects() {
     return subjects;
   } catch (error) {
     console.error("Error fetching subjects:", error);
+    return [];
+  }
+}
+
+// Fonction pour récupérer les niveaux scolaires avec leurs matières
+export async function getGrades() {
+  try {
+    const grades = await prisma.grade.findMany({
+      include: {
+        subjects: {
+          orderBy: {
+            name: "asc",
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return grades;
+  } catch (error) {
+    console.error("Error fetching grades:", error);
     return [];
   }
 }

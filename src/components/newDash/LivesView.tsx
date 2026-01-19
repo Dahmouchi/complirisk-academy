@@ -9,8 +9,10 @@ import { InscriptionSteps } from "../cinq/InscriptionSteps";
 import { PaymentMethods } from "../cinq/PaymentMethods";
 import {
   Calendar,
+  Camera,
   CheckCircle,
   CreditCard,
+  Filter,
   KeyRound,
   MessageCircle,
   MessageSquare,
@@ -20,7 +22,7 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { StudentLiveCard } from "../cinq/StudentLiveCard";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 const steps = [
   {
     number: 1,
@@ -110,10 +112,9 @@ const LivesView = ({
       variant: "cream" as const,
     },
   ];
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const router = useRouter();
   // Get all unique subjects from live rooms
   const allLiveRooms = [
     ...(liveRooms.live || []),
@@ -165,7 +166,7 @@ const LivesView = ({
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
   return (
-    <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pb-0 pb-16">
+    <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pt-8 pt-[54px]">
       <div className="max-w-5xl">
         {!user.registerCode ? (
           <div className="w-full">
@@ -183,8 +184,7 @@ const LivesView = ({
                 <div
                   className="bg-card/10 backdrop-blur-sm h-full relative rounded-2xl p-6 border border-primary-foreground/20"
                   style={{
-                    backgroundImage:
-                      "url(&apos;https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg&apos;)",
+                    backgroundImage: "url(/cinq/bgnew.jpg)",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -299,12 +299,21 @@ const LivesView = ({
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-              <div>
-                <SearchBar
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Rechercher une session live..."
-                />
+              <div className="w-full col-span-2">
+                <div className="flex items-center justify-between gap-2 w-full">
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Rechercher une session live..."
+                  />
+                  <Button
+                    onClick={() => router.push("/dashboard/registredLIve")}
+                    className="w-fit text-center text-sm text-white hover:text-foreground transition-colors"
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    Les Live enregistrés
+                  </Button>
+                </div>
                 <nav className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide">
                   <button
                     key={"All"}
@@ -459,6 +468,7 @@ const LivesView = ({
                                   )}
                                 </div>
                                 <StudentLiveCard
+                                  isProgrammed={true}
                                   room={subjectData.upcomingLive}
                                   userId={user.id}
                                   isRegistered={registeredLives.has(
@@ -483,6 +493,7 @@ const LivesView = ({
                                   {subjectData.recordedLives.map(
                                     (room: any) => (
                                       <StudentLiveCard
+                                        isProgrammed={false}
                                         key={room.id}
                                         room={room}
                                         userId={user.id}

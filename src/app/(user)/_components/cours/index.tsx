@@ -4,7 +4,7 @@ const CoursContainer = (cours: any) => {
   const coursArray = cours.cours;
   console.log(coursArray);
   return (
-    <div className="rounded-xl border p-4 w-full sm:w-[30%]">
+    <div className="rounded-[8px] border p-4 w-full sm:w-[30%]">
       <div className="mb-10">
         <div className="font-bold text-2xl text-zinc-700">25% Complété</div>
         <div className="">Avancement</div>

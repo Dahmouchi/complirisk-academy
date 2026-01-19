@@ -15,7 +15,7 @@ const GoogleLoginButton = () => {
         signIn("google");
         redirect("/dashboard");
       }}
-      className="w-full bg-white border-2 cursor-pointer border-gray-200 rounded-xl px-6 py-4 flex items-center justify-center gap-3 text-gray-700 font-semibold lg:text-lg text-xs hover:border-blue-500 hover:shadow-lg transition-all duration-300 group"
+      className="w-full bg-white border-2 cursor-pointer border-gray-200 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-700 font-semibold lg:text-lg text-xs hover:border-blue-500 hover:shadow-lg transition-all duration-300 group"
       whileHover={{ scale: 1.02 }}
     >
       {/* Logo Google */}
@@ -67,13 +67,13 @@ const Auth = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-5xl max-h-[80vh] relative bg-card rounded-xl shadow-lg overflow-hidden flex flex-col lg:flex-row"
+        className="w-full max-w-5xl max-h-[80vh] relative bg-card rounded-[8px] shadow-lg overflow-hidden flex flex-col lg:flex-row"
       >
         {/* Left Side - Image Collage */}
         <div className="hidden lg:block lg:w-1/2 relative bg-muted p-6">
           <div className="grid grid-cols-3 grid-rows-4 gap-3 h-full">
             {/* Row 1 */}
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
                 src={"/enita/hero-student.png"}
                 alt=""
@@ -84,41 +84,41 @@ const Auth = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="relative rounded-xl overflow-hidden bg-[#00b8ff] flex flex-col items-start justify-center p-4 text-white row-span-2"
+              className="relative rounded-[8px] overflow-hidden bg-[#00b8ff] flex flex-col items-start justify-center p-4 text-white row-span-2"
             >
               <span className="text-4xl font-bold">95%</span>
               <p className="text-xs mt-2 leading-tight">
                 de nos diplômés trouvent un emploi dans les 6 mois
               </p>
             </motion.div>
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/science.jpg"}
+                src={"/cinq/login1.jpg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
 
             {/* Row 2 */}
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/enita/blueprint.jpg"}
+                src={"/cinq/login2.jpg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/enita/bridge.jpg"}
+                src={"/cinq/login3.jpg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
 
             {/* Row 3 */}
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/lettres.jpg"}
+                src={"/cinq/login4.jpg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -127,7 +127,7 @@ const Auth = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="relative rounded-xl overflow-hidden bg-primary flex flex-col items-start justify-center p-4 text-primary-foreground col-span-2 row-span-2"
+              className="relative rounded-[8px] overflow-hidden bg-primary flex flex-col items-start justify-center p-4 text-primary-foreground col-span-2 row-span-2"
             >
               <span className="text-4xl font-bold">+500</span>
               <p className="text-xs mt-2 leading-tight">
@@ -136,7 +136,7 @@ const Auth = () => {
             </motion.div>
 
             {/* Row 4 */}
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-[8px] overflow-hidden">
               <img
                 src={"/cinq/physique.jpeg"}
                 alt=""
@@ -164,7 +164,7 @@ const Auth = () => {
           <div className="">
             {/* Header mobile */}
             <div className=" text-center mb-4 flex items-center justify-center ">
-              <div className=" bg-gradient-to-r rounded-xl flex items-center justify-center mx-auto mb-4">
+              <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
                   onClick={() => redirect("/")}
                   src="/cinq/logoH.png"
@@ -184,7 +184,7 @@ const Auth = () => {
             {/* Bouton Google */}
             <div className="mb-6">
               {loading ? (
-                <div className="w-full bg-gray-100 rounded-xl px-6 py-4 flex items-center justify-center gap-3 text-gray-500">
+                <div className="w-full bg-gray-100 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-500">
                   <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                   <span>Connexion en cours...</span>
                 </div>

@@ -11,7 +11,7 @@ export const SectionPreview = ({ section }: any) => {
   return (
     <div
       className={cn(
-        "relative w-full min-h-[500px] h-full rounded-xl overflow-y-hidden shadow-lg",
+        "relative w-full min-h-[500px] h-full rounded-[8px] overflow-y-hidden shadow-lg",
         theme === "modern-dark" && "theme-modern-dark",
         theme === "light-minimal" && "theme-light-minimal",
         theme === "gradient-bold" && "theme-gradient-bold",

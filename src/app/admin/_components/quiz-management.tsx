@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Copy, 
-  Save, 
-  X, 
-  AlertCircle, 
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Copy,
+  Save,
+  X,
+  AlertCircle,
   CheckCircle,
   HelpCircle,
   BarChart3,
   Eye,
-  EyeOff
-} from 'lucide-react';
+  EyeOff,
+} from "lucide-react";
 
 // Types TypeScript
 interface Option {
@@ -58,20 +58,25 @@ interface QuizFormProps {
 }
 
 // Composant pour le formulaire de quiz
-const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel }) => {
+const QuizForm: React.FC<QuizFormProps> = ({
+  quiz,
+  courseId,
+  onSave,
+  onCancel,
+}) => {
   const [formData, setFormData] = useState<Quiz>({
-    title: quiz?.title || '',
+    title: quiz?.title || "",
     courseId: courseId,
     questions: quiz?.questions || [
       {
-        content: '',
-        answer: '',
+        content: "",
+        answer: "",
         options: [
-          { text: '', isCorrect: true },
-          { text: '', isCorrect: false }
-        ]
-      }
-    ]
+          { text: "", isCorrect: true },
+          { text: "", isCorrect: false },
+        ],
+      },
+    ],
   });
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -82,11 +87,11 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
     const newErrors: string[] = [];
 
     if (!formData.title.trim()) {
-      newErrors.push('Le titre du quiz est requis');
+      newErrors.push("Le titre du quiz est requis");
     }
 
     if (formData.questions.length === 0) {
-      newErrors.push('Au moins une question est requise');
+      newErrors.push("Au moins une question est requise");
     }
 
     formData.questions.forEach((question, qIndex) => {
@@ -95,21 +100,31 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
       }
 
       if (!question.answer.trim()) {
-        newErrors.push(`La question ${qIndex + 1} doit avoir une réponse/explication`);
+        newErrors.push(
+          `La question ${qIndex + 1} doit avoir une réponse/explication`
+        );
       }
 
       if (question.options.length < 2) {
-        newErrors.push(`La question ${qIndex + 1} doit avoir au moins 2 options`);
+        newErrors.push(
+          `La question ${qIndex + 1} doit avoir au moins 2 options`
+        );
       }
 
-      const correctOptions = question.options.filter(opt => opt.isCorrect);
+      const correctOptions = question.options.filter((opt) => opt.isCorrect);
       if (correctOptions.length === 0) {
-        newErrors.push(`La question ${qIndex + 1} doit avoir au moins une option correcte`);
+        newErrors.push(
+          `La question ${qIndex + 1} doit avoir au moins une option correcte`
+        );
       }
 
       question.options.forEach((option, oIndex) => {
         if (!option.text.trim()) {
-          newErrors.push(`L'option ${oIndex + 1} de la question ${qIndex + 1} doit avoir un texte`);
+          newErrors.push(
+            `L'option ${oIndex + 1} de la question ${
+              qIndex + 1
+            } doit avoir un texte`
+          );
         }
       });
     });
@@ -120,73 +135,84 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
 
   // Ajouter une nouvelle question
   const addQuestion = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       questions: [
         ...prev.questions,
         {
-          content: '',
-          answer: '',
+          content: "",
+          answer: "",
           options: [
-            { text: '', isCorrect: true },
-            { text: '', isCorrect: false }
-          ]
-        }
-      ]
+            { text: "", isCorrect: true },
+            { text: "", isCorrect: false },
+          ],
+        },
+      ],
     }));
   };
 
   // Supprimer une question
   const removeQuestion = (questionIndex: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      questions: prev.questions.filter((_, index) => index !== questionIndex)
+      questions: prev.questions.filter((_, index) => index !== questionIndex),
     }));
   };
 
   // Ajouter une option à une question
   const addOption = (questionIndex: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       questions: prev.questions.map((question, qIndex) =>
         qIndex === questionIndex
           ? {
               ...question,
-              options: [...question.options, { text: '', isCorrect: false }]
+              options: [...question.options, { text: "", isCorrect: false }],
             }
           : question
-      )
+      ),
     }));
   };
 
   // Supprimer une option
   const removeOption = (questionIndex: number, optionIndex: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       questions: prev.questions.map((question, qIndex) =>
         qIndex === questionIndex
           ? {
               ...question,
-              options: question.options.filter((_, oIndex) => oIndex !== optionIndex)
+              options: question.options.filter(
+                (_, oIndex) => oIndex !== optionIndex
+              ),
             }
           : question
-      )
+      ),
     }));
   };
 
   // Mettre à jour une question
-  const updateQuestion = (questionIndex: number, field: keyof Question, value: string) => {
-    setFormData(prev => ({
+  const updateQuestion = (
+    questionIndex: number,
+    field: keyof Question,
+    value: string
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       questions: prev.questions.map((question, index) =>
         index === questionIndex ? { ...question, [field]: value } : question
-      )
+      ),
     }));
   };
 
   // Mettre à jour une option
-  const updateOption = (questionIndex: number, optionIndex: number, field: keyof Option, value: string | boolean) => {
-    setFormData(prev => ({
+  const updateOption = (
+    questionIndex: number,
+    optionIndex: number,
+    field: keyof Option,
+    value: string | boolean
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       questions: prev.questions.map((question, qIndex) =>
         qIndex === questionIndex
@@ -194,10 +220,10 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
               ...question,
               options: question.options.map((option, oIndex) =>
                 oIndex === optionIndex ? { ...option, [field]: value } : option
-              )
+              ),
             }
           : question
-      )
+      ),
     }));
   };
 
@@ -211,7 +237,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
     try {
       await onSave(formData);
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error);
+      console.error("Erreur lors de la sauvegarde:", error);
     } finally {
       setIsLoading(false);
     }
@@ -229,7 +255,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">
-              {quiz ? 'Modifier le quiz' : 'Créer un nouveau quiz'}
+              {quiz ? "Modifier le quiz" : "Créer un nouveau quiz"}
             </h2>
             <button
               onClick={onCancel}
@@ -254,10 +280,14 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
                 <div className="flex items-start space-x-2">
                   <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h3 className="font-medium text-red-800 mb-2">Erreurs de validation :</h3>
+                    <h3 className="font-medium text-red-800 mb-2">
+                      Erreurs de validation :
+                    </h3>
                     <ul className="list-disc list-inside space-y-1">
                       {errors.map((error, index) => (
-                        <li key={index} className="text-red-700 text-sm">{error}</li>
+                        <li key={index} className="text-red-700 text-sm">
+                          {error}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -274,7 +304,9 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
             <input
               type="text"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Entrez le titre du quiz"
             />
@@ -300,7 +332,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
                 key={questionIndex}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-50 rounded-xl p-6 border border-gray-200"
+                className="bg-gray-50 rounded-[8px] p-6 border border-gray-200"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-md font-semibold text-gray-800">
@@ -324,7 +356,9 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
                   </label>
                   <textarea
                     value={question.content}
-                    onChange={(e) => updateQuestion(questionIndex, 'content', e.target.value)}
+                    onChange={(e) =>
+                      updateQuestion(questionIndex, "content", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows={3}
                     placeholder="Entrez l'énoncé de la question"
@@ -338,7 +372,9 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
                   </label>
                   <textarea
                     value={question.answer}
-                    onChange={(e) => updateQuestion(questionIndex, 'answer', e.target.value)}
+                    onChange={(e) =>
+                      updateQuestion(questionIndex, "answer", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows={2}
                     placeholder="Explication de la réponse correcte"
@@ -362,23 +398,42 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, courseId, onSave, onCancel })
 
                   <div className="space-y-2">
                     {question.options.map((option, optionIndex) => (
-                      <div key={optionIndex} className="flex items-center space-x-3 bg-white p-3 rounded-lg border">
+                      <div
+                        key={optionIndex}
+                        className="flex items-center space-x-3 bg-white p-3 rounded-lg border"
+                      >
                         <input
                           type="checkbox"
                           checked={option.isCorrect}
-                          onChange={(e) => updateOption(questionIndex, optionIndex, 'isCorrect', e.target.checked)}
+                          onChange={(e) =>
+                            updateOption(
+                              questionIndex,
+                              optionIndex,
+                              "isCorrect",
+                              e.target.checked
+                            )
+                          }
                           className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                         />
                         <input
                           type="text"
                           value={option.text}
-                          onChange={(e) => updateOption(questionIndex, optionIndex, 'text', e.target.value)}
+                          onChange={(e) =>
+                            updateOption(
+                              questionIndex,
+                              optionIndex,
+                              "text",
+                              e.target.value
+                            )
+                          }
                           className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder={`Option ${optionIndex + 1}`}
                         />
                         {question.options.length > 2 && (
                           <button
-                            onClick={() => removeOption(questionIndex, optionIndex)}
+                            onClick={() =>
+                              removeOption(questionIndex, optionIndex)
+                            }
                             className="text-red-500 hover:text-red-700 p-1"
                             title="Supprimer cette option"
                           >
@@ -433,7 +488,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
   courseId,
   quizzes: initialQuizzes,
   onQuizzesUpdate,
-  isEditable = true
+  isEditable = true,
 }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>(initialQuizzes);
   const [showForm, setShowForm] = useState(false);
@@ -454,16 +509,16 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
     setError(null);
 
     try {
-      const url = editingQuiz 
+      const url = editingQuiz
         ? `/api/quizzes/${editingQuiz.id}`
         : `/api/courses/${courseId}/quizzes`;
-      
-      const method = editingQuiz ? 'PUT' : 'POST';
+
+      const method = editingQuiz ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(quizData),
       });
@@ -473,18 +528,18 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
       if (result.success) {
         if (editingQuiz) {
           // Mise à jour
-          const updatedQuizzes = quizzes.map(quiz =>
+          const updatedQuizzes = quizzes.map((quiz) =>
             quiz.id === editingQuiz.id ? result.data : quiz
           );
           setQuizzes(updatedQuizzes);
           onQuizzesUpdate?.(updatedQuizzes);
-          setSuccess('Quiz mis à jour avec succès');
+          setSuccess("Quiz mis à jour avec succès");
         } else {
           // Création
           const updatedQuizzes = [...quizzes, result.data];
           setQuizzes(updatedQuizzes);
           onQuizzesUpdate?.(updatedQuizzes);
-          setSuccess('Quiz créé avec succès');
+          setSuccess("Quiz créé avec succès");
         }
 
         setShowForm(false);
@@ -493,10 +548,10 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
         // Effacer le message de succès après 3 secondes
         setTimeout(() => setSuccess(null), 3000);
       } else {
-        throw new Error(result.error || 'Erreur inconnue');
+        throw new Error(result.error || "Erreur inconnue");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setIsLoading(false);
     }
@@ -504,7 +559,11 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
 
   // Fonction pour supprimer un quiz
   const handleDeleteQuiz = async (quizId: string) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce quiz ? Cette action est irréversible.')) {
+    if (
+      !window.confirm(
+        "Êtes-vous sûr de vouloir supprimer ce quiz ? Cette action est irréversible."
+      )
+    ) {
       return;
     }
 
@@ -513,24 +572,24 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
 
     try {
       const response = await fetch(`/api/quizzes/${quizId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       const result = await response.json();
 
       if (result.success) {
-        const updatedQuizzes = quizzes.filter(quiz => quiz.id !== quizId);
+        const updatedQuizzes = quizzes.filter((quiz) => quiz.id !== quizId);
         setQuizzes(updatedQuizzes);
         onQuizzesUpdate?.(updatedQuizzes);
-        setSuccess('Quiz supprimé avec succès');
+        setSuccess("Quiz supprimé avec succès");
 
         // Effacer le message de succès après 3 secondes
         setTimeout(() => setSuccess(null), 3000);
       } else {
-        throw new Error(result.error || 'Erreur lors de la suppression');
+        throw new Error(result.error || "Erreur lors de la suppression");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setIsLoading(false);
     }
@@ -543,9 +602,9 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
 
     try {
       const response = await fetch(`/api/quizzes/${quizId}/duplicate`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({}),
       });
@@ -556,15 +615,15 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
         const updatedQuizzes = [...quizzes, result.data];
         setQuizzes(updatedQuizzes);
         onQuizzesUpdate?.(updatedQuizzes);
-        setSuccess('Quiz dupliqué avec succès');
+        setSuccess("Quiz dupliqué avec succès");
 
         // Effacer le message de succès après 3 secondes
         setTimeout(() => setSuccess(null), 3000);
       } else {
-        throw new Error(result.error || 'Erreur lors de la duplication');
+        throw new Error(result.error || "Erreur lors de la duplication");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setIsLoading(false);
     }
@@ -663,7 +722,9 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
         {quizzes.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
             <HelpCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun quiz</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Aucun quiz
+            </h3>
             <p className="text-gray-600 mb-6">
               Commencez par créer votre premier quiz pour ce cours
             </p>
@@ -703,7 +764,11 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                         <span className="flex items-center space-x-1">
                           <BarChart3 className="w-4 h-4" />
                           <span>
-                            {quiz.questions.reduce((sum, q) => sum + q.options.length, 0)} option(s)
+                            {quiz.questions.reduce(
+                              (sum, q) => sum + q.options.length,
+                              0
+                            )}{" "}
+                            option(s)
                           </span>
                         </span>
                       </div>
@@ -713,11 +778,19 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                       <button
                         onClick={() => toggleQuizExpansion(quiz.id!)}
                         className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                        title={expandedQuiz === quiz.id ? "Masquer les détails" : "Voir les détails"}
+                        title={
+                          expandedQuiz === quiz.id
+                            ? "Masquer les détails"
+                            : "Voir les détails"
+                        }
                       >
-                        {expandedQuiz === quiz.id ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {expandedQuiz === quiz.id ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
                       </button>
-                      
+
                       {isEditable && (
                         <>
                           <button
@@ -761,7 +834,10 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                     >
                       <div className="p-6 space-y-4">
                         {quiz.questions.map((question, qIndex) => (
-                          <div key={qIndex} className="bg-gray-50 rounded-lg p-4">
+                          <div
+                            key={qIndex}
+                            className="bg-gray-50 rounded-lg p-4"
+                          >
                             <h4 className="font-medium text-gray-900 mb-2">
                               Question {qIndex + 1}: {question.content}
                             </h4>
@@ -770,15 +846,25 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                                 <div
                                   key={oIndex}
                                   className={`flex items-center space-x-2 p-2 rounded ${
-                                    option.isCorrect 
-                                      ? 'bg-green-100 border border-green-200' 
-                                      : 'bg-white border border-gray-200'
+                                    option.isCorrect
+                                      ? "bg-green-100 border border-green-200"
+                                      : "bg-white border border-gray-200"
                                   }`}
                                 >
-                                  <div className={`w-3 h-3 rounded-full ${
-                                    option.isCorrect ? 'bg-green-500' : 'bg-gray-300'
-                                  }`} />
-                                  <span className={option.isCorrect ? 'text-green-800 font-medium' : 'text-gray-700'}>
+                                  <div
+                                    className={`w-3 h-3 rounded-full ${
+                                      option.isCorrect
+                                        ? "bg-green-500"
+                                        : "bg-gray-300"
+                                    }`}
+                                  />
+                                  <span
+                                    className={
+                                      option.isCorrect
+                                        ? "text-green-800 font-medium"
+                                        : "text-gray-700"
+                                    }
+                                  >
                                     {option.text}
                                   </span>
                                 </div>
@@ -787,7 +873,8 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                             {question.answer && (
                               <div className="bg-blue-50 border border-blue-200 rounded p-3">
                                 <p className="text-sm text-blue-800">
-                                  <strong>Explication :</strong> {question.answer}
+                                  <strong>Explication :</strong>{" "}
+                                  {question.answer}
                                 </p>
                               </div>
                             )}

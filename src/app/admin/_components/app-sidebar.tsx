@@ -126,7 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <div className="text-center flex items-center gap-1 text-xs text-gray-500">
-          Powered by <span className="font-bold">Scoolia</span>
+          Powered by <span className="font-bold">Cinq-Cinq</span>
         </div>
       </SidebarFooter>
       <SidebarRail />

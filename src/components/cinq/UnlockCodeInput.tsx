@@ -77,23 +77,15 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
             />
             <button
               disabled={isLoading}
-              className="relative w-full bg-blue-600 text-white font-medium text-[17px] px-4 py-[0.35em] pl-5 h-[2.8em] rounded-full flex items-center overflow-hidden cursor-pointer shadow-[inset_0_0_1.6em_-0.6em_#714da6] group"
+              className="relative w-full bg-blue-600 text-white font-medium text-[17px] px-4 py-[0.35em] pr-5 h-[2.8em] rounded-full flex items-center overflow-hidden cursor-pointer shadow-[inset_0_0_1.6em_-0.6em_#714da6] group"
             >
-              <span className="mr-10 flex items-center justify-center gap-2">
-                {isLoading ? (
-                  <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Unlock className="h-4 w-4" />
-                )}{" "}
-                Déverrouiller
-              </span>
-              <div className="absolute right-[0.3em] bg-primary h-[2.2em] w-[2.2em] rounded-full flex items-center justify-center transition-all duration-300 group-hover:w-[calc(100%-0.6em)] shadow-[0.1em_0.1em_0.6em_0.2em_#7b52b9] active:scale-95">
+              <div className="absolute left-[0.3em] bg-primary h-[2.2em] w-[2.2em] rounded-full flex items-center justify-center transition-all duration-300 group-hover:w-[calc(100%-0.6em)] shadow-[0.1em_0.1em_0.6em_0.2em_#7b52b9] active:scale-95">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   width={24}
                   height={24}
-                  className="w-[1.1em] transition-transform duration-300 text-[#7b52b9] group-hover:translate-x-[0.1em]"
+                  className="w-[1.1em] transition-transform duration-300 text-[#7b52b9] group-hover:-translate-x-[0.1em]"
                 >
                   <path fill="none" d="M0 0h24v24H0z" />
                   <path
@@ -102,6 +94,14 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
                   />
                 </svg>
               </div>
+              <span className="ml-10 flex items-center justify-center gap-2">
+                {isLoading ? (
+                  <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Unlock className="h-4 w-4" />
+                )}{" "}
+                Déverrouiller
+              </span>
             </button>
           </div>
         </form>

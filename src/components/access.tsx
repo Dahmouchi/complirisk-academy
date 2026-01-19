@@ -44,7 +44,7 @@ const AccessDenied = (role: any) => {
             'url("https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg")',
         }}
       >
-        <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-[8px] shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           {/* Header */}
           <div className="bg-red-50 dark:bg-red-900/20 p-6 flex flex-col items-center">
             <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4">

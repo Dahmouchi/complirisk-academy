@@ -84,7 +84,7 @@ export const SubjectCardNew = ({
 
         <div className="relative z-10 flex items-start justify-between">
           <div className="flex items-center space-x-4">
-            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+            <div className="bg-white/20 p-3 rounded-[8px] backdrop-blur-sm">
               {icon || <div className="w-8 h-8" />}
             </div>
             <div>

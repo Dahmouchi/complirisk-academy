@@ -12,7 +12,7 @@ const SubjectPage = async ({ params }: any) => {
 
   const subject = await prisma.subject.findFirst({
     where: {
-      handler: params.id,
+      id: params.id,
     },
     include: {
       courses: {
@@ -36,7 +36,7 @@ const SubjectPage = async ({ params }: any) => {
   }
   const progressCount = await getSubjectProgress(user.id, subject.id);
   return (
-    <div>
+    <div className="overflow-y-scroll h-[calc(100vh-80px)]">
       <CoursDetails
         subject={subject}
         user={user}

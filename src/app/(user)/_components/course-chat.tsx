@@ -488,7 +488,7 @@ export function CourseChat({
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b bg-gradient-to-r from-pubg-purple-600/5 to-accent/5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-600/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[8px] bg-purple-600/10 flex items-center justify-center">
             <MessageCircle className="h-5 w-5 text-pubg-purple-600" />
           </div>
           <div>
@@ -514,7 +514,7 @@ export function CourseChat({
             size="icon"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="h-9 w-9 rounded-xl"
+            className="h-9 w-9 rounded-[8px]"
           >
             <RefreshCw
               className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
@@ -557,7 +557,7 @@ export function CourseChat({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex items-center gap-2 mb-3 text-sm bg-purple-600/10 text-pubg-purple-600 px-4 py-2.5 rounded-xl"
+              className="flex items-center gap-2 mb-3 text-sm bg-purple-600/10 text-pubg-purple-600 px-4 py-2.5 rounded-[8px]"
             >
               <Reply className="h-4 w-4" />
               <span className="font-medium">Réponse au message</span>
@@ -585,14 +585,14 @@ export function CourseChat({
                 handleSend();
               }
             }}
-            className="min-h-[56px] max-h-[120px] resize-none rounded-xl border-border/50 bg-background focus-visible:ring-pubg-purple-600/50"
+            className="min-h-[56px] max-h-[120px] resize-none rounded-[8px] border-border/50 bg-background focus-visible:ring-pubg-purple-600/50"
             disabled={sending}
           />
           <Button
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
             size="icon"
-            className="h-14 w-14 rounded-xl bg-purple-600 hover:bg-purple-600/90 shadow-lg shadow-pubg-purple-600/25 transition-all hover:shadow-xl hover:shadow-pubg-purple-600/30"
+            className="h-14 w-14 rounded-[8px] bg-purple-600 hover:bg-purple-600/90 shadow-lg shadow-pubg-purple-600/25 transition-all hover:shadow-xl hover:shadow-pubg-purple-600/30"
           >
             {sending ? (
               <Loader2 className="h-5 w-5 animate-spin" />

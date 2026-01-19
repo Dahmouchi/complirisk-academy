@@ -95,7 +95,7 @@ export const RecentActivity = ({ activities }: any) => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 + index * 0.1 }}
-              className="flex items-start gap-4 p-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer"
+              className="flex items-start gap-4 p-3 rounded-[8px] hover:bg-secondary/50 transition-colors cursor-pointer"
             >
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-slate-900 truncate">{title}</p>

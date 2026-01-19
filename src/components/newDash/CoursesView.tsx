@@ -5,11 +5,13 @@ import { Clock, Play, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const router = useRouter();
   // Flatten all courses from all matieres with their matiere info
   const allCourses =
     matieres?.flatMap(
@@ -38,7 +40,7 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
   });
 
   return (
-    <div className="flex-1 p-6 overflow-auto">
+    <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pb-0 pb-24">
       <div className="max-w-5xl">
         {!registeredUser && (
           <div className="relative w-full text-primary-foreground bg-blue-600 p-8 rounded-2xl space-y-6">
@@ -161,6 +163,9 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
               <CourseCard
                 key={course.id}
                 title={course.title}
+                onClick={() =>
+                  router.push(`/dashboard/matiere/${course.matiereId}`)
+                }
                 thumbnail={course.coverImage}
                 description={course.description}
                 instructor={course.matiereName}

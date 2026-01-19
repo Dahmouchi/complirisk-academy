@@ -4,12 +4,19 @@ import Link from "next/link";
 
 const actions = [
   {
+    icon: Video,
+    label: "Gérer les lives",
+    description: "Liste et gérer les sessions en direct",
+    color: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400",
+    href: "/teacher/dashboard/live",
+  },
+  {
     icon: BookPlus,
-    label: "Créer un cours",
-    description: "Nouveau module de formation",
+    label: "Gérer les actualités",
+    description: "Nouvelle actualité",
     color:
       "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400",
-    href: "#",
+    href: "/teacher/dashboard/news",
   },
   {
     icon: FileText,
@@ -26,14 +33,6 @@ const actions = [
       "bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400",
     href: "#",
   },
-
-  {
-    icon: Video,
-    label: "Gérer les lives",
-    description: "Liste et gérer les sessions en direct",
-    color: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400",
-    href: "/teacher/dashboard/live",
-  },
 ];
 
 const QuickActions = () => {
@@ -45,7 +44,7 @@ const QuickActions = () => {
           key={action.label}
           className="h-auto p-4 cursor-pointer flex flex-col items-start gap-3 bg-card hover:bg-primary/20 border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5"
         >
-          <div className={`p-2.5 rounded-xl ${action.color}`}>
+          <div className={`p-2.5 rounded-[8px] ${action.color}`}>
             <action.icon className="h-5 w-5" />
           </div>
           <div className="text-left">

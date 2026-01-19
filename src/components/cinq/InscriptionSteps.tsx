@@ -65,7 +65,7 @@ export function InscriptionSteps() {
             </div>
 
             {/* Step content */}
-            <div className="flex-1 bg-card border border-border/50 rounded-xl p-4 md:p-5 hover:border-primary/30 transition-colors">
+            <div className="flex-1 bg-card border border-border/50 rounded-[8px] p-4 md:p-5 hover:border-primary/30 transition-colors">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">
                   Étape {step.number}

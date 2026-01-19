@@ -398,7 +398,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                                 </div>
 
                                 {hasCompleted && (
-                                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                  <div className="bg-gray-50 rounded-[8px] p-4 mb-4">
                                     <div className="flex items-center justify-between mb-2">
                                       <span className="text-sm font-medium text-gray-700">
                                         Meilleur score
@@ -433,7 +433,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                               <button
                                 onClick={() => startQuiz(quiz)}
                                 className={`
-                      group/btn relative px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105
+                      group/btn relative px-6 py-3 rounded-[8px] font-semibold transition-all duration-200 transform hover:scale-105
                       ${
                         hasCompleted
                           ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-2 border-blue-200 hover:from-blue-100 hover:to-blue-200"
@@ -532,7 +532,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                                 </div>
 
                                 {hasCompleted && (
-                                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                  <div className="bg-gray-50 rounded-[8px] p-4 mb-4">
                                     <div className="flex items-center justify-between mb-2">
                                       <span className="text-sm font-medium text-gray-700">
                                         Meilleur score
@@ -567,7 +567,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                               <button
                                 onClick={() => startQuiz(quiz)}
                                 className={`
-                      group/btn relative px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105
+                      group/btn relative px-6 py-3 rounded-[8px] font-semibold transition-all duration-200 transform hover:scale-105
                       ${
                         hasCompleted
                           ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-2 border-blue-200 hover:from-blue-100 hover:to-blue-200"
@@ -673,14 +673,14 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={resetQuiz}
-            className="lg:px-8 px-4 py-4 bg-blue-600 text-white lg:text-lg font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-3"
+            className="lg:px-8 px-4 py-4 bg-blue-600 text-white lg:text-lg font-semibold rounded-[8px] shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-3"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Retour</span>
           </button>
           <button
             onClick={() => startQuiz(selectedQuiz)}
-            className="lg:px-8 px-4 py-4 bg-blue-600 text-white lg:text-lg font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-3"
+            className="lg:px-8 px-4 py-4 bg-blue-600 text-white lg:text-lg font-semibold rounded-[8px] shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center space-x-3"
           >
             <RotateCcw className="w-5 h-5" />
             <span>Recommencer</span>
@@ -715,7 +715,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
         </span>
       </div>
 
-      <div className="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-200">
+      <div className="mb-8 p-6 bg-blue-50 rounded-[8px] border border-blue-200">
         <p className="text-xl font-medium text-gray-800">
           {currentQuestion.content}
         </p>
@@ -759,7 +759,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
         <button
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0}
-          className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors disabled:opacity-50 flex items-center space-x-2"
+          className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-[8px] hover:bg-gray-300 transition-colors disabled:opacity-50 flex items-center space-x-2"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Précédent</span>
@@ -767,7 +767,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
         <button
           onClick={handleNextQuestion}
           disabled={!isAnswerSelected && !isLastQuestion} // Disable if no answer selected and not last question
-          className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
+          className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-[8px] hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
         >
           <span>{isLastQuestion ? "Terminer" : "Suivant"}</span>
           {isLastQuestion ? (

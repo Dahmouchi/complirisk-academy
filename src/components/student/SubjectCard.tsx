@@ -46,7 +46,7 @@ export const SubjectCard = ({
         {/* Icon and title */}
         <div className="flex items-start justify-between mb-4">
           <div
-            className="p-3 rounded-xl"
+            className="p-3 rounded-[8px]"
             style={{ backgroundColor: `${subject.color}20` }}
           >
             <BookOpen className="w-6 h-6" style={{ color: subject.color }} />

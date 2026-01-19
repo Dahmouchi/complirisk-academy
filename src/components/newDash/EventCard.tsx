@@ -2,10 +2,14 @@ import { Clock, Video, BookOpen, Sparkles, Lock, Unlock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
 interface EventCardProps {
   type: "webinar" | "lesson" | "task";
   title: string;
+  author: string;
+  image: string;
+  role: string;
   description: string;
   date: string;
   time?: string;
@@ -17,6 +21,9 @@ interface EventCardProps {
 const EventCard = ({
   type,
   title,
+  author,
+  image,
+  role,
   description,
   date,
   time,
@@ -25,10 +32,10 @@ const EventCard = ({
   className,
 }: EventCardProps) => {
   const variantClasses = {
-    mint: "bg-mint",
-    lavender: "bg-lavender",
-    cream: "bg-cream",
-    card: "bg-card",
+    mint: "bg-yellow-50",
+    lavender: "bg-purple-100",
+    cream: "bg-blue-100",
+    card: "bg-yellow-100",
   };
 
   const typeConfig = {
@@ -47,35 +54,60 @@ const EventCard = ({
   };
 
   const Icon = typeConfig[type].icon;
-
+  const [seeMore, setSeeMore] = useState(false);
   return (
     <div
       className={cn(
         "rounded-2xl p-4 card-shadow hover:card-shadow-hover transition-all duration-300 animate-slide-in relative",
         variantClasses[variant],
         isLocked && "opacity-75",
-        className
+        className,
       )}
     >
       {/* Lock/Unlock Badge */}
 
       <div className="flex items-start justify-between mb-3 pr-16">
         <div className="flex items-center gap-2">
-          {type === "webinar" && (
+          {role === "TEACHER" ? (
             <Avatar className="w-6 h-6">
-              <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop" />
-              <AvatarFallback>W</AvatarFallback>
+              <AvatarImage src={image} />
+              <AvatarFallback>{author.slice(0, 2)}</AvatarFallback>
             </Avatar>
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-gray-700"></div>
           )}
-          {type !== "webinar" && <Icon className="w-4 h-4" />}
-          <span className="text-sm font-medium">{typeConfig[type].label}</span>
+          <div>
+            <span className="text-sm font-medium">{author}</span>
+            {role === "TEACHER" && (
+              <p className="text-xs text-muted-foreground">Professeur</p>
+            )}
+            {role === "ADMIN" && (
+              <p className="text-xs text-muted-foreground">Administrateur</p>
+            )}
+          </div>
         </div>
         <span className="text-xs text-muted-foreground">{date}</span>
       </div>
-
-      <p className={cn("text-sm mb-3 line-clamp-3", isLocked && "blur-[2px]")}>
-        {description}
-      </p>
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <div className="mb-3">
+        <p
+          className={cn(
+            "text-sm",
+            isLocked && "blur-[2px]",
+            !seeMore && "line-clamp-3",
+          )}
+        >
+          {description}
+        </p>
+        {description && description.length > 90 && (
+          <button
+            onClick={() => setSeeMore(!seeMore)}
+            className="text-xs text-blue-500 hover:text-blue-600 cursor-pointer mt-1 font-medium transition-colors"
+          >
+            {seeMore ? "Voir moins" : "Voir plus"}
+          </button>
+        )}
+      </div>
 
       {time && (
         <div className="flex items-center gap-2 bg-card rounded-full px-3 py-1.5 w-fit">

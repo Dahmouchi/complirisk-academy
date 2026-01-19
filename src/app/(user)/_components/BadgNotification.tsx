@@ -257,7 +257,7 @@ export function BadgeNotification() {
                   <Button
                     onClick={handleClaimBadge}
                     disabled={isClaiming}
-                    className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/25 border-0 transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-[8px] shadow-lg shadow-purple-500/25 border-0 transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isClaiming ? (
                       <motion.div
@@ -279,7 +279,7 @@ export function BadgeNotification() {
                   <Button
                     onClick={handleDismiss}
                     variant="ghost"
-                    className="h-12 px-5 text-white/70 hover:text-white hover:bg-white/10 rounded-xl font-medium transition-all duration-200"
+                    className="h-12 px-5 text-white/70 hover:text-white hover:bg-white/10 rounded-[8px] font-medium transition-all duration-200"
                   >
                     Plus tard
                   </Button>

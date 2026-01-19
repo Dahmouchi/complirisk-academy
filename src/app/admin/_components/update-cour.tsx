@@ -124,7 +124,7 @@ const FileUpload = ({
   return (
     <div className="space-y-4">
       <div
-        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
+        className={`border-2 border-dashed rounded-[8px] p-8 text-center transition-all duration-300 cursor-pointer ${
           isDragOver
             ? "border-blue-500 bg-blue-50"
             : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
@@ -297,7 +297,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[8px] flex items-center justify-center">
               <BookOpen className="w-7 h-7 text-white" />
             </div>
             <div>

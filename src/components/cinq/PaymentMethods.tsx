@@ -42,14 +42,16 @@ export function PaymentMethods() {
         >
           <CardHeader className="pb-2">
             <div
-              className={`w-12 h-12 rounded-xl ${method.bgColor} flex items-center justify-center mb-2`}
+              className={`w-12 h-12 rounded-[8px] ${method.bgColor} flex items-center justify-center mb-2`}
             >
               <method.icon className={`h-6 w-6 ${method.color}`} />
             </div>
             <CardTitle className="text-lg">{method.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">{method.description}</p>
+            <p className="text-sm text-muted-foreground">
+              {method.description}
+            </p>
           </CardContent>
         </Card>
       ))}

@@ -49,10 +49,10 @@ const CourseContent = ({ course, userId }: any) => {
                   {documents.map((document: any) => (
                     <div
                       key={document.id}
-                      className="group relative bg-gradient-to-r from-white to-gray-50 border-2 border-gray-100 rounded-xl p-4 md:p-6 hover:border-blue-200 transition-all duration-300 hover:shadow-lg"
+                      className="group relative bg-gradient-to-r from-white to-gray-50 border-2 border-gray-100 rounded-[8px] p-4 md:p-6 hover:border-blue-200 transition-all duration-300 hover:shadow-lg"
                     >
                       {/* Hover indicator */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-[8px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         {/* Document info (left side) */}

@@ -128,7 +128,7 @@ export const columns: ColumnDef<any>[] = [
 
           <DropdownMenuContent
             align="end"
-            className="bg-white p-2 rounded-xl border-2 border-gray-300 z-50 shadow-lg"
+            className="bg-white p-2 rounded-[8px] border-2 border-gray-300 z-50 shadow-lg"
           >
             <DropdownMenuLabel className="p-2 text-gray-500 font-bold">
               Actions

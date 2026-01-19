@@ -117,7 +117,7 @@ const Header = () => {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="">
-              <BreadcrumbLink href="/">Enita</BreadcrumbLink>
+              <BreadcrumbLink href="/">Cinq-Cinq Sup</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem>

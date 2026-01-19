@@ -15,7 +15,7 @@ export default async function TeacherLivesPage() {
     redirect("/dashboard");
   }
 
-  const [liveRooms, subjects] = await Promise.all([
+  const [liveRooms, teacherSubjects] = await Promise.all([
     getTeacherLiveRooms(session.user.id),
     prisma.teacherSubject.findMany({
       where: { teacherId: session.user.id },
@@ -27,15 +27,19 @@ export default async function TeacherLivesPage() {
             color: true,
           },
         },
+        grade: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     }),
   ]);
 
-  const teacherSubjects = subjects.map((ts) => ts.subject);
-
   const activeLives = liveRooms.filter((room) => room.status === "LIVE");
   const scheduledLives = liveRooms.filter(
-    (room) => room.status === "SCHEDULED"
+    (room) => room.status === "SCHEDULED",
   );
   const pastLives = liveRooms.filter((room) => room.status === "ENDED");
 

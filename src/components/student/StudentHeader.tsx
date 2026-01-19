@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 
 interface StudentHeaderProps {
   userName?: string;
@@ -59,38 +60,125 @@ export const StudentHeader = ({
     toast.success("Déconnexion réussie");
     navigate.push("/");
   };
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const navItems = [
+    {
+      icon: GraduationCap,
+      label: "1er au Maroc",
+      description: "1er au Maroc",
+    },
+    {
+      icon: Users,
+      label: "+50K étudiants",
+      description: "+50K étudiants",
+    },
+    {
+      icon: CheckCircle,
+      label: "Certifications",
+      description: "Reconnu nationalement",
+    },
+    {
+      icon: Laptop,
+      label: "Platform 100% en ligne",
+      description: "100% en ligne",
+    },
+    {
+      icon: LayoutGrid,
+      label: "+200 formations",
+      description: "+200 formations",
+    },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev: any) => (prev + 1) % navItems.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       {/* Top Header */}
-      <div className="flex bg-[#fbfaf6] items-center justify-between px-6 py-4  border-b border-gray-400/40 ">
+      <div className="flex bg-[#fbfaf6] items-center justify-between px-6 lg:py-2  border-b border-gray-400/40 ">
         {/* Logo */}
-        <div className="relative h-14 w-autoflex items-center justify-center">
-          <img src="/cinq/logoH.png" alt="" className=" h-10 w-auto" />
+        <div
+          onClick={() => navigate.push("/dashboard")}
+          className="relative h-14 cursor-pointer w-auto flex items-center justify-center"
+        >
+          <img src="/cinq/logoH.png" alt="" className=" lg:h-10 h-8 w-auto" />
         </div>
 
-        {/* Center Navigation */}
-        <nav className=" lg:flex hidden items-center gap-2 bg-card rounded-full px-2 py-2 card-shadow">
-          <div className="flex items-center gap-2 bg-secondary rounded-full px-4 py-2">
-            <GraduationCap className="w-4 h-4" />
-            <span className="text-sm font-medium">Learning Plan</span>
-          </div>
+        <nav className="lg:flex hidden items-center gap-2 bg-white backdrop-blur-lg rounded-full px-4 shadow py-2  border border-white/20">
+          {navItems.map((item, index) => {
+            const Icon = item.icon;
+            const isActive = index === activeIndex;
 
-          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
-            <Users className="w-5 h-5 text-muted-foreground" />
-          </button>
+            return (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`relative overflow-hidden rounded-full transition-all duration-500 ease-out ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2 min-w-[150px]"
+                    : "p-2 hover:bg-white/10"
+                }`}
+                style={{
+                  transform: isActive ? "scale(1.05)" : "scale(1)",
+                }}
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <Icon
+                    className={`transition-all duration-500 ${
+                      isActive ? "w-4 h-4 text-white" : "w-5 h-5 text-slate-400"
+                    }`}
+                    style={{
+                      transform: isActive ? "rotate(360deg)" : "rotate(0deg)",
+                    }}
+                  />
 
-          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
-            <CheckCircle className="w-5 h-5 text-muted-foreground" />
-          </button>
+                  <div
+                    className={`flex flex-col items-start transition-all duration-500 ${
+                      isActive
+                        ? "opacity-100 max-w-[200px]"
+                        : "opacity-0 max-w-0"
+                    }`}
+                    style={{
+                      width: isActive ? "auto" : "0",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <span className="text-xs font-semibold text-white whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  </div>
+                </div>
 
-          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
-            <Laptop className="w-5 h-5 text-muted-foreground" />
-          </button>
-
-          <button className="p-2 hover:bg-secondary rounded-full transition-colors">
-            <LayoutGrid className="w-5 h-5 text-muted-foreground" />
-          </button>
+                {isActive && (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-500/20 rounded-full"
+                    style={{
+                      animation: "pulse 2s ease-in-out infinite",
+                    }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </nav>
+
+        <style>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.5;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+        }
+      `}</style>
 
         {/* User Profile */}
         <DropdownMenu>

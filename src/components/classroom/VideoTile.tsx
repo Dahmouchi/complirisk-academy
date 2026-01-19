@@ -8,26 +8,40 @@ interface VideoTileProps {
   isMain?: boolean;
 }
 
-export const VideoTile = ({ participant, isTeacher = false, isMain = false }: VideoTileProps) => {
+export const VideoTile = ({
+  participant,
+  isTeacher = false,
+  isMain = false,
+}: VideoTileProps) => {
   const tracks = useTracks([
     { source: Track.Source.Camera, withPlaceholder: false },
     { source: Track.Source.Microphone, withPlaceholder: false },
     { source: Track.Source.ScreenShare, withPlaceholder: false },
-  ]).filter(t => t.participant?.identity === participant.identity);
+  ]).filter((t) => t.participant?.identity === participant.identity);
 
-  const cameraTrack = tracks.find(t => t.source === Track.Source.Camera && t.publication?.track);
-  const screenTrack = tracks.find(t => t.source === Track.Source.ScreenShare && t.publication?.track);
-  const micTrack = tracks.find(t => t.source === Track.Source.Microphone && t.publication?.track);
+  const cameraTrack = tracks.find(
+    (t) => t.source === Track.Source.Camera && t.publication?.track
+  );
+  const screenTrack = tracks.find(
+    (t) => t.source === Track.Source.ScreenShare && t.publication?.track
+  );
+  const micTrack = tracks.find(
+    (t) => t.source === Track.Source.Microphone && t.publication?.track
+  );
 
-  const hasCamera = !!cameraTrack?.publication && !cameraTrack.publication.isMuted;
-  const hasScreen = !!screenTrack?.publication && !screenTrack.publication.isMuted;
+  const hasCamera =
+    !!cameraTrack?.publication && !cameraTrack.publication.isMuted;
+  const hasScreen =
+    !!screenTrack?.publication && !screenTrack.publication.isMuted;
   const hasMic = !!micTrack?.publication && !micTrack.publication.isMuted;
 
   const displayTrack = hasScreen ? screenTrack : cameraTrack;
   const hasVideo = hasScreen || hasCamera;
 
   return (
-    <div className={`relative overflow-hidden rounded-xl bg-muted aspect-video`}>
+    <div
+      className={`relative overflow-hidden rounded-[8px] bg-muted aspect-video`}
+    >
       {hasVideo && displayTrack?.publication?.track ? (
         <video
           ref={(el) => {
@@ -42,9 +56,17 @@ export const VideoTile = ({ participant, isTeacher = false, isMain = false }: Vi
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
-          <div className={`${isMain ? 'w-24 h-24' : 'w-16 h-16'} rounded-full bg-primary/10 flex items-center justify-center`}>
-            <span className={`${isMain ? 'text-4xl' : 'text-2xl'} font-bold text-primary`}>
-              {participant.name?.[0]?.toUpperCase() || '?'}
+          <div
+            className={`${
+              isMain ? "w-24 h-24" : "w-16 h-16"
+            } rounded-full bg-primary/10 flex items-center justify-center`}
+          >
+            <span
+              className={`${
+                isMain ? "text-4xl" : "text-2xl"
+              } font-bold text-primary`}
+            >
+              {participant.name?.[0]?.toUpperCase() || "?"}
             </span>
           </div>
         </div>
@@ -71,7 +93,7 @@ export const VideoTile = ({ participant, isTeacher = false, isMain = false }: Vi
               </div>
             )}
             <span className="text-sm font-medium text-white truncate max-w-[150px]">
-              {participant.name || 'Anonymous'}
+              {participant.name || "Anonymous"}
             </span>
             {hasScreen && (
               <div className="flex items-center gap-1 text-xs text-white/80">

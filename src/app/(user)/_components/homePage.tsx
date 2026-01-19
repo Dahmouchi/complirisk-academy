@@ -236,7 +236,7 @@ const StudentStats = ({ userId }: any) => {
       {cards.map((stat, index) => (
         <motion.div
           key={stat.label}
-          className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
+          className="bg-white rounded-[8px] p-6 shadow-lg border border-gray-100"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
@@ -329,7 +329,7 @@ const SubjectCard = ({
 
         <div className="relative z-10 flex items-start justify-between">
           <div className="flex items-center space-x-4">
-            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+            <div className="bg-white/20 p-3 rounded-[8px] backdrop-blur-sm">
               {icon || <div className="w-8 h-8" />}{" "}
               {/* Fallback while loading */}
             </div>
@@ -445,7 +445,7 @@ const CourseCard = ({ course }: { course: Course }) => {
 
   return (
     <motion.div
-      className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden group cursor-pointer"
+      className="bg-white rounded-[8px] shadow-lg border border-gray-100 overflow-hidden group cursor-pointer"
       whileHover={{ scale: 1.02, boxShadow: "0 15px 30px rgba(0,0,0,0.1)" }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, x: -20 }}

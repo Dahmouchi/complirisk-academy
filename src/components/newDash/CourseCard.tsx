@@ -57,25 +57,6 @@ const CourseCard = ({
     card: "bg-card",
   };
 
-  const statusConfig = {
-    completed: {
-      label: "Completed 👏",
-      bgClass: "bg-mint text-mint-foreground",
-    },
-    watching: {
-      label: `Watching ${watchTime || "00:00"}`,
-      bgClass: "bg-card text-foreground",
-    },
-    upcoming: {
-      label: "Upcoming ⏰",
-      bgClass: "bg-secondary text-foreground",
-    },
-    locked: {
-      label: "Locked",
-      bgClass: "bg-muted text-muted-foreground",
-    },
-  };
-
   return (
     <div
       onClick={onClick}

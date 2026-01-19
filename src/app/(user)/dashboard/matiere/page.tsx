@@ -8,7 +8,7 @@ const MatierePage = async () => {
   }
 
   return (
-    <div>
+    <div className="overflow-y-scroll h-[calc(100vh-80px)]">
       <StudentSubjects subjects={user.grade?.subjects} userName={user.name} />
     </div>
   );

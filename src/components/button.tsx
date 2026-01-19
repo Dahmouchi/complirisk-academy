@@ -1,51 +1,55 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva(
-  'font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg',
+  "font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg",
   {
     variants: {
       variant: {
-        primary: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:shadow-indigo-500/40',
-        success: 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-emerald-500/40',
-        danger: 'bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-rose-500/40',
-        warning: 'bg-gradient-to-r from-amber-500 to-orange-600 hover:shadow-amber-500/40',
-        dark: 'bg-gradient-to-r from-gray-800 to-gray-900 hover:shadow-gray-800/40',
+        primary:
+          "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:shadow-indigo-500/40",
+        success:
+          "bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-emerald-500/40",
+        danger:
+          "bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-rose-500/40",
+        warning:
+          "bg-gradient-to-r from-amber-500 to-orange-600 hover:shadow-amber-500/40",
+        dark: "bg-gradient-to-r from-gray-800 to-gray-900 hover:shadow-gray-800/40",
       },
       size: {
-        sm: 'text-xs px-4 py-2',
-        md: 'text-sm px-5 py-2.5',
-        lg: 'text-base px-6 py-3',
+        sm: "text-xs px-4 py-2",
+        md: "text-sm px-5 py-2.5",
+        lg: "text-base px-6 py-3",
       },
       glow: {
-        true: 'shadow-xl hover:shadow-2xl',
+        true: "shadow-xl hover:shadow-2xl",
       },
       fullWidth: {
-        true: 'w-full',
+        true: "w-full",
       },
       rounded: {
-        none: 'rounded-none',
-        sm: 'rounded-md',
-        md: 'rounded-lg',
-        lg: 'rounded-xl',
-        full: 'rounded-full',
+        none: "rounded-none",
+        sm: "rounded-md",
+        md: "rounded-lg",
+        lg: "rounded-[8px]",
+        full: "rounded-full",
       },
     },
     defaultVariants: {
-      variant: 'primary',
-      size: 'md',
+      variant: "primary",
+      size: "md",
       glow: true,
-      rounded: 'lg',
+      rounded: "lg",
     },
   }
 );
 
-interface ButtonProps 
+interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
   icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
 }
 
 const Buttona = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -59,7 +63,7 @@ const Buttona = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rounded,
       loading = false,
       icon,
-      iconPosition = 'left',
+      iconPosition = "left",
       children,
       ...props
     },
@@ -80,7 +84,7 @@ const Buttona = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         <span className="flex items-center justify-center gap-2">
-          {icon && iconPosition === 'left' && !loading && (
+          {icon && iconPosition === "left" && !loading && (
             <span className="inline-flex">{icon}</span>
           )}
           {loading && (
@@ -106,7 +110,7 @@ const Buttona = React.forwardRef<HTMLButtonElement, ButtonProps>(
             </svg>
           )}
           {children}
-          {icon && iconPosition === 'right' && !loading && (
+          {icon && iconPosition === "right" && !loading && (
             <span className="inline-flex">{icon}</span>
           )}
         </span>
@@ -115,6 +119,6 @@ const Buttona = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Buttona.displayName = 'Button';
+Buttona.displayName = "Button";
 
 export { Buttona, buttonVariants };

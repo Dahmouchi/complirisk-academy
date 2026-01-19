@@ -103,7 +103,7 @@ export function BadgesDisplay() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
-                    className={`p-3 rounded-xl border text-center transition-all relative ${
+                    className={`p-3 rounded-[8px] border text-center transition-all relative ${
                       isEarned
                         ? "bg-blue-600/5 border-blue-600/20 hover:border-blue-600/40 cursor-pointer group"
                         : "bg-muted/30 border-border opacity-60"

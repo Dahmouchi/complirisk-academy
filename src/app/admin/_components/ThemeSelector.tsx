@@ -20,7 +20,7 @@ export const ThemeSelector = ({ value, onChange }: ThemeSelectorProps) => {
             type="button"
             onClick={() => onChange(theme.value)}
             className={cn(
-              "relative p-4 rounded-xl border-2 transition-all duration-300 text-left group overflow-hidden",
+              "relative p-4 rounded-[8px] border-2 transition-all duration-300 text-left group overflow-hidden",
               isSelected
                 ? "border-primary shadow-lg shadow-primary/20 scale-105"
                 : "border-border hover:border-primary/50 hover:shadow-md"

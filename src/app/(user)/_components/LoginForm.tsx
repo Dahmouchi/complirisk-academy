@@ -12,7 +12,7 @@ const AuthForm = () => {
     return (
       <motion.button
         onClick={onClick}
-        className="w-full bg-white border-2 cursor-pointer border-gray-200 rounded-xl px-6 py-4 flex items-center justify-center gap-3 text-gray-700 font-semibold text-lg hover:border-blue-500 hover:shadow-lg transition-all duration-300 group"
+        className="w-full bg-white border-2 cursor-pointer border-gray-200 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-700 font-semibold text-lg hover:border-blue-500 hover:shadow-lg transition-all duration-300 group"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
@@ -53,7 +53,7 @@ const AuthForm = () => {
   }) => {
     return (
       <motion.div
-        className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20"
+        className="bg-white/10 backdrop-blur-sm rounded-[8px] p-4 text-center border border-white/20"
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.2 }}
       >
@@ -113,7 +113,7 @@ const AuthForm = () => {
           <div className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
             {/* Header mobile */}
             <div className=" text-center mb-4 flex items-center justify-center ">
-              <div className=" bg-gradient-to-r rounded-xl flex items-center justify-center mx-auto mb-4">
+              <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
                   onClick={() => redirect("/")}
                   src="/cinq/logoH.png"
@@ -133,7 +133,7 @@ const AuthForm = () => {
             {/* Bouton Google */}
             <div className="mb-6">
               {loading ? (
-                <div className="w-full bg-gray-100 rounded-xl px-6 py-4 flex items-center justify-center gap-3 text-gray-500">
+                <div className="w-full bg-gray-100 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-500">
                   <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                   <span>Connexion en cours...</span>
                 </div>

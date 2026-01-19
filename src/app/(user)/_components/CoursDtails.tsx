@@ -125,7 +125,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
 
           {/* Title Section */}
 
-          <div className="bg-card rounded-xl p-4 border border-border">
+          <div className="bg-card rounded-[8px] p-4 border border-border">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-foreground">
                 Votre Progrès
@@ -175,7 +175,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                 transition={{ delay: 0.2 }}
               >
                 <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="w-full justify-start bg-muted/50 p-1 rounded-xl h-auto flex-wrap">
+                  <TabsList className="w-full justify-start bg-muted/50 p-1 rounded-[8px] h-auto flex-wrap">
                     <TabsTrigger
                       value="overview"
                       className="gap-2 data-[state=active]:bg-background rounded-lg"
@@ -290,7 +290,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                         <button
                           key={course.id}
                           onClick={() => handleCourseSelect(course)}
-                          className={`w-full flex items-start gap-3 p-3 rounded-xl transition-all duration-200 text-left group ${
+                          className={`w-full flex items-start gap-3 p-3 rounded-[8px] transition-all duration-200 text-left group ${
                             isActive
                               ? "bg-blue-600/10 border border-blue-600/20"
                               : "hover:bg-muted/50"
@@ -380,10 +380,10 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                       <div
                         key={doc.id}
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-3 p-3 cursor-pointer rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group"
+                        className="flex items-center gap-3 p-3 cursor-pointer rounded-[8px] bg-muted/30 hover:bg-muted/50 transition-colors group"
                       >
                         <div
-                          className={`p-2.5 rounded-xl bg-red-100 text-red-500`}
+                          className={`p-2.5 rounded-[8px] bg-red-100 text-red-500`}
                         >
                           <FileText className="w-4 h-4" />
                         </div>

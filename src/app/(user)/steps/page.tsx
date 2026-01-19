@@ -540,7 +540,7 @@ const ConfirmationStep = ({ data }: { data: FormData }) => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 + index * 0.1 }}
-              className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm"
+              className="flex items-center justify-between bg-white rounded-[8px] p-4 shadow-sm"
             >
               <span className="text-gray-600 text-sm flex items-center gap-2">
                 <item.icon className="w-4 h-4 text-gray-400" />
