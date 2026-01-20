@@ -4,21 +4,21 @@ import { Linkedin, Mail } from "lucide-react";
 
 const instructors = [
   {
-    name: "Prof. Ahmed Benali",
+    name: "Prof. Hatim",
     specialty: "Mathématiques",
     description:
       "Expert en mathématiques avec 25 ans d'expérience dans l'enseignement universitaire et la recherche.",
     initials: "AB",
   },
   {
-    name: "Prof. Fatima Zahra",
-    specialty: "Physique",
+    name: "Prof. Yassine",
+    specialty: "Économie",
     description:
       "Docteure en physique, spécialisée dans la physique quantique et la mécanique.",
     initials: "FZ",
   },
   {
-    name: "Prof. Mohamed Tazi",
+    name: "Prof. Achraf",
     specialty: "Économie",
     description:
       "Expert en économie et gestion avec une expertise reconnue en finance et commerce international.",

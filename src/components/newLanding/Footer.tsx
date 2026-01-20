@@ -54,7 +54,7 @@ export const Footer = () => {
                 Recevez les dernières actualités universitaires
               </p>
             </div>
-            <div className="flex gap-3 w-full md:w-auto">
+            <div className="flex lg:flex-row flex-col gap-3 w-full md:w-auto">
               <Input
                 type="email"
                 onChange={(e) => console.log(e.target.value)}
