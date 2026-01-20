@@ -1,4 +1,12 @@
-import { Clock, Video, BookOpen, Sparkles, Lock, Unlock } from "lucide-react";
+import {
+  Clock,
+  Video,
+  BookOpen,
+  Sparkles,
+  Lock,
+  Unlock,
+  GraduationCap,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +74,7 @@ const EventCard = ({
     >
       {/* Lock/Unlock Badge */}
 
-      <div className="flex items-start justify-between mb-3 pr-16">
+      <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           {role === "TEACHER" ? (
             <Avatar className="w-6 h-6">
@@ -74,10 +82,14 @@ const EventCard = ({
               <AvatarFallback>{author.slice(0, 2)}</AvatarFallback>
             </Avatar>
           ) : (
-            <div className="w-24 h-24 rounded-full bg-gray-700"></div>
+            <div className="w-8 h-8 rounded-full bg-yellow-400 text-blue-600 flex items-center justify-center">
+              <GraduationCap className="w-6 h-6" />
+            </div>
           )}
           <div>
-            <span className="text-sm font-medium">{author}</span>
+            <span className="text-sm font-medium">
+              {role === "TEACHER" ? author : "Cinq-Cinq"}
+            </span>
             {role === "TEACHER" && (
               <p className="text-xs text-muted-foreground">Professeur</p>
             )}

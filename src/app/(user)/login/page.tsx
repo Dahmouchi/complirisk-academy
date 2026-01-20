@@ -93,7 +93,7 @@ const Auth = () => {
             </motion.div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login1.jpg"}
+                src={"/cinq/login1.JPG"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -102,14 +102,14 @@ const Auth = () => {
             {/* Row 2 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login2.jpg"}
+                src={"/cinq/login2.JPG"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login3.jpg"}
+                src={"/cinq/login3.JPG"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -118,7 +118,7 @@ const Auth = () => {
             {/* Row 3 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login4.jpg"}
+                src={"/cinq/login4.JPG"}
                 alt=""
                 className="w-full h-full object-cover"
               />

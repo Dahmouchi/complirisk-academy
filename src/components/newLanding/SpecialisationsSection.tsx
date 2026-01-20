@@ -75,7 +75,7 @@ export const SpecialisationsSection = () => {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group relative rounded-xs overflow-hidden cursor-pointer card-hover"
+              className="group relative rounded-2xl overflow-hidden cursor-pointer card-hover"
             >
               <div className="aspect-[3/4] relative">
                 <img
@@ -84,7 +84,7 @@ export const SpecialisationsSection = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">

@@ -79,7 +79,7 @@ export const CoursesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-card rounded-xs overflow-hidden shadow-xl card-hover group"
+              className="bg-card rounded-2xl overflow-hidden shadow-xl card-hover group"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">

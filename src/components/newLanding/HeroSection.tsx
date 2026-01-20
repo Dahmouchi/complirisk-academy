@@ -128,7 +128,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="lg:mt-16  bg-background rounded-md lg:rounded-full shadow-md p-4 md:p-8 z-10"
+          className="lg:mt-16  bg-white rounded-md lg:rounded-full shadow-md p-4 md:p-8 z-10"
         >
           <div className="flex lg:flex-wrap lg:flex-row flex-col justify-between lg:items-center gap-6 md:gap-10">
             {features.map((feature, index) => (

@@ -24,7 +24,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="fixed top-0 z-50 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 z-50 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-border">
       <nav className="container-custom flex items-center justify-between h-16 md:h-20 px-4 md:px-8">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2">

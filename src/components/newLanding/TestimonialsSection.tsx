@@ -36,13 +36,13 @@ export const TestimonialsSection = () => {
 
   const prevTestimonial = () => {
     setActiveIndex(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
     );
   };
 
   return (
-    <section className="section-padding bg-section-alt relative">
-      <div className="absolute inset-0 bg-[url('/enita/bg-paper.jpg')] bg-cover bg-center opacity-50"></div>
+    <div className="section-padding bg-section-alt relative">
+      <div className="absolute inset-0 bg-[url('/cinq/bgnew3.jpg')] bg-cover bg-center "></div>
       <div className="container-custom relative">
         {/* Header */}
         <div className="text-center mb-12">
@@ -63,12 +63,12 @@ export const TestimonialsSection = () => {
                 onClick={() => setActiveIndex(index)}
                 className={`w-12 h-12 rounded-full overflow-hidden border-2 transition-all ${
                   activeIndex === index
-                    ? "border-primary scale-110"
+                    ? "border-blue-600 scale-110"
                     : "border-border opacity-50"
                 }`}
               >
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
-                  <span className="text-primary font-bold text-sm">
+                <div className="w-full h-full bg-gradient-to-br from-blue-600/20 to-blue-600/40 flex items-center justify-center">
+                  <span className="text-blue-600 font-bold text-sm">
                     {testimonials[index].name.charAt(0)}
                   </span>
                 </div>
@@ -81,7 +81,7 @@ export const TestimonialsSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-card rounded-lg p-8 md:p-12 shadow-lg text-center relative"
+            className="bg-card rounded-2xl p-8 md:p-12 shadow-lg text-center relative"
           >
             <Quote className="w-12 h-12 text-primary/20 mx-auto mb-6" />
 
@@ -123,6 +123,6 @@ export const TestimonialsSection = () => {
           </motion.div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };

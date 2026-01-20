@@ -45,20 +45,6 @@ export const AboutSection = () => {
                 className="w-full h-auto object-cover bg-center aspect-[4/3]"
               />
               {/* Floating Stats Card */}
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute -bottom-6 z-50 -right-6 bg-primary text-primary-foreground rounded-2xl p-6 shadow-primary"
-              >
-                <div className="text-center">
-                  <p className="text-4xl font-bold">98%</p>
-                  <p className="text-sm opacity-90">Taux de réussite</p>
-                </div>
-              </motion.div>
             </div>
 
             {/* Decorative */}

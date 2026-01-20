@@ -16,6 +16,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import ThemeToggler from "./ThemeToggler";
 import {
   BookOpenText,
+  ChevronDown,
+  ChevronsDown,
   ChevronsUpDown,
   LogIn,
   LogOut,
@@ -110,7 +112,7 @@ const Header = ({ visible }: { visible: any }) => {
             <img
               onClick={() => router.push("/")}
               src="/cinq/logoH.png"
-              className="h-auto w-20 lg:w-20 cursor-pointer"
+              className="h-auto w-26 lg:w-28 cursor-pointer"
               alt=""
             />
             {visible === true && (
@@ -125,44 +127,6 @@ const Header = ({ visible }: { visible: any }) => {
             <div className="flex gap-2 items-center">
               {session?.user ? (
                 <div className=" flex items-center gap-2">
-                  <motion.button
-                    onClick={() => router.push("/dashboard")}
-                    className="relative group px-6 lg:py-3 py-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg overflow-hidden"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {/* Glow effect */}
-                    <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></span>
-                    {/* Inner glow */}
-                    <span className="absolute inset-0 border-2 border-white/20 rounded-lg group-hover:border-white/40 transition-all duration-300"></span>
-                    {/* Shadow animation */}
-                    <motion.span
-                      className="absolute inset-0 rounded-lg shadow-lg"
-                      initial={{
-                        boxShadow:
-                          "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
-                      }}
-                      animate={{
-                        boxShadow: [
-                          "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
-                          "0 20px 25px -5px rgba(99, 102, 241, 0.4), 0 10px 10px -5px rgba(99, 102, 241, 0.2)",
-                          "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
-                        ],
-                      }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 3,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    <div className="relative z-10 flex items-center justify-center gap-2">
-                      <User className="lg:text-lg text-sm" />
-                      <span>Mon Espace</span>
-                    </div>
-                  </motion.button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -175,15 +139,8 @@ const Header = ({ visible }: { visible: any }) => {
                             alt={"user.name"}
                           />
                         </Avatar>
-                        <div className=" flex-1 text-left text-sm leading-tight hidden lg:grid">
-                          <span className="truncate font-semibold">
-                            {session?.user.username || "Utilisateur"}
-                          </span>
-                          <span className="truncate text-xs">
-                            {session?.user.email || "vous êtes connecté"}
-                          </span>
-                        </div>
-                        <ChevronsUpDown className="ml-auto size-4 lg:block hidden" />
+
+                        <ChevronDown className="ml-auto size-4 lg:block hidden" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

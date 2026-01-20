@@ -29,7 +29,9 @@ import { useParams, useRouter } from "next/navigation";
 import { getLiveReplay, getLivesRegistred } from "@/actions/live-room";
 import QuizDisplay from "@/app/(user)/_components/quizSection";
 import { useSession } from "next-auth/react";
-
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import { SecureVideoPlayer } from "@/components/SecureVideoPlayer";
 const LiveReplay = () => {
   const router = useRouter();
   const params = useParams();
@@ -182,115 +184,13 @@ const LiveReplay = () => {
           {/* Video Section */}
           <div className="lg:col-span-2">
             {/* Video Player */}
-            <div className="relative bg-white aspect-video w-full rounded-2xl">
-              {/* Video Player with Controls */}
-              {live?.signedRecordingUrl ? (
-                <>
-                  {/* Video element */}
-                  <video
-                    ref={videoRef}
-                    src={live.recordingUrl}
-                    controls={false} // We're using custom controls
-                    className="w-full h-full object-cover rounded-t-2xl"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    muted={isMuted}
-                    onTimeUpdate={handleTimeUpdate}
-                    onDurationChange={handleDurationChange}
-                  />
-
-                  {/* Image overlay when not playing */}
-                  {!isPlaying && (
-                    <div className="absolute inset-0">
-                      <img
-                        src={`${live?.image}`}
-                        alt="Live session"
-                        className="w-full h-full object-cover rounded-t-2xl"
-                      />
-                      <div className="absolute inset-0 bg-black/40 rounded-t-2xl" />
-                    </div>
-                  )}
-
-                  {/* Play button overlay - shown on top of image or paused video */}
-                  {!isPlaying && (
-                    <button
-                      onClick={handlePlayPause}
-                      className="absolute inset-0 flex items-center justify-center z-10"
-                    >
-                      <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-colors">
-                        <Play className="w-8 h-8 text-foreground ml-1" />
-                      </div>
-                    </button>
-                  )}
-
-                  {/* Video Controls */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-white hover:bg-white/20"
-                          onClick={handlePlayPause}
-                        >
-                          {isPlaying ? (
-                            <Pause className="w-5 h-5" />
-                          ) : (
-                            <Play className="w-5 h-5" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-white hover:bg-white/20"
-                          onClick={() => setIsMuted(!isMuted)}
-                        >
-                          {isMuted ? (
-                            <VolumeX className="w-5 h-5" />
-                          ) : (
-                            <Volume2 className="w-5 h-5" />
-                          )}
-                        </Button>
-                        <span className="text-white text-sm ml-2">
-                          {formatTime(currentTime)} / {formatTime(duration)}
-                        </span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-white hover:bg-white/20"
-                        onClick={handleFullscreen}
-                      >
-                        <Maximize className="w-5 h-5" />
-                      </Button>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div
-                      className="mt-2 h-1 bg-white/30 rounded-full overflow-hidden cursor-pointer"
-                      onClick={handleProgressClick}
-                    >
-                      <div
-                        className="h-full bg-white rounded-full"
-                        style={{
-                          width: `${(currentTime / duration) * 100 || 0}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                /* Fallback when no video URL */
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <img
-                    src={`${live?.image}`}
-                    alt="Live session"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/20" />
-                </div>
-              )}
-            </div>
+            {live?.signedRecordingUrl && (
+              <SecureVideoPlayer
+                liveId={live.id}
+                poster={live.image}
+                watermark={`${session?.user.email} · ${new Date().toLocaleDateString()}`}
+              />
+            )}
 
             {/* Session Details - Mobile & Desktop */}
             <div className=" lg:p-0 lg:mt-6 lg:mb-0">

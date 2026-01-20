@@ -38,6 +38,7 @@ interface PersonalInfo {
 interface StudyInfo {
   gradeId: string;
   universiteId: string;
+  universiteCity: string;
   niveau: string;
 }
 
@@ -202,8 +203,8 @@ const ProgressIndicator = ({
                 index < currentStep
                   ? "bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg shadow-green-500/50"
                   : index === currentStep
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
-                  : "bg-white border-2 border-gray-300 text-gray-400"
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
+                    : "bg-white border-2 border-gray-300 text-gray-400"
               }`}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -317,37 +318,40 @@ const StudyInfoStep = ({
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-  const universitesMarocaines = [
-    { value: "um5", label: "Université Mohammed V de Rabat" },
-    { value: "uh2c", label: "Université Hassan II de Casablanca" },
-    { value: "usmba", label: "Université Sidi Mohamed Ben Abdellah de Fès" },
-    { value: "uca", label: "Université Cadi Ayyad de Marrakech" },
-    { value: "uiz", label: "Université Ibn Zohr d'Agadir" },
-    { value: "uit", label: "Université Ibn Tofail de Kénitra" },
-    { value: "uae", label: "Université Abdelmalek Essaâdi de Tétouan" },
-    { value: "ump", label: "Université Moulay Ismail de Meknès" },
-    { value: "uh1", label: "Université Hassan 1er de Settat" },
-    { value: "ucam", label: "Université Chouaib Doukkali d'El Jadida" },
-    { value: "uma", label: "Université Mohammed Premier d'Oujda" },
-    { value: "usms", label: "Université Sultan Moulay Slimane de Béni Mellal" },
-    {
-      value: "uiz-es",
-      label: "Université Ibn Zohr - École Supérieure de Technologie",
-    },
-    { value: "umi", label: "Université Mundiapolis de Casablanca (Privée)" },
-    { value: "uir", label: "Université Internationale de Rabat (Privée)" },
-    { value: "um6p", label: "Université Mohammed VI Polytechnique - UM6P" },
-    {
-      value: "um6ss",
-      label: "Université Mohammed VI des Sciences de la Santé",
-    },
-    { value: "ueuromed", label: "Université Euromed de Fès (Privée)" },
-    {
-      value: "uilcs",
-      label: "Université Internationale de Casablanca (Privée)",
-    },
-    { value: "autre", label: "Autre université" },
-  ];
+
+  // Mapping of cities to universities based on the provided image
+  const villesUniversites: {
+    [key: string]: { value: string; label: string }[];
+  } = {
+    Rabat: [{ value: "um5", label: "Université Mohammed V" }],
+    Salé: [{ value: "um5-sale", label: "Université Mohammed V" }],
+    Casablanca: [{ value: "uh2c", label: "Université Hassan II" }],
+    Fès: [
+      { value: "usmba", label: "Université Sidi Mohamed Ben Abdellah" },
+      { value: "uaq", label: "Université Al Quaraouiyine" },
+    ],
+    Marrakech: [{ value: "uca", label: "Université Cadi Ayyad" }],
+    Meknès: [{ value: "ump", label: "Université Moulay Ismail" }],
+    Oujda: [{ value: "uma", label: "Université Mohammed Premier" }],
+    Tanger: [{ value: "uae", label: "Université Abdelmalek Essaâdi" }],
+    Tétouan: [{ value: "uae-tetouan", label: "Université Abdelmalek Essaâdi" }],
+    "El Jadida": [{ value: "ucam", label: "Université Chouaib Doukkali" }],
+    Kénitra: [{ value: "uit", label: "Université Ibn Tofail" }],
+    Agadir: [{ value: "uiz", label: "Université Ibn Zohr" }],
+    Settat: [{ value: "uh1", label: "Université Hassan Ier" }],
+    "Beni Mellal": [
+      { value: "usms", label: "Université Sultan Moulay Slimane" },
+    ],
+  };
+
+  // List of cities for the dropdown
+  const villes = Object.keys(villesUniversites)
+    .sort()
+    .map((ville) => ({
+      value: ville,
+      label: ville,
+    }));
+
   useEffect(() => {
     const fetchNiveaux = async () => {
       try {
@@ -374,6 +378,17 @@ const StudyInfoStep = ({
 
   const handleNiveauChange = (value: string) => {
     onChange({ ...data, niveau: value, gradeId: "" });
+  };
+
+  const handleCityChange = (value: string) => {
+    // Reset university when city changes
+    onChange({ ...data, universiteCity: value, universiteId: "" });
+  };
+
+  // Get universities for the selected city
+  const getUniversitiesForCity = () => {
+    if (!data.universiteCity) return [];
+    return villesUniversites[data.universiteCity] || [];
   };
 
   return (
@@ -403,6 +418,7 @@ const StudyInfoStep = ({
         </div>
       ) : (
         <>
+          {/* Step 1: Select City */}
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
@@ -410,16 +426,43 @@ const StudyInfoStep = ({
             transition={{ duration: 0.3 }}
           >
             <SelectField
-              label="Université"
-              value={data.universiteId}
-              onChange={(value) => onChange({ ...data, universiteId: value })}
-              options={universitesMarocaines}
-              placeholder="Sélectionnez votre université"
-              icon={School} // ou utilisez GraduationCap de lucide-react
-              error={errors.universiteId}
+              label="Ville de l'université"
+              value={data.universiteCity}
+              onChange={handleCityChange}
+              options={villes}
+              placeholder="Sélectionnez votre ville"
+              icon={School}
+              error={errors.universiteCity}
               required
             />
           </motion.div>
+
+          {/* Step 2: Select University (appears after city selection) */}
+          <AnimatePresence>
+            {data.universiteCity && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <SelectField
+                  label="Université"
+                  value={data.universiteId}
+                  onChange={(value) =>
+                    onChange({ ...data, universiteId: value })
+                  }
+                  options={getUniversitiesForCity()}
+                  placeholder="Sélectionnez votre université"
+                  icon={GraduationCap}
+                  error={errors.universiteId}
+                  required
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Step 3: Select Niveau */}
           <SelectField
             label="Niveau d'étude"
             value={data.niveau}
@@ -431,6 +474,7 @@ const StudyInfoStep = ({
             required
           />
 
+          {/* Step 4: Select Grade (appears after niveau selection) */}
           <AnimatePresence>
             {data.niveau && (
               <motion.div
@@ -448,7 +492,7 @@ const StudyInfoStep = ({
                       ?.grades || []
                   }
                   placeholder="Sélectionnez votre classe"
-                  icon={School}
+                  icon={Award}
                   error={errors.gradeId}
                   required
                 />
@@ -573,7 +617,7 @@ const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(session?.user.step || 0);
   const [formData, setFormData] = useState<FormData>({
     personal: { nom: "", prenom: "", phone: "" },
-    study: { niveau: "", gradeId: "", universiteId: "" },
+    study: { niveau: "", gradeId: "", universiteId: "", universiteCity: "" },
   });
   const [errors, setErrors] = useState<{
     personal: Partial<PersonalInfo>;
@@ -596,7 +640,12 @@ const MultiStepForm = () => {
                 prenom: res.prenom || "",
                 phone: res.phone?.toString() || "",
               },
-              study: { gradeId: "", niveau: "", universiteId: "" },
+              study: {
+                gradeId: "",
+                niveau: "",
+                universiteId: "",
+                universiteCity: "",
+              },
             });
           }
         }
@@ -619,9 +668,10 @@ const MultiStepForm = () => {
 
   const validateStudyInfo = (data: StudyInfo): Partial<StudyInfo> => {
     const errors: Partial<StudyInfo> = {};
+    if (!data.universiteCity) errors.universiteCity = "La ville est requise";
+    if (!data.universiteId) errors.universiteId = "L'université est requise";
     if (!data.niveau) errors.niveau = "Le niveau d'étude est requis";
     if (!data.gradeId) errors.gradeId = "La classe est requise";
-    if (!data.universiteId) errors.universiteId = "L'université est requise";
     return errors;
   };
 
@@ -674,7 +724,7 @@ const MultiStepForm = () => {
     <div
       className="min-h-screen relative overflow-hidden"
       style={{
-        backgroundImage: `url("/enita/bg-paper.jpg")`,
+        backgroundImage: `url("/cinq/bgnew.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -703,7 +753,7 @@ const MultiStepForm = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/95 backdrop-blur-xl rounded-sm shadow-2xl p-8 md:p-12"
+          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 md:p-12"
         >
           {currentStep < 2 && (
             <ProgressIndicator currentStep={currentStep} totalSteps={2} />

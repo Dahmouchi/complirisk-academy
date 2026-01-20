@@ -146,7 +146,7 @@ export function LiveCard({ room, isTeacher, userId }: LiveCardProps) {
                   variant="outline"
                   className="flex-1 rounded-full"
                   onClick={() =>
-                    router.push(`/dashboard/live/${room.id}/replay`)
+                    router.push(`/teacher/dashboard/live/${room.id}/replay`)
                   }
                 >
                   Voir le replay

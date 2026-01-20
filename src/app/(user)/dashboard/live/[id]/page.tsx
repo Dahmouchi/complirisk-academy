@@ -17,8 +17,11 @@ import {
   AlertCircle,
   ArrowLeft,
   Headphones,
+  BookOpen,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import QuizDisplay from "@/app/(user)/_components/quizSection";
+import { useSession } from "next-auth/react";
 
 // Main Student Page Component
 export default function StudentLiveRoomPage() {
@@ -29,7 +32,8 @@ export default function StudentLiveRoomPage() {
   const [roomName, setRoomName] = useState<string | null>(null);
   const [status, setStatus] = useState<any>("LOADING");
   const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
-
+  const [quiz, setQuiz] = useState<any>([]);
+  const { data: session } = useSession();
   const hasFetched = useRef(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -39,11 +43,11 @@ export default function StudentLiveRoomPage() {
 
     try {
       const res = await getLiveToken(params.id as string);
-
+      console.log(res);
       if (res.success) {
         setStatus(res.status);
         setRecordingUrl(res.recordingUrl || null);
-
+        setQuiz(res.quizzes || []);
         if (!token && res.token) {
           setToken(res.token);
           setRoomName(res.roomName);
@@ -145,7 +149,7 @@ export default function StudentLiveRoomPage() {
   // 4. Live State - Simple VideoConference View
   if (status === "LIVE" && token && roomName) {
     return (
-      <div className="h-full overflow-y-scroll w-full ">
+      <div className="h-full overflow-y-scroll w-full bg-white">
         {/* Header */}
         <div className="h-14 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white">
           <div className="flex items-center gap-4">
@@ -173,6 +177,7 @@ export default function StudentLiveRoomPage() {
         {/* LiveKit Room */}
         <div className="h-[calc(100vh-3.5rem)]">
           <LiveKitRoom
+            className="bg-white"
             token={token}
             serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
             connect={true}
@@ -188,6 +193,20 @@ export default function StudentLiveRoomPage() {
             <RoomAudioRenderer />
           </LiveKitRoom>
         </div>
+        {quiz.length > 0 ? (
+          <div className="lg:px-24 my-8">
+            {" "}
+            <QuizDisplay quizzes={quiz} userId={session?.user.id || ""} />
+          </div>
+        ) : (
+          <div className="bg-card rounded-2xl border border-border p-6 text-center">
+            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="font-semibold text-foreground mb-2">Quiz</h3>
+            <p className="text-muted-foreground text-sm">
+              Prenez des quiz pour tester vos connaissances.
+            </p>
+          </div>
+        )}
       </div>
     );
   }

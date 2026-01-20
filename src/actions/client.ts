@@ -10,7 +10,7 @@ export async function changeAdminPassword(
   id: string,
   oldPassword: string,
   newPassword: string,
-  confirmedPassword: string
+  confirmedPassword: string,
 ): Promise<string> {
   // Validate that new password matches the confirmation
   if (newPassword !== confirmedPassword) {
@@ -49,7 +49,7 @@ export async function changeAdminPassword(
   } catch (error: any) {
     throw new Error(
       error.message ||
-        "An unexpected error occurred while updating the password."
+        "An unexpected error occurred while updating the password.",
     );
   }
 }
@@ -57,7 +57,7 @@ export async function updateUser(
   userId: string,
   name: string,
   prenom: string,
-  email: string
+  email: string,
 ) {
   try {
     const user = await prisma.user.findUnique({
@@ -84,7 +84,7 @@ export async function RegisterClient(
   prenom: string,
   email: string,
   phone: string,
-  password: string
+  password: string,
 ) {
   try {
     const hashedPassword = await hash(password, 10);
@@ -130,7 +130,7 @@ export async function updateClientProfile1(
     study: {
       niveau: string;
     };
-  }
+  },
 ) {
   try {
     const updatedUser = await prisma.user.update({
@@ -162,8 +162,9 @@ export async function updateClientProfile2(
       gradeId: string;
       niveau: string;
       universiteId: string;
+      universiteCity: string;
     };
-  }
+  },
 ) {
   try {
     // Update the user with the new info
@@ -172,6 +173,7 @@ export async function updateClientProfile2(
       data: {
         gradeId: formData.study.gradeId,
         universite: formData.study.universiteId,
+        universiteCity: formData.study.universiteCity,
         emailVerified: new Date(),
         StatutUser: "verified",
         step: 2,
@@ -363,7 +365,7 @@ async function calculateVerificationDays(userId: string): Promise<number> {
   // Calculate difference in days
   const timeDifference = currentDate.getTime() - verificationDate.getTime();
   const daysSinceVerification = Math.floor(
-    timeDifference / (1000 * 60 * 60 * 24)
+    timeDifference / (1000 * 60 * 60 * 24),
   );
 
   return daysSinceVerification >= 0 ? daysSinceVerification : 0;

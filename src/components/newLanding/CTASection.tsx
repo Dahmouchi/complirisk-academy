@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 export const CTASection = () => {
   return (
-    <section
+    <div
       className="py-20 relative overflow-hidden"
       style={{
         backgroundImage: "url('/cinq/bgblue.jpg')",
@@ -34,13 +34,19 @@ export const CTASection = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
+              onClick={() => {
+                window.location.href = "/login";
+              }}
               size="lg"
-              className="bg-background text-primary hover:bg-background/90 shadow-lg"
+              className="bg-background text-primary border border-primary hover:bg-background/90 shadow-lg"
             >
               Demander une inscription
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button
+              onClick={() => {
+                window.location.href = "/login";
+              }}
               size="lg"
               variant="outline"
               className="border-primary-foreground text-primary-foreground bg-transparent hover:bg-primary-foreground/10"
@@ -54,6 +60,6 @@ export const CTASection = () => {
       {/* Decorative Elements */}
       <div className="absolute top-10 left-10 w-32 h-32 bg-primary-foreground/5 rounded-full blur-2xl" />
       <div className="absolute bottom-10 right-10 w-48 h-48 bg-primary-foreground/5 rounded-full blur-3xl" />
-    </section>
+    </div>
   );
 };

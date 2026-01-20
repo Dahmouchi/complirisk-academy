@@ -36,7 +36,7 @@ model NotesGlobal {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
 
@@ -116,7 +116,7 @@ enum NewsPriority {
 model UserActivity {
   id     String @id @default(cuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   type        ActivityType // 👈 "login", "course_completed", etc.
   description String? // Optional text to add details
@@ -277,17 +277,17 @@ model Flashcard {
 }
 
 model LiveRoom {
-  id          String     @id @default(cuid())
-  name        String
-  description String?
-  image       String?
-  type        LiveType   @default(LIVEKIT)
-  status      LiveStatus @default(DRAFT)
-  teacherId   String
-  teacher     User       @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-
-  subjectId String?
-  subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  id              String     @id @default(cuid())
+  name            String
+  description     String?
+  image           String?
+  type            LiveType   @default(LIVEKIT)
+  status          LiveStatus @default(DRAFT)
+  teacherId       String
+  teacher         User       @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  isQuizPublished Boolean    @default(false)
+  subjectId       String?
+  subject         Subject?   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   gradeId String?
   grade   Grade?  @relation(fields: [gradeId], references: [id])
@@ -548,6 +548,7 @@ model User {
   totalTimeSpent   Int?       @default(0) // Total time spent on the platform in seconds
   password         String?
   universite       String?
+  universiteCity   String?
   prenom           String?
   qrSecret         String?
   role             Role       @default(USER)

@@ -31,9 +31,11 @@ import {
   MicOff,
   VideoOff,
   Monitor,
+  BookOpen,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import QuizDisplay from "@/app/(user)/_components/quizSection";
 
 // Teacher Room View Component
 function TeacherRoomView() {
@@ -96,7 +98,7 @@ function TeacherRoomView() {
     <div className="h-screen w-full flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white relative">
       {/* Modern Header with Glass Effect */}
       <div
-        className={`absolute top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={` z-50 transition-all duration-300 ${
           showControls
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
@@ -177,7 +179,7 @@ function TeacherRoomView() {
       </div>
 
       {/* Main Video Content */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-y-scroll">
         <VideoConference />
         <RoomAudioRenderer />
 
@@ -222,7 +224,7 @@ export default function LiveRoomPage() {
   const [status, setStatus] = useState<string>("LOADING");
   const [recordingUrl, setRecordingUrl] = useState<any>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-
+  const [quiz, setQuiz] = useState<any>([]);
   const hasFetched = useRef(false);
 
   // Fetch credentials on mount - ONLY ONCE
@@ -241,6 +243,7 @@ export default function LiveRoomPage() {
           setRoomName(res.roomName);
           setIsTeacher(res.isTeacher || false);
           setStatus(res.status || "LOADING");
+          setQuiz(res.quizzes || []);
           setRecordingUrl(res.recordingUrl || null);
         } else {
           setStatus("ERROR");
@@ -413,36 +416,38 @@ export default function LiveRoomPage() {
   // 6. Live State (Connect LiveKit)
   if (status === "LIVE" && token && roomName) {
     return (
-      <LiveKitRoom
-        className="bg-white"
-        token={token}
-        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-        connect={true}
-        audio={true}
-        video={true}
-        onDisconnected={() => {
-          console.log("Teacher disconnected");
-          if (isTeacher) {
-            toast.info("Vous avez été déconnecté");
-          }
-        }}
-      >
-        <TeacherRoomView />
-        {isTeacher && (
-          <div className="absolute bottom-8 right-8 z-50">
-            <Button
-              variant="destructive"
-              onClick={handleEndLive}
-              className="shadow-2xl bg-red-600 hover:bg-red-700 px-6 py-6 text-base gap-2"
-              size="lg"
-            >
-              <Power className="h-5 w-5" />
-              Terminer le Live
-            </Button>
-          </div>
-        )}
-        <RoomAudioRenderer />
-      </LiveKitRoom>
+      <>
+        <LiveKitRoom
+          className="bg-white"
+          token={token}
+          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+          connect={true}
+          audio={true}
+          video={true}
+          onDisconnected={() => {
+            console.log("Teacher disconnected");
+            if (isTeacher) {
+              toast.info("Vous avez été déconnecté");
+            }
+          }}
+        >
+          <TeacherRoomView />
+          {isTeacher && (
+            <div className="absolute bottom-8 right-8 z-50">
+              <Button
+                variant="destructive"
+                onClick={handleEndLive}
+                className="shadow-2xl bg-red-600 hover:bg-red-700 px-6 py-6 text-base gap-2"
+                size="lg"
+              >
+                <Power className="h-5 w-5" />
+                Terminer le Live
+              </Button>
+            </div>
+          )}
+          <RoomAudioRenderer />
+        </LiveKitRoom>
+      </>
     );
   }
 

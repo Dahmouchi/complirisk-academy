@@ -26,6 +26,7 @@ import {
   Box,
   Boxes,
   Heart,
+  GraduationCap,
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -93,7 +94,12 @@ const datas = {
     {
       title: "Enseignants",
       url: "/admin/dashboard/teacher",
-      icon: Users,
+      icon: GraduationCap,
+    },
+    {
+      title: "actualités",
+      url: "/admin/dashboard/actualites",
+      icon: Newspaper,
     },
 
     {

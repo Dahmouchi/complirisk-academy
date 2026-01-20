@@ -16,7 +16,7 @@ import { uploadImage } from "./cours";
 const roomService = new RoomServiceClient(
   process.env.LIVEKIT_URL!,
   process.env.LIVEKIT_API_KEY!,
-  process.env.LIVEKIT_API_SECRET!
+  process.env.LIVEKIT_API_SECRET!,
 );
 
 interface CreateLiveRoomInput {
@@ -167,7 +167,7 @@ export async function startLiveRoom(liveRoomId: string, teacherId: string) {
     const credentials = await getLiveKitToken(
       liveRoom.name.trim(),
       session.user.username || "",
-      session.user.role === "TEACHER" ? true : false
+      session.user.role === "TEACHER" ? true : false,
     );
     await prisma.liveCredentials.create({
       data: {
@@ -260,7 +260,7 @@ export async function endLiveRoom(liveRoomId: string, teacherId: string) {
       const roomService = new RoomServiceClient(
         process.env.LIVEKIT_URL,
         process.env.LIVEKIT_API_KEY!,
-        process.env.LIVEKIT_API_SECRET!
+        process.env.LIVEKIT_API_SECRET!,
       );
 
       await roomService.deleteRoom(liveRoom.livekitRoom!);
@@ -309,7 +309,7 @@ export async function getLiveTokens(liveRoomId: string, userId: string) {
       liveRoom.livekitRoom!,
       participantName,
       userId,
-      isTeacher
+      isTeacher,
     );
 
     // Enregistrer la participation
@@ -555,7 +555,7 @@ export async function getStudentLiveRooms(userId: string) {
 export async function getCalendarLiveRooms(
   userId: string,
   month: number,
-  year: number
+  year: number,
 ) {
   try {
     const user = await prisma.user.findUnique({
@@ -723,7 +723,7 @@ export async function startLiveSession(liveRoomId: string) {
     const roomServiceClient = new RoomServiceClient(
       livekitUrl,
       apiKey,
-      apiSecret
+      apiSecret,
     ); // <--- Create this client
 
     // 3. CRITICAL FIX: Create the Room on the LiveKit Server first
@@ -762,7 +762,7 @@ export async function startLiveSession(liveRoomId: string) {
     const egressClient = new EgressClient(
       hostURL.origin,
       LIVEKIT_API_KEY,
-      LIVEKIT_API_SECRET
+      LIVEKIT_API_SECRET,
     );
     const roomName = room.livekitRoom!;
     const existingEgresses = await egressClient.listEgress({ roomName });
@@ -797,7 +797,7 @@ export async function startLiveSession(liveRoomId: string) {
       },
       {
         layout: "speaker",
-      }
+      },
     );
 
     // 6. Update DB Status
@@ -838,7 +838,7 @@ export async function startLiveSessionm(liveRoomId: string) {
     const egressClient = new EgressClient(
       process.env.LIVEKIT_URL!,
       process.env.LIVEKIT_API_KEY!,
-      process.env.LIVEKIT_API_SECRET!
+      process.env.LIVEKIT_API_SECRET!,
     );
     const fileOutput = new EncodedFileOutput({
       fileType: EncodedFileType.MP4,
@@ -848,7 +848,7 @@ export async function startLiveSessionm(liveRoomId: string) {
     const egressInfo = await egressClient.startRoomCompositeEgress(
       room.livekitRoom!, // The LiveKit room name
       fileOutput,
-      "speaker-light" // Layout preset as a direct string parameter
+      "speaker-light", // Layout preset as a direct string parameter
     );
 
     // Start recording the composite (speaker view)
@@ -882,7 +882,18 @@ export async function getLiveToken(liveRoomId: string) {
   try {
     const liveRoom = await prisma.liveRoom.findUnique({
       where: { id: liveRoomId },
-      include: { teacher: true },
+      include: {
+        teacher: true,
+        quizzes: {
+          include: {
+            questions: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!liveRoom) {
@@ -910,7 +921,7 @@ export async function getLiveToken(liveRoomId: string) {
         identity: user.id,
         name: user.name || user.username || "Guest",
         ttl: 60 * 60,
-      }
+      },
     );
 
     // Permissions
@@ -944,6 +955,7 @@ export async function getLiveToken(liveRoomId: string) {
       isTeacher,
       status: liveRoom.status,
       recordingUrl: liveRoom.recordingUrl, // Pass this if we need to show recording
+      quizzes: liveRoom.quizzes,
     };
   } catch (error) {
     console.error("Token Error:", error);
@@ -980,6 +992,10 @@ export async function getLivesRegistred() {
     };
   }
 }
+function extractS3Key(url: string) {
+  return url.split(".amazonaws.com/")[1];
+}
+
 export async function getLiveReplay(id: string) {
   try {
     const live = await prisma.liveRoom.findUnique({
@@ -998,7 +1014,8 @@ export async function getLiveReplay(id: string) {
     let signedRecordingUrl: string | null = null;
 
     if (live.recordingUrl) {
-      signedRecordingUrl = await getSignedVideoUrl(live.recordingUrl);
+      const key = extractS3Key(live.recordingUrl);
+      signedRecordingUrl = await getSignedVideoUrl(key);
     }
 
     return {

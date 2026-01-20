@@ -8,6 +8,7 @@ import Head from "next/head";
 enum Role {
   USER = "USER",
   ADMIN = "ADMIN",
+  TEACHER = "TEACHER",
 }
 
 const AccessDenied = (role: any) => {
@@ -20,6 +21,9 @@ const AccessDenied = (role: any) => {
         break;
       case Role.ADMIN:
         setUrl("/admin/dashboard");
+        break;
+      case Role.TEACHER:
+        setUrl("/teacher/dashboard");
         break;
       default:
         setUrl("/access-denied");
