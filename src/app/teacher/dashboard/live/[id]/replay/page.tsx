@@ -28,9 +28,9 @@ import { fr } from "date-fns/locale";
 import Link from "next/link";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function LiveReplayPage({ params }: PageProps) {
@@ -40,7 +40,8 @@ export default async function LiveReplayPage({ params }: PageProps) {
     redirect("/dashboard");
   }
 
-  const result = await getLiveReplay(params.id);
+  const { id } = await params;
+  const result = await getLiveReplay(id);
 
   if (!result.success || !result.live) {
     redirect("/teacher/dashboard/live");
