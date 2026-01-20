@@ -43,7 +43,7 @@ export const Footer = () => {
   return (
     <footer id="contact" className="bg-foreground text-background/80">
       {/* Newsletter Section */}
-      <div className="border-b border-background/10">
+      <div className="border-b border-black/20">
         <div className="container-custom py-8 px-4 md:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
@@ -59,7 +59,7 @@ export const Footer = () => {
                 type="email"
                 onChange={(e) => console.log(e.target.value)}
                 placeholder="Votre adresse email"
-                className="bg-background/10 border-background/20 text-background placeholder:text-background/50 min-w-[250px]"
+                className="bg-background/10 rounded-[8px] border-black/30 text-background placeholder:text-background/50 min-w-[250px]"
               />
               <Button variant="hero">S&apos;abonner</Button>
             </div>
@@ -159,10 +159,13 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-background/10">
+      <div className="border-t border-black/20">
         <div className="container-custom py-6 px-4 md:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/50">
-            <p>© 2024 Plateforme Universitaire Maroc. Tous droits réservés.</p>
+            <p>
+              © {new Date().getFullYear()} Plateforme Universitaire Maroc. Tous
+              droits réservés.
+            </p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-primary transition-colors">
                 Politique de confidentialité

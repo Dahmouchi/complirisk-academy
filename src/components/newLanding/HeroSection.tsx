@@ -21,7 +21,7 @@ const features = [
 export const HeroSection = () => {
   const router = useRouter();
   return (
-    <section
+    <div
       id="accueil"
       className="hero-gradient pt-20 md:pt-32 pb-16 md:pb-24 relative"
     >
@@ -40,7 +40,7 @@ export const HeroSection = () => {
               Plateforme <span className="text-primary">Éducative</span> pour
               Universités Marocaines
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
+            <p className="text-sm md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
               Accédez aux cours et ressources pédagogiques pour tous les
               semestres (S1, S2, S3, S4, S5, S6) des universités marocaines.
             </p>
@@ -58,9 +58,9 @@ export const HeroSection = () => {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 border-2 border-background flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary border-2 border-black/20 flex items-center justify-center"
                   >
-                    <span className="text-xs font-semibold text-primary">
+                    <span className="text-xs font-semibold text-white">
                       E{i}
                     </span>
                   </div>
@@ -103,7 +103,7 @@ export const HeroSection = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute lg:block hidden bottom-6 right-6 bg-background/95 backdrop-blur-sm rounded-2xl p-4 shadow-card"
+                className="absolute lg:block hidden bottom-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-card"
               >
                 <p className="text-sm text-muted-foreground">
                   Apprenez des meilleurs
@@ -147,6 +147,6 @@ export const HeroSection = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
