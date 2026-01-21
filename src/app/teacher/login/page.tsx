@@ -13,7 +13,7 @@ export default async function AuthButton() {
     <div
       className="flex h-screen w-full items-center relative justify-center bg-gray-900 bg-cover bg-no-repeat"
       style={{
-        backgroundImage: `url('/cinq/bgnew.jpg')`,
+        backgroundImage: `url('/optimized/bgnew.webp')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

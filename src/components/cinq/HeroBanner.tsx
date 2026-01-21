@@ -16,7 +16,7 @@ export function HeroBanner() {
             {/* Background image - removed z-index */}
             <div
               style={{
-                backgroundImage: "url('/cinq/items2.png')",
+                backgroundImage: "url('/optimized/items2.webp')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}

@@ -10,7 +10,7 @@ import prisma from "@/lib/prisma";
  */
 const receiver = new WebhookReceiver(
   process.env.LIVEKIT_API_KEY!,
-  process.env.LIVEKIT_API_SECRET!
+  process.env.LIVEKIT_API_SECRET!,
 );
 
 /**
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       console.error("LiveKit Webhook: Missing authorization header");
       return NextResponse.json(
         { error: "Missing authorization header" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -68,14 +68,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true });
       }
 
-      const s3Key = extractS3KeyFromUrl(videoUrl);
+      const fullVideoUrl = videoUrl;
 
-      if (!s3Key) {
-        console.warn("Failed to extract S3 key from URL:", videoUrl);
+      if (!fullVideoUrl.startsWith("http")) {
+        console.warn("Invalid video URL:", fullVideoUrl);
         return NextResponse.json({ received: true });
       }
 
-      console.log(`Recording completed for room=${roomName}, key=${s3Key}`);
+      console.log(
+        `Recording completed for room=${roomName}, key=${fullVideoUrl}`,
+      );
 
       // 5️⃣ Update database
       const updateResult = await prisma.liveRoom.updateMany({
@@ -83,7 +85,7 @@ export async function POST(req: NextRequest) {
           OR: [{ livekitRoom: roomName }, { egressId }],
         },
         data: {
-          recordingUrl: s3Key, // ✅ ONLY S3 KEY
+          recordingUrl: fullVideoUrl, // ✅ ONLY S3 KEY
           recordingStatus: "COMPLETED",
           status: "ENDED",
           endedAt: new Date(),
@@ -92,7 +94,7 @@ export async function POST(req: NextRequest) {
 
       if (updateResult.count === 0) {
         console.warn(
-          `No LiveRoom found for room=${roomName} or egressId=${egressId}`
+          `No LiveRoom found for room=${roomName} or egressId=${egressId}`,
         );
       } else {
         console.log(`Updated ${updateResult.count} live session(s)`);
@@ -105,7 +107,7 @@ export async function POST(req: NextRequest) {
     console.error("LiveKit Webhook error:", error.message);
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

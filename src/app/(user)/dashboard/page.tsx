@@ -2,7 +2,6 @@ import React from "react";
 import { getStudentById } from "@/actions/client";
 import { getQuizzesGroupedByMatiere } from "@/actions/quizResults";
 import { getStudentDashboardStats } from "@/actions/student";
-import IndexCinq from "@/components/cinq/Index";
 import IndexNewDash from "@/components/newDash/Dashboard";
 
 const page = async () => {

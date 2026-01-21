@@ -18,7 +18,7 @@ const IndexCinq = ({ matieres, user }: any) => {
     past: [],
   });
   const [registeredLives, setRegisteredLives] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [loading, setLoading] = useState(true);
 
@@ -40,13 +40,13 @@ const IndexCinq = ({ matieres, user }: any) => {
       // Load registrations
       const allLives = [...rooms.live, ...rooms.scheduled];
       const registrations = await Promise.all(
-        allLives.map((live) => isUserRegistered(live.id, user.id))
+        allLives.map((live) => isUserRegistered(live.id, user.id)),
       );
 
       const registered = new Set(
         allLives
           .filter((_, index) => registrations[index])
-          .map((live) => live.id)
+          .map((live) => live.id),
       );
       setRegisteredLives(registered);
     } catch (error) {
@@ -199,7 +199,7 @@ const IndexCinq = ({ matieres, user }: any) => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <img src="/cinq/logoH.png" alt="" className="w-16 h:auto" />
+              <img src="/optimized/logoH.webp" alt="" className="w-16 h:auto" />
             </div>
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} CinqCinq. All rights reserved.

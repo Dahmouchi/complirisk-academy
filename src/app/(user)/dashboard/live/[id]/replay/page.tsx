@@ -195,7 +195,10 @@ const LiveReplay = () => {
             {/* Session Details - Mobile & Desktop */}
             <div className=" lg:p-0 lg:mt-6 lg:mb-0">
               <div className="bg-white lg:rounded-2xl p-4 card-shadow  lg:p-4 lg:shadow-none">
-                <QuizDisplay quizzes={[]} userId={session?.user.id || ""} />
+                <QuizDisplay
+                  quizzes={live?.quizzes || []}
+                  userId={session?.user.id || ""}
+                />
               </div>
             </div>
           </div>

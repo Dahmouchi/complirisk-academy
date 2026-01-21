@@ -73,7 +73,7 @@ export const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/cinq/logoH.png" alt="" className="w-36 h-auto" />
+              <img src="/optimized/logoH.webp" alt="" className="w-36 h-auto" />
             </div>
             <p className="text-background/60 mb-6 max-w-sm">
               Plateforme éducative pour les universités marocaines -

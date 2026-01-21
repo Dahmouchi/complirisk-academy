@@ -42,7 +42,7 @@ export const TestimonialsSection = () => {
 
   return (
     <div className="section-padding bg-section-alt relative">
-      <div className="absolute inset-0 bg-[url('/cinq/bgnew3.jpg')] bg-cover bg-center "></div>
+      <div className="absolute inset-0 bg-[url('/optimized/bgnew3.webp')] bg-cover bg-center "></div>
       <div className="container-custom relative">
         {/* Header */}
         <div className="text-center mb-12">

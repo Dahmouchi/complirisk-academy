@@ -28,7 +28,7 @@ export const Navbar = () => {
       <nav className="container-custom flex items-center justify-between h-16 md:h-20 px-4 md:px-8">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2">
-          <img src="/cinq/logoH.png" className="w-32 h-auto" alt="" />
+          <img src="/optimized/logoH.png" className="w-32 h-auto" alt="" />
         </a>
 
         {/* Desktop Navigation */}

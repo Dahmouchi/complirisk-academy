@@ -71,7 +71,7 @@ const LoginForm = () => {
         <div className="pb-8">
           <div className="mt-5 w-full flex items-center justify-center ">
             <Link href="/" className="lg:flex">
-              <img src="/cinq/logoH.png" alt="" className="w-32 h-auto" />
+              <img src="/optimized/logoH.webp" alt="" className="w-32 h-auto" />
             </Link>
           </div>
         </div>

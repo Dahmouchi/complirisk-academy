@@ -5,22 +5,22 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const specialisations = [
   {
     title: "Faculté des Sciences",
-    image: "/cinq/science.jpg",
+    image: "/optimized/science.webp",
     description: "Mathématiques, Physique, Chimie, Informatique",
   },
   {
     title: "Faculté des Lettres",
-    image: "/cinq/lettres.jpg",
+    image: "/optimized/lettres.webp",
     description: "Langues, Littérature, Sciences Humaines",
   },
   {
     title: "Faculté de Droit",
-    image: "/cinq/doit.jpeg",
+    image: "/optimized/doit.webp",
     description: "Droit privé, Droit public, Sciences politiques",
   },
   {
     title: "Faculté d'Économie",
-    image: "/cinq/economie.jpg",
+    image: "/optimized/economie.webp",
     description: "Économie, Gestion, Commerce",
   },
 ];

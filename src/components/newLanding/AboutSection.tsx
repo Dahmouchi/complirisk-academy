@@ -40,7 +40,7 @@ export const AboutSection = () => {
           >
             <div className="relative rounded-3xl overflow-hidden shadow-card-hover">
               <img
-                src={"/cinq/about.jpg"}
+                src={"/optimized/about.webp"}
                 alt="Étudiants universitaires en formation"
                 className="w-full h-auto object-cover bg-center aspect-[4/3]"
               />

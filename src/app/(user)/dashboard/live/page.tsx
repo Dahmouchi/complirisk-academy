@@ -1,6 +1,6 @@
 import { getStudentRegister } from "@/actions/client";
-import StudentLivesPage from "@/components/cinq/Lives";
-import Lives from "@/components/cinq/NewLive";
+import StudentLivesPage from "@/components/optimized/Lives";
+import Lives from "@/components/optimized/NewLive";
 
 export default async function Live() {
   const user = await getStudentRegister();

@@ -58,7 +58,7 @@ const Auth = () => {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: "url('/cinq/bgnew.jpg')",
+          backgroundImage: "url('/optimized/bgnew.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -75,7 +75,7 @@ const Auth = () => {
             {/* Row 1 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login5.jpg"}
+                src={"/optimized/login5.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -93,7 +93,7 @@ const Auth = () => {
             </motion.div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login6.jpg"}
+                src={"/optimized/login6.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -102,14 +102,14 @@ const Auth = () => {
             {/* Row 2 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login2.JPG"}
+                src={"/optimized/login2.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login3.JPG"}
+                src={"/optimized/login3.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -118,7 +118,7 @@ const Auth = () => {
             {/* Row 3 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login10.png"}
+                src={"/optimized/login10.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -138,7 +138,7 @@ const Auth = () => {
             {/* Row 4 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/cinq/login9.png"}
+                src={"/optimized/login9.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -167,7 +167,7 @@ const Auth = () => {
               <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
                   onClick={() => redirect("/")}
-                  src="/cinq/logoH.png"
+                  src="/optimized/logoH.webp"
                   alt=""
                   className="w-52 h-auto cursor-pointer"
                 />{" "}

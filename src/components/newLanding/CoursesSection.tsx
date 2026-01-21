@@ -15,7 +15,7 @@ const courses = [
   {
     title: "Mathématiques I - Semestre 1",
     instructor: "Prof. Ahmed Benali",
-    image: "/cinq/math.jpg",
+    image: "/optimized/math.webp",
     duration: "Semestre 1",
     students: 250,
     rating: 4.8,
@@ -25,7 +25,7 @@ const courses = [
   {
     title: "Physique Générale - Semestre 3",
     instructor: "Prof. Fatima Zahra",
-    image: "/cinq/physique.jpeg",
+    image: "/optimized/physique.webp",
     duration: "Semestre 3",
     students: 185,
     rating: 4.9,
@@ -35,7 +35,7 @@ const courses = [
   {
     title: "Programmation Avancée - Semestre 4",
     instructor: "Prof. Mohamed Tazi",
-    image: "/cinq/programing.jpg",
+    image: "/optimized/programing.webp",
     duration: "Semestre 4",
     students: 198,
     rating: 4.7,
@@ -45,7 +45,7 @@ const courses = [
   {
     title: "Gestion de Projet - Semestre 6",
     instructor: "Prof. Karim Alaoui",
-    image: "/cinq/gestion.jpg",
+    image: "/optimized/gestion.webp",
     duration: "Semestre 6",
     students: 142,
     rating: 4.8,

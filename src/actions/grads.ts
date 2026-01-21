@@ -1,6 +1,6 @@
-"use server"
+"use server";
 
-import prisma from "@/lib/prisma"
+import prisma from "@/lib/prisma";
 
 function getCorrectId(id: string) {
   return id
@@ -16,76 +16,73 @@ function getCorrectId(id: string) {
 }
 
 export async function createNiveau(name: string) {
-  
-  if (!name || name.trim() === '') {
-    throw new Error('Le nom du niveau est requis.')
+  if (!name || name.trim() === "") {
+    throw new Error("Le nom du niveau est requis.");
   }
- const handler = getCorrectId(name)
+  const handler = getCorrectId(name);
   const niveau = await prisma.niveau.create({
     data: {
       name: name.trim(),
       handler,
     },
-  })
-  return { success: true, data: niveau }
-    // or return a success value instead
+  });
+  return { success: true, data: niveau };
+  // or return a success value instead
 }
 export async function updateNiveau(id: string, name: string) {
-  if (!id || !name || name.trim() === '') {
-    throw new Error('ID et nom du niveau sont requis.')
+  if (!id || !name || name.trim() === "") {
+    throw new Error("ID et nom du niveau sont requis.");
   }
 
   const updatedNiveau = await prisma.niveau.update({
     where: { id },
     data: { name: name.trim() },
-  })
+  });
 
-  return { success: true, data: updatedNiveau }
+  return { success: true, data: updatedNiveau };
 }
 export async function deleteNiveau(id: string) {
   if (!id) {
-    throw new Error("L'identifiant du niveau est requis.")
+    throw new Error("L'identifiant du niveau est requis.");
   }
 
   await prisma.niveau.delete({
     where: { id },
-  })
+  });
 
-  return { success: true }
+  return { success: true };
 }
 
 export async function getNiveau() {
-
   const niveau = await prisma.niveau.findMany({
-    include: { 
-      grades:true,
-     },
-  })
+    include: {
+      grades: true,
+    },
+  });
 
-  return { success: true,data:niveau }
+  return { success: true, data: niveau };
 }
 
 //---------------------------------------------- classes --------------------------------------------------
 
-export async function createClasse(name: string,niveauId:string) {
-  
-  if (!name || name.trim() === '') {
-    throw new Error('Le nom du niveau est requis.')
+export async function createClasse(name: string) {
+  if (!name || name.trim() === "") {
+    throw new Error("Le nom du niveau est requis.");
   }
-  const handler = getCorrectId(name)
+  const handler = getCorrectId(name);
   const niveau = await prisma.grade.create({
     data: {
       name: name.trim(),
       handler,
-      niveauId,
+      niveauId: "cmk1e7ue6000h0sroci9i2ev2",
     },
-  })
-  return { success: true, data: niveau }
-    // or return a success value instead
+  });
+  return { success: true, data: niveau };
+  // or return a success value instead
 }
 export async function updateClasse(id: string, name: string, niveauId: string) {
-  if (!id || !name || !niveauId || name.trim() === '') {
-    throw new Error('ID, nom et niveau sont requis.')
+  if (!id || !name || !niveauId || name.trim() === "") {
+    throw new Error("ID, nom et niveau sont requis.");
   }
 
   const updatedGrade = await prisma.grade.update({
@@ -94,81 +91,89 @@ export async function updateClasse(id: string, name: string, niveauId: string) {
       name: name.trim(),
       niveauId,
     },
-  })
+  });
 
-  return { success: true, data: updatedGrade }
+  return { success: true, data: updatedGrade };
 }
 
 export async function deleteClasse(id: string) {
   if (!id) {
-    throw new Error("L'identifiant du niveau est requis.")
+    throw new Error("L'identifiant du niveau est requis.");
   }
 
   await prisma.grade.delete({
     where: { id },
-  })
+  });
 
-  return { success: true }
+  return { success: true };
 }
 
 //---------------------------------------------- matiére --------------------------------------------------
 
-export async function createSubject(name: string, color: string,handler:string, gradeId: string,description: string) {
+export async function createSubject(
+  name: string,
+  color: string,
+  handler: string,
+  gradeId: string,
+  description: string,
+) {
   if (!name || !color || !gradeId) {
-    throw new Error('Nom, couleur et classe (gradeId) sont requis.')
+    throw new Error("Nom, couleur et classe (gradeId) sont requis.");
   }
-  const hand = getCorrectId(handler)
+  const hand = getCorrectId(handler);
   const subject = await prisma.subject.create({
     data: {
       name: name.trim(),
-      handler:hand,
+      handler: hand,
       color: color.trim(),
       gradeId,
       description,
     },
-  })
+  });
 
-  return { success: true, data: subject }
+  return { success: true, data: subject };
 }
 
 export async function updateSubject(
   id: string,
   name: string,
   color: string,
-  handler:string,
+  handler: string,
   gradeId: string,
   description: string,
 ) {
   if (!id || !name || !color || !gradeId) {
-    throw new Error('Tous les champs sont requis pour mettre à jour la matière.')
+    throw new Error(
+      "Tous les champs sont requis pour mettre à jour la matière.",
+    );
   }
 
-    const hand = getCorrectId(handler)
+  const hand = getCorrectId(handler);
 
   const updatedSubject = await prisma.subject.update({
     where: { id },
     data: {
-      handler:hand,
+      handler: hand,
       name: name.trim(),
       color: color.trim(),
       gradeId,
       description,
     },
-  })
+  });
 
-  return { success: true, data: updatedSubject }
+  return { success: true, data: updatedSubject };
 }
 
 export async function deleteSubject(id: string) {
   if (!id) {
-    throw new Error("L'identifiant de la matière est requis.")
+    throw new Error("L'identifiant de la matière est requis.");
   }
 
   await prisma.subject.delete({
     where: { id },
-  })
+  });
 
-  return { success: true }
+  return { success: true };
 }
 
 //---------------------------------------------- cours --------------------------------------------------
@@ -182,16 +187,16 @@ export async function createCourse({
   index,
   subjectId,
 }: {
-  title: string
-  content?: string
-  videoUrl?: string
-  coverImage?: string
-  handler: string
-  index: number
-  subjectId: string
+  title: string;
+  content?: string;
+  videoUrl?: string;
+  coverImage?: string;
+  handler: string;
+  index: number;
+  subjectId: string;
 }) {
   if (!title || !handler || !subjectId) {
-    throw new Error('Titre, identifiant (handler) et matière sont requis.')
+    throw new Error("Titre, identifiant (handler) et matière sont requis.");
   }
 
   const course = await prisma.course.create({
@@ -204,7 +209,7 @@ export async function createCourse({
       index,
       subjectId,
     },
-  })
+  });
 
-  return { success: true, data: course }
+  return { success: true, data: course };
 }

@@ -111,7 +111,7 @@ const Header = ({ visible }: { visible: any }) => {
           <div className="container mx-auto lg:max-w-screen-xl md:max-w-screen-md flex items-center justify-between px-4">
             <img
               onClick={() => router.push("/")}
-              src="/cinq/logoH.png"
+              src="/optimized/logoH.webp"
               className="h-auto w-26 lg:w-28 cursor-pointer"
               alt=""
             />

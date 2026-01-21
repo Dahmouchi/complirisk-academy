@@ -1003,7 +1003,15 @@ export async function getLiveReplay(id: string) {
       include: {
         teacher: true,
         subject: true,
-        quizzes: true,
+        quizzes: {
+          include: {
+            questions: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        },
       },
     });
 

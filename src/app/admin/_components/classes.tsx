@@ -94,7 +94,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
         const res = await updateClasse(
           editingGrade.id,
           gradeData.name,
-          gradeData.niveauId
+          gradeData.niveauId,
         );
         if (res.success) {
           toast.success("Le niveau a été modifié avec succès");
@@ -105,15 +105,14 @@ export default function ClassesPage({ niveauxx, classe }: any) {
         }
       } else {
         // Création
-        if (niveau) {
-          const res = await createClasse(gradeData.name, niveau.id);
-          if (res.success) {
-            toast.success("Classe a été créée avec succès");
-            setIsDialogOpen(false);
-            router.refresh();
-          } else {
-            toast.error("Erreur lors de la création du niveau");
-          }
+
+        const res = await createClasse(gradeData.name);
+        if (res.success) {
+          toast.success("Classe a été créée avec succès");
+          setIsDialogOpen(false);
+          router.refresh();
+        } else {
+          toast.error("Erreur lors de la création du niveau");
         }
       }
     } catch (error) {
@@ -168,7 +167,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
             </Button>
             {niveaux.map((niveau) => {
               const count = grades.filter(
-                (g) => g.niveauId === niveau.id
+                (g) => g.niveauId === niveau.id,
               ).length;
               return (
                 <Button
@@ -222,7 +221,6 @@ export default function ClassesPage({ niveauxx, classe }: any) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nom de la Classe</TableHead>
                   <TableHead>Niveau</TableHead>
                   <TableHead>Nombre de Matières</TableHead>
                   <TableHead>Matières</TableHead>
@@ -233,9 +231,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                 {filteredGrades.map((grade) => (
                   <TableRow key={grade.id}>
                     <TableCell className="font-medium">{grade.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{grade.niveau.name}</Badge>
-                    </TableCell>
+
                     <TableCell>
                       <Badge variant="outline">
                         {grade.subjects.length} matière

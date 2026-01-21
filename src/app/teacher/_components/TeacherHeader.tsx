@@ -15,7 +15,7 @@ export default function TeacherHeader() {
       <div className="container-custom mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <img src="/cinq/logoH.png" className="w-24 h-auto" alt="" />
+            <img src="/optimized/logoH.webp" className="w-24 h-auto" alt="" />
             <span className="hidden md:inline text-muted-foreground">
               | Espace Instructeur
             </span>

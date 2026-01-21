@@ -5,7 +5,6 @@ import CoursesView from "@/components/newDash/CoursesView";
 import LivesView from "@/components/newDash/LivesView";
 import EventsPanel from "@/components/newDash/EventsPanel";
 import { getStudentLiveRooms, isUserRegistered } from "@/actions/live-room";
-import { HeroBanner } from "../cinq/HeroBanner";
 
 const IndexNewDash = ({ matieres, user }: any) => {
   const [activeTab, setActiveTab] = useState<"courses" | "lives">("courses");
@@ -15,7 +14,7 @@ const IndexNewDash = ({ matieres, user }: any) => {
     past: [],
   });
   const [registeredLives, setRegisteredLives] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [loading, setLoading] = useState(true);
 
@@ -37,13 +36,13 @@ const IndexNewDash = ({ matieres, user }: any) => {
       // Load registrations
       const allLives = [...rooms.live, ...rooms.scheduled];
       const registrations = await Promise.all(
-        allLives.map((live) => isUserRegistered(live.id, user.id))
+        allLives.map((live) => isUserRegistered(live.id, user.id)),
       );
 
       const registered = new Set(
         allLives
           .filter((_, index) => registrations[index])
-          .map((live) => live.id)
+          .map((live) => live.id),
       );
       setRegisteredLives(registered);
     } catch (error) {

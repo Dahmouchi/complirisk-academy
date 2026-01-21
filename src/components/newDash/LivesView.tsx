@@ -1,22 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LiveCard from "./LiveCard";
 import SearchBar from "./SearchBar";
 import { UnlockedLive } from "@/actions/client";
 import { toast } from "react-toastify";
-import { WhatsAppButton } from "../cinq/WhatsAppButton";
 import { UnlockCodeInput } from "../cinq/UnlockCodeInput";
-import { InscriptionSteps } from "../cinq/InscriptionSteps";
-import { PaymentMethods } from "../cinq/PaymentMethods";
+
 import {
   Calendar,
   Camera,
   CheckCircle,
+  Clock,
   CreditCard,
   Filter,
   KeyRound,
   MessageCircle,
   MessageSquare,
+  Play,
   Send,
+  Users,
   Video,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
@@ -115,17 +116,52 @@ const LivesView = ({
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 2,
+    minutes: 45,
+    seconds: 30,
+  });
+
+  // Countdown timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        }
+        return prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   // Get all unique subjects from live rooms
   const allLiveRooms = [
     ...(liveRooms.live || []),
     ...(liveRooms.scheduled || []),
   ];
+  const nextLive = {
+    id: "next-1",
+    title: "Advanced Patient Assessment Techniques",
+    instructor: "Dr. Emily Chen",
+    instructorImage:
+      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop",
+    date: "Today",
+    time: "14:00",
+    participants: 45,
+    description:
+      "Master the essential techniques for comprehensive patient assessment in clinical settings.",
+  };
   const uniqueSubjects = Array.from(
     new Map(
       allLiveRooms
         .filter((room: any) => room.subject)
-        .map((room: any) => [room.subject.id, room.subject])
-    ).values()
+        .map((room: any) => [room.subject.id, room.subject]),
+    ).values(),
   );
 
   // Filter live rooms based on active category and search query
@@ -158,10 +194,12 @@ const LivesView = ({
     }
     console.log("Unlocked with code:", code);
   };
+  const formatTime = (value: number) => value.toString().padStart(2, "0");
+
   const handleWhatsApp = () => {
     const phoneNumber = "212600000000"; // Replace with actual number
     const message = encodeURIComponent(
-      "Bonjour, je souhaite m&apos;inscrire au plan Pro. Voici mon reçu de paiement:"
+      "Bonjour, je souhaite m&apos;inscrire au plan Pro. Voici mon reçu de paiement:",
     );
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
@@ -184,7 +222,7 @@ const LivesView = ({
                 <div
                   className="bg-card/10 backdrop-blur-sm h-full relative rounded-2xl p-6 border border-primary-foreground/20"
                   style={{
-                    backgroundImage: "url(/cinq/bgnew.jpg)",
+                    backgroundImage: "url(/optimized/bgnew.webp)",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -266,7 +304,7 @@ const LivesView = ({
                       className="rounded-2xl w-full p-4 flex-col flex cursor-pointer text-white font-semibold items-center gap-2 justify-center h-full bg-[#25D366] hover:bg-[#20BD5A]"
                     >
                       <img
-                        src="/cinq/whatsapp.png"
+                        src="/optimized/whatsapp.webp"
                         alt=""
                         className="w-12 h-12"
                       />
@@ -297,7 +335,121 @@ const LivesView = ({
               Rejoignez des sessions en direct et des salles de classe
               interactives avec des instructeurs experts
             </p>
+            <div className="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-8 text-primary-foreground shadow-2xl">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
 
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
+                      <span className="text-sm font-medium">
+                        Next Live Session
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm opacity-90">
+                    <Calendar className="w-4 h-4" />
+                    <span>{nextLive.date}</span>
+                    <span className="mx-2">•</span>
+                    <Clock className="w-4 h-4" />
+                    <span>{nextLive.time}</span>
+                  </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {/* Left - Session Info */}
+                  <div className="space-y-4">
+                    <h2 className="text-3xl font-bold leading-tight">
+                      {nextLive.title}
+                    </h2>
+                    <p className="text-white/80 text-lg">
+                      {nextLive.description}
+                    </p>
+
+                    {/* Instructor */}
+                    <div className="flex items-center gap-4 pt-2">
+                      <img
+                        src={nextLive.instructorImage}
+                        alt={nextLive.instructor}
+                        className="w-14 h-14 rounded-full border-2 border-white/30 object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold text-lg">
+                          {nextLive.instructor}
+                        </p>
+                        <div className="flex items-center gap-2 text-white/70 text-sm">
+                          <Users className="w-4 h-4" />
+                          <span>
+                            {nextLive.participants} participants registered
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={() => router.push(`/live/${nextLive.id}`)}
+                      className="mt-4 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <Play className="w-5 h-5 mr-2" />
+                      Set Reminder
+                    </Button>
+                  </div>
+
+                  {/* Right - Countdown Timer */}
+                  <div className="flex flex-col items-center lg:items-end">
+                    <p className="text-white/70 text-sm mb-4 uppercase tracking-wider font-medium">
+                      Starts In
+                    </p>
+                    <div className="flex items-center gap-3">
+                      {/* Hours */}
+                      <div className="flex flex-col items-center">
+                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10">
+                          <span className="text-5xl font-bold tabular-nums">
+                            {formatTime(timeLeft.hours)}
+                          </span>
+                        </div>
+                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
+                          Hours
+                        </span>
+                      </div>
+
+                      <span className="text-4xl font-light opacity-50">:</span>
+
+                      {/* Minutes */}
+                      <div className="flex flex-col items-center">
+                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10">
+                          <span className="text-5xl font-bold tabular-nums">
+                            {formatTime(timeLeft.minutes)}
+                          </span>
+                        </div>
+                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
+                          Minutes
+                        </span>
+                      </div>
+
+                      <span className="text-4xl font-light opacity-50">:</span>
+
+                      {/* Seconds */}
+                      <div className="flex flex-col items-center">
+                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10 animate-pulse">
+                          <span className="text-5xl font-bold tabular-nums">
+                            {formatTime(timeLeft.seconds)}
+                          </span>
+                        </div>
+                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
+                          Seconds
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
               <div className="w-full col-span-2">
                 <div className="flex items-center justify-between gap-2 w-full">
@@ -403,7 +555,7 @@ const LivesView = ({
                                 acc[subjectId].upcomingLive.startsAt &&
                                 new Date(room.startsAt) <
                                   new Date(
-                                    acc[subjectId].upcomingLive.startsAt
+                                    acc[subjectId].upcomingLive.startsAt,
                                   ))
                             ) {
                               acc[subjectId].upcomingLive = room;
@@ -414,7 +566,7 @@ const LivesView = ({
 
                           return acc;
                         },
-                        {}
+                        {},
                       );
 
                       // Sort recorded lives by endedAt descending (most recent first)
@@ -429,7 +581,7 @@ const LivesView = ({
                               : 0;
                             return dateB - dateA;
                           });
-                        }
+                        },
                       );
 
                       return Object.values(roomsBySubject).map(
@@ -472,7 +624,7 @@ const LivesView = ({
                                   room={subjectData.upcomingLive}
                                   userId={user.id}
                                   isRegistered={registeredLives.has(
-                                    subjectData.upcomingLive.id
+                                    subjectData.upcomingLive.id,
                                   )}
                                 />
                               </div>
@@ -498,10 +650,10 @@ const LivesView = ({
                                         room={room}
                                         userId={user.id}
                                         isRegistered={registeredLives.has(
-                                          room.id
+                                          room.id,
                                         )}
                                       />
-                                    )
+                                    ),
                                   )}
                                 </div>
                               </div>
@@ -517,7 +669,7 @@ const LivesView = ({
                                 </div>
                               )}
                           </div>
-                        )
+                        ),
                       );
                     })()}
                   </div>

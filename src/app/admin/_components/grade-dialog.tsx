@@ -52,16 +52,16 @@ export default function GradeDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name.trim() || !niveauId) {
       return;
     }
 
     setLoading(true);
-    
+
     // Simulation d'une requête API
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     onSave({ name: name.trim(), niveauId });
     setLoading(false);
     setName("");
@@ -85,13 +85,12 @@ export default function GradeDialog({
               {grade ? "Modifier la classe" : "Créer une nouvelle classe"}
             </DialogTitle>
             <DialogDescription>
-              {grade 
+              {grade
                 ? "Modifiez les informations de la classe."
-                : "Créez une nouvelle classe pour un niveau d'éducation."
-              }
+                : "Créez une nouvelle classe pour un niveau d'éducation."}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -106,26 +105,8 @@ export default function GradeDialog({
                 required
               />
             </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="niveau" className="text-right">
-                Niveau *
-              </Label>
-              <Select value={niveauId} onValueChange={setNiveauId}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Sélectionnez un niveau" />
-                </SelectTrigger>
-                <SelectContent>
-                  {niveaux.map((niveau) => (
-                    <SelectItem key={niveau.id} value={niveau.id}>
-                      {niveau.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
-          
+
           <DialogFooter>
             <Button
               type="button"
@@ -141,8 +122,10 @@ export default function GradeDialog({
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   {grade ? "Modification..." : "Création..."}
                 </div>
+              ) : grade ? (
+                "Modifier"
               ) : (
-                grade ? "Modifier" : "Créer"
+                "Créer"
               )}
             </Button>
           </DialogFooter>

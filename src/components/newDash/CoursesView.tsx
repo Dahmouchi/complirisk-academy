@@ -20,7 +20,7 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
           ...course,
           matiereName: matiere.name,
           matiereId: matiere.id,
-        })) || []
+        })) || [],
     ) || [];
 
   // Filter courses based on active category and search query
@@ -43,11 +43,11 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
     <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pb-0 pb-24">
       <div className="max-w-5xl">
         {!registeredUser && (
-          <div className="relative w-full text-primary-foreground bg-blue-600 p-8 rounded-2xl space-y-6">
+          <div className="relative w-full mt-12 lg:mt-0 text-primary-foreground bg-blue-600 p-8 rounded-2xl space-y-6">
             {/* Background image - removed z-index */}
             <div
               style={{
-                backgroundImage: "url('/cinq/items2.png')",
+                backgroundImage: "url('/optimized/items2.webp')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}

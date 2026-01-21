@@ -310,12 +310,11 @@ const StudyInfoStep = ({
   onChange: (data: StudyInfo) => void;
   errors: Partial<StudyInfo>;
 }) => {
-  const [niveauOptions, setNiveauOptions] = useState<
-    {
-      value: string;
-      label: string;
-      grades?: { value: string; label: string }[];
-    }[]
+  // Fixed niveau ID - all students will be linked to this
+  const FIXED_NIVEAU_ID = "cmk1e7ue6000h0sroci9i2ev2";
+
+  const [gradeOptions, setGradeOptions] = useState<
+    { value: string; label: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
@@ -353,32 +352,33 @@ const StudyInfoStep = ({
     }));
 
   useEffect(() => {
-    const fetchNiveaux = async () => {
+    const fetchGrades = async () => {
       try {
         const response = await getNiveau();
         if (response.success) {
-          const options = response.data.map((niveau: any) => ({
-            value: niveau.id,
-            label: niveau.name,
-            grades: niveau.grades.map((grade: any) => ({
+          // Find the specific niveau and extract its grades
+          const targetNiveau = response.data.find(
+            (niveau: any) => niveau.id === FIXED_NIVEAU_ID,
+          );
+
+          if (targetNiveau && targetNiveau.grades) {
+            const grades = targetNiveau.grades.map((grade: any) => ({
               value: grade.id,
               label: grade.name,
-            })),
-          }));
-          setNiveauOptions(options);
+            }));
+            setGradeOptions(grades);
+            // Automatically set the niveau ID
+            onChange({ ...data, niveau: FIXED_NIVEAU_ID });
+          }
         }
       } catch (error) {
-        console.error("Error fetching niveaux:", error);
+        console.error("Error fetching grades:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchNiveaux();
+    fetchGrades();
   }, []);
-
-  const handleNiveauChange = (value: string) => {
-    onChange({ ...data, niveau: value, gradeId: "" });
-  };
 
   const handleCityChange = (value: string) => {
     // Reset university when city changes
@@ -462,43 +462,17 @@ const StudyInfoStep = ({
             )}
           </AnimatePresence>
 
-          {/* Step 3: Select Niveau */}
+          {/* Step 3: Select Niveaux (formerly Class) */}
           <SelectField
-            label="Niveau d'étude"
-            value={data.niveau}
-            onChange={handleNiveauChange}
-            options={niveauOptions}
-            placeholder="Choisissez votre niveau"
-            icon={BookOpen}
-            error={errors.niveau}
+            label="Niveaux"
+            value={data.gradeId}
+            onChange={(value) => onChange({ ...data, gradeId: value })}
+            options={gradeOptions}
+            placeholder="Sélectionnez votre niveau"
+            icon={Award}
+            error={errors.gradeId}
             required
           />
-
-          {/* Step 4: Select Grade (appears after niveau selection) */}
-          <AnimatePresence>
-            {data.niveau && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SelectField
-                  label="Classe"
-                  value={data.gradeId}
-                  onChange={(value) => onChange({ ...data, gradeId: value })}
-                  options={
-                    niveauOptions.find((n) => n.value === data.niveau)
-                      ?.grades || []
-                  }
-                  placeholder="Sélectionnez votre classe"
-                  icon={Award}
-                  error={errors.gradeId}
-                  required
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </>
       )}
     </motion.div>
@@ -670,8 +644,7 @@ const MultiStepForm = () => {
     const errors: Partial<StudyInfo> = {};
     if (!data.universiteCity) errors.universiteCity = "La ville est requise";
     if (!data.universiteId) errors.universiteId = "L'université est requise";
-    if (!data.niveau) errors.niveau = "Le niveau d'étude est requis";
-    if (!data.gradeId) errors.gradeId = "La classe est requise";
+    if (!data.gradeId) errors.gradeId = "Le niveau est requis";
     return errors;
   };
 
@@ -724,7 +697,7 @@ const MultiStepForm = () => {
     <div
       className="min-h-screen relative overflow-hidden"
       style={{
-        backgroundImage: `url("/cinq/bgnew.jpg")`,
+        backgroundImage: `url("/optimized/bgnew.webp")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

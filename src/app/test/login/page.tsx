@@ -165,7 +165,7 @@ const Auth = () => {
               <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
                   onClick={() => redirect("/")}
-                  src="/cinq/logoH.png"
+                  src="/optimized/logoH.webp"
                   alt=""
                   className="w-52 h-auto cursor-pointer"
                 />{" "}

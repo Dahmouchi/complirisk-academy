@@ -8,7 +8,7 @@ export const CTASection = () => {
     <div
       className="py-20 relative overflow-hidden"
       style={{
-        backgroundImage: "url('/cinq/bgblue.jpg')",
+        backgroundImage: "url('/optimized/bgblue.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

@@ -106,7 +106,11 @@ export const StudentHeader = ({
           onClick={() => navigate.push("/dashboard")}
           className="relative h-14 cursor-pointer w-auto flex items-center justify-center"
         >
-          <img src="/cinq/logoH.png" alt="" className=" lg:h-10 h-8 w-auto" />
+          <img
+            src="/optimized/logoH.  webp"
+            alt=""
+            className=" lg:h-10 h-8 w-auto"
+          />
         </div>
 
         <nav className="lg:flex hidden items-center gap-2 bg-white backdrop-blur-lg rounded-full px-4 shadow py-2  border border-white/20">
@@ -248,7 +252,7 @@ export const StudentHeader = ({
         </DropdownMenu>
       </div>
 
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation 
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
@@ -281,7 +285,7 @@ export const StudentHeader = ({
             );
           })}
         </div>
-      </motion.nav>
+      </motion.nav>*/}
     </>
   );
 };

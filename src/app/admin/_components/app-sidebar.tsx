@@ -66,13 +66,9 @@ const datas = {
       url: "/admin/dashboard/codes",
       icon: Key,
     },
+
     {
       title: "Niveaux",
-      url: "/admin/dashboard/niveaux",
-      icon: Route,
-    },
-    {
-      title: "Classes",
       url: "/admin/dashboard/classes",
       icon: Shapes,
     },
@@ -121,7 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-start rounded-t-xl ">
         <Image
-          src={`${state === "expanded" ? "/cinq/logoH.png" : "/logo.png"}`}
+          src={`${state === "expanded" ? "/optimized/logoH.webp" : "/logo.png"}`}
           alt="logo"
           width={state === "expanded" ? 100 : 100}
           height={state === "expanded" ? 100 : 100}

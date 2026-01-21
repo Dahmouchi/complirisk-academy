@@ -110,7 +110,7 @@ const MagicNotesButton = ({
   const [currentNote, setCurrentNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"📝 Résumé" | "🗂️ Schéma">(
-    "📝 Résumé"
+    "📝 Résumé",
   );
   const router = useRouter();
   const [result, setResult] = useState<MagicNoteResultProps>();
@@ -145,7 +145,7 @@ const MagicNotesButton = ({
       const output = await generateMagicNoteServer(
         type,
         notes.map((n) => n.id),
-        courseTitle
+        courseTitle,
       );
       setGeneratedContent({ type, content: output.summary || "No result" });
       setResult(output);
@@ -215,7 +215,7 @@ const MagicNotesButton = ({
             }</h1>
              <img
              
-              src="/cinq/logoH.png"
+              src="/optimized/logoH.webp"
               class="imgg"
               alt=""
             />
@@ -244,11 +244,11 @@ const MagicNotesButton = ({
               <div style="margin-left: ${indent}px; margin-bottom: 15px;">
                 <h${Math.min(
                   level + 3,
-                  6
+                  6,
                 )} style="color: #0891b2; margin-bottom: 8px;">${key}</h${Math.min(
-              level + 3,
-              6
-            )}>
+                  level + 3,
+                  6,
+                )}>
                 <div class="nested">${renderObject(value, level + 1)}</div>
               </div>
             `;
@@ -286,15 +286,15 @@ const MagicNotesButton = ({
                 <span class="schema-type">Array[${value.length}]</span>
                 <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
                   Path: ${currentPath} | Items: ${
-              value.length
-            } | Item Type: ${itemType}
+                    value.length
+                  } | Item Type: ${itemType}
                 </div>
                 ${
                   value.length > 0 && typeof value[0] === "object"
                     ? `<div class="nested">${analyzeDataStructure(
                         value[0],
                         `${currentPath}[0]`,
-                        level + 1
+                        level + 1,
                       )}</div>`
                     : ""
                 }
@@ -307,13 +307,13 @@ const MagicNotesButton = ({
                 <span class="schema-type">Object</span>
                 <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
                   Path: ${currentPath} | Properties: ${
-              Object.keys(value).length
-            }
+                    Object.keys(value).length
+                  }
                 </div>
                 <div class="nested">${analyzeDataStructure(
                   value,
                   currentPath,
-                  level + 1
+                  level + 1,
                 )}</div>
               </div>
             `;
@@ -324,9 +324,9 @@ const MagicNotesButton = ({
                 <span class="schema-type">${typeof value}</span>
                 <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
                   Path: ${currentPath} | Value: "${String(value).substring(
-              0,
-              50
-            )}${String(value).length > 50 ? "..." : ""}"
+                    0,
+                    50,
+                  )}${String(value).length > 50 ? "..." : ""}"
                 </div>
               </div>
             `;
@@ -367,7 +367,7 @@ const MagicNotesButton = ({
               "border-2 border-white/20",
               "transition-all duration-300 ease-out",
               "hover:pr-5 hover:shadow-lg",
-              "group"
+              "group",
             )}
             aria-label="Ouvrir les notes magiques"
           >

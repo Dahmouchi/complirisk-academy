@@ -91,7 +91,7 @@ export const HeroSection = () => {
           >
             <div className="relative">
               <img
-                src={"/cinq/2334.jpg"}
+                src={"/optimized/2334.webp"}
                 alt="Étudiants universitaires en formation"
                 className="w-full h-full object-cover rounded-2xl"
               />

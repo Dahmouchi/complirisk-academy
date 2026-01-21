@@ -472,7 +472,7 @@ const CourseCard = ({ course }: { course: Course }) => {
             <div className="flex items-center space-x-2 ml-4">
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                  course.status
+                  course.status,
                 )}`}
               >
                 {getStatusText(course.status)}
@@ -496,7 +496,7 @@ const CourseCard = ({ course }: { course: Course }) => {
             </div>
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-                course.difficulty
+                course.difficulty,
               )}`}
             >
               {course.difficulty}
@@ -566,7 +566,7 @@ const ModernStudentSpace = ({ user, quizzes }: any) => {
           <div className="flex items-center justify-between h-24">
             <img
               onClick={() => router.push("/dashboard")}
-              src="/cinq/logoH.png"
+              src="/optimized/logoH.webp"
               className="h-auto w-30 lg:w-40 cursor-pointer"
               alt=""
             />
