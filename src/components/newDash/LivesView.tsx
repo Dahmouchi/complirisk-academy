@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { UnlockCodeInput } from "../cinq/UnlockCodeInput";
 
 import {
+  Bell,
   Calendar,
   Camera,
   CheckCircle,
@@ -117,45 +118,63 @@ const LivesView = ({
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState({
-    hours: 2,
-    minutes: 45,
-    seconds: 30,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
   });
 
-  // Countdown timer effect
+  // Get the next live session dynamically (earliest live or scheduled)
+  const nextLive = (() => {
+    const upcomingLives = [
+      ...(liveRooms.live || []),
+      ...(liveRooms.scheduled || []),
+    ].filter(
+      (room: any) => room.status === "LIVE" || room.status === "SCHEDULED",
+    );
+
+    if (upcomingLives.length === 0) return null;
+
+    // Sort by startsAt to get the earliest one
+    const sortedLives = upcomingLives.sort((a: any, b: any) => {
+      const dateA = a.startsAt ? new Date(a.startsAt).getTime() : 0;
+      const dateB = b.startsAt ? new Date(b.startsAt).getTime() : 0;
+      return dateA - dateB;
+    });
+
+    return sortedLives[0];
+  })();
+
+  // Countdown timer effect - dynamic based on nextLive startsAt
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        }
-        return prev;
-      });
-    }, 1000);
+    if (!nextLive?.startsAt) return;
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const target = new Date(nextLive.startsAt).getTime();
+      const difference = target - now;
+
+      if (difference > 0) {
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        setTimeLeft({ hours, minutes, seconds });
+      } else {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [nextLive]);
   // Get all unique subjects from live rooms
   const allLiveRooms = [
     ...(liveRooms.live || []),
     ...(liveRooms.scheduled || []),
   ];
-  const nextLive = {
-    id: "next-1",
-    title: "Advanced Patient Assessment Techniques",
-    instructor: "Dr. Emily Chen",
-    instructorImage:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop",
-    date: "Today",
-    time: "14:00",
-    participants: 45,
-    description:
-      "Master the essential techniques for comprehensive patient assessment in clinical settings.",
-  };
   const uniqueSubjects = Array.from(
     new Map(
       allLiveRooms
@@ -335,121 +354,209 @@ const LivesView = ({
               Rejoignez des sessions en direct et des salles de classe
               interactives avec des instructeurs experts
             </p>
-            <div className="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-8 text-primary-foreground shadow-2xl">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
+            {nextLive && (
+              <div
+                className="mb-8 relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 text-primary-foreground shadow-2xl"
+                style={{
+                  backgroundImage: nextLive.image
+                    ? `url(${nextLive.image})`
+                    : "linear-gradient(to bottom right, hsl(var(--primary) / 0.9), hsl(var(--primary)), hsl(var(--primary) / 0.8))",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {/* Background overlay - gradient changes direction based on screen size */}
+                <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-blue-500/70 via-blue-500/40 to-transparent" />
 
-              <div className="relative z-10">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
-                      <span className="text-sm font-medium">
-                        Next Live Session
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm opacity-90">
-                    <Calendar className="w-4 h-4" />
-                    <span>{nextLive.date}</span>
-                    <span className="mx-2">•</span>
-                    <Clock className="w-4 h-4" />
-                    <span>{nextLive.time}</span>
-                  </div>
-                </div>
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
 
-                {/* Main Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                  {/* Left - Session Info */}
-                  <div className="space-y-4">
-                    <h2 className="text-3xl font-bold leading-tight">
-                      {nextLive.title}
-                    </h2>
-                    <p className="text-white/80 text-lg">
-                      {nextLive.description}
-                    </p>
-
-                    {/* Instructor */}
-                    <div className="flex items-center gap-4 pt-2">
-                      <img
-                        src={nextLive.instructorImage}
-                        alt={nextLive.instructor}
-                        className="w-14 h-14 rounded-full border-2 border-white/30 object-cover"
-                      />
-                      <div>
-                        <p className="font-semibold text-lg">
-                          {nextLive.instructor}
-                        </p>
-                        <div className="flex items-center gap-2 text-white/70 text-sm">
-                          <Users className="w-4 h-4" />
-                          <span>
-                            {nextLive.participants} participants registered
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      onClick={() => router.push(`/live/${nextLive.id}`)}
-                      className="mt-4 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all"
-                    >
-                      <Play className="w-5 h-5 mr-2" />
-                      Set Reminder
-                    </Button>
-                  </div>
-
-                  {/* Right - Countdown Timer */}
-                  <div className="flex flex-col items-center lg:items-end">
-                    <p className="text-white/70 text-sm mb-4 uppercase tracking-wider font-medium">
-                      Starts In
-                    </p>
+                <div className="relative z-10">
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
                     <div className="flex items-center gap-3">
-                      {/* Hours */}
-                      <div className="flex flex-col items-center">
-                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10">
-                          <span className="text-5xl font-bold tabular-nums">
-                            {formatTime(timeLeft.hours)}
-                          </span>
-                        </div>
-                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
-                          Hours
-                        </span>
-                      </div>
-
-                      <span className="text-4xl font-light opacity-50">:</span>
-
-                      {/* Minutes */}
-                      <div className="flex flex-col items-center">
-                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10">
-                          <span className="text-5xl font-bold tabular-nums">
-                            {formatTime(timeLeft.minutes)}
-                          </span>
-                        </div>
-                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
-                          Minutes
-                        </span>
-                      </div>
-
-                      <span className="text-4xl font-light opacity-50">:</span>
-
-                      {/* Seconds */}
-                      <div className="flex flex-col items-center">
-                        <div className="bg-white/20 backdrop-blur-md rounded-2xl px-6 py-4 min-w-[90px] text-center border border-white/10 animate-pulse">
-                          <span className="text-5xl font-bold tabular-nums">
-                            {formatTime(timeLeft.seconds)}
-                          </span>
-                        </div>
-                        <span className="text-xs mt-2 text-white/60 uppercase tracking-wider">
-                          Seconds
+                      <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full">
+                        <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
+                        <span className="text-xs sm:text-sm font-medium">
+                          {nextLive.status === "LIVE"
+                            ? "EN DIRECT"
+                            : "Next Live"}
                         </span>
                       </div>
                     </div>
+                    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">
+                          {nextLive.startsAt
+                            ? new Date(nextLive.startsAt).toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  weekday: "long",
+                                  day: "numeric",
+                                  month: "long",
+                                },
+                              )
+                            : "Date non définie"}
+                        </span>
+                        <span className="sm:hidden">
+                          {nextLive.startsAt
+                            ? new Date(nextLive.startsAt).toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                },
+                              )
+                            : "Date non définie"}
+                        </span>
+                      </div>
+                      <span className="mx-1">•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span>
+                          {nextLive.startsAt
+                            ? new Date(nextLive.startsAt).toLocaleTimeString(
+                                "fr-FR",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )
+                            : "--:--"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Main Content */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+                    {/* Left - Session Info */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight line-clamp-2">
+                        {nextLive.name}
+                      </h2>
+                      {nextLive.description && (
+                        <p className="text-white/80 text-sm sm:text-base lg:text-lg line-clamp-2">
+                          {nextLive.description}
+                        </p>
+                      )}
+
+                      {/* Instructor */}
+                      <div className="flex items-center gap-3 pt-2">
+                        <img
+                          src={
+                            nextLive.teacher?.image ||
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              nextLive.teacher?.name || "Teacher",
+                            )}&background=random`
+                          }
+                          alt={nextLive.teacher?.name || "Teacher"}
+                          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-white/30 object-cover"
+                        />
+                        <div>
+                          <p className="font-semibold text-base sm:text-lg">
+                            {nextLive.teacher?.name || "Instructeur"}{" "}
+                            {nextLive.teacher?.prenom || ""}
+                          </p>
+                          <div className="flex items-center gap-2 text-white/70 text-xs sm:text-sm">
+                            <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>
+                              {nextLive.participants?.length || 0} participant
+                              {(nextLive.participants?.length || 0) !== 1
+                                ? "s"
+                                : ""}{" "}
+                              inscrit
+                              {(nextLive.participants?.length || 0) !== 1
+                                ? "s"
+                                : ""}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Button
+                        onClick={() =>
+                          router.push(
+                            nextLive.status === "LIVE"
+                              ? `/dashboard/live/${nextLive.id}`
+                              : `/dashboard/live/${nextLive.id}`,
+                          )
+                        }
+                        className="group w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 rounded-[8px] shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+                      >
+                        {nextLive.status === "LIVE" ? (
+                          <>
+                            <Video className="w-5 h-5 group-hover:animate-pulse" />
+                            Rejoindre le Live
+                          </>
+                        ) : (
+                          <>
+                            <Bell className="w-5 h-5" />
+                            Activer le rappel
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Right - Countdown Timer */}
+                    {nextLive.status !== "LIVE" && (
+                      <div className="flex flex-col items-center lg:items-end">
+                        <p className="text-white text-xs sm:text-sm mb-3 sm:mb-4 uppercase tracking-wider font-medium">
+                          Commence dans
+                        </p>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          {/* Hours */}
+                          <div className="flex flex-col items-center">
+                            <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
+                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                                {formatTime(timeLeft.hours)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] sm:text-xs mt-1 sm:mt-2 text-white uppercase tracking-wider">
+                              Heures
+                            </span>
+                          </div>
+
+                          <span className="text-2xl sm:text-3xl lg:text-4xl font-light opacity-50">
+                            :
+                          </span>
+
+                          {/* Minutes */}
+                          <div className="flex flex-col items-center">
+                            <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
+                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                                {formatTime(timeLeft.minutes)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] sm:text-xs mt-1 sm:mt-2 text-white uppercase tracking-wider">
+                              Minutes
+                            </span>
+                          </div>
+
+                          <span className="text-2xl sm:text-3xl lg:text-4xl font-light opacity-50">
+                            :
+                          </span>
+
+                          {/* Seconds */}
+                          <div className="flex flex-col items-center">
+                            <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
+                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                                {formatTime(timeLeft.seconds)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] sm:text-xs mt-1 sm:mt-2 text-white uppercase tracking-wider">
+                              Secondes
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
               <div className="w-full col-span-2">
                 <div className="flex items-center justify-between gap-2 w-full">
@@ -458,13 +565,6 @@ const LivesView = ({
                     onChange={setSearchQuery}
                     placeholder="Rechercher une session live..."
                   />
-                  <Button
-                    onClick={() => router.push("/dashboard/registredLIve")}
-                    className="w-fit text-center text-sm text-white hover:text-foreground transition-colors"
-                  >
-                    <Camera className="w-4 h-4 mr-2" />
-                    Les Live enregistrés
-                  </Button>
                 </div>
                 <nav className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide">
                   <button

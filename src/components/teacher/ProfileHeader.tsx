@@ -7,11 +7,13 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { FileUpload } from "../student/StudentProfile";
+import Link from "next/link";
 
 interface ProfileHeaderProps {
   user: any;
   name: string;
   role: string;
+  prenom: string;
   department: string;
   avatarUrl?: string;
 }
@@ -20,6 +22,7 @@ const ProfileHeader = ({
   user,
   name,
   role,
+  prenom,
   department,
   avatarUrl,
 }: ProfileHeaderProps) => {
@@ -79,7 +82,9 @@ const ProfileHeader = ({
 
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-semibold text-foreground">{name}</h2>
+            <h2 className="text-xl font-semibold text-foreground">
+              {name} {prenom}
+            </h2>
             <Badge
               variant="secondary"
               className="bg-primary/10 text-primary border-0"
@@ -104,13 +109,12 @@ const ProfileHeader = ({
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">
-            3
-          </span>
         </Button>
-        <Button variant="ghost" size="icon">
-          <Settings className="h-5 w-5" />
-        </Button>
+        <Link href="/teacher/dashboard/settings">
+          <Button variant="ghost" size="icon">
+            <Settings className="h-5 w-5" />
+          </Button>
+        </Link>
       </div>
     </div>
   );

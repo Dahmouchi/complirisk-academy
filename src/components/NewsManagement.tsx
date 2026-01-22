@@ -34,10 +34,12 @@ import {
   Trash2,
   CheckCircle,
   XCircle,
+  Edit,
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface NewsItem {
   id: string;
@@ -72,7 +74,7 @@ export function NewsManagement() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
     fetchNews();
     fetchGrades();
@@ -290,6 +292,16 @@ export function NewsManagement() {
                                 Publier
                               </>
                             )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(
+                                `/teacher/dashboard/actualites/${item.id}/edit`,
+                              )
+                            }
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Modifier
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem

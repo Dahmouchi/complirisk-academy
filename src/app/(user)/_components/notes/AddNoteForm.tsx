@@ -38,11 +38,11 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
       <button
         onClick={() => setIsExpanded(true)}
         className={cn(
-          "w-full rounded-lg p-4 shadow-soft transition-all duration-300",
+          "w-full rounded-[8px] p-4 shadow-soft transition-all duration-300",
           "hover:shadow-medium hover:-translate-y-0.5",
           "flex items-center justify-center gap-2",
           "border-2 border-dashed border-border hover:border-primary/50",
-          "text-muted-foreground hover:text-foreground"
+          "text-muted-foreground hover:text-foreground",
         )}
       >
         <Plus className="h-5 w-5" />
@@ -54,15 +54,15 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
   return (
     <div
       className={cn(
-        "rounded-lg p-4 shadow-note transition-all duration-300",
-        colorClasses[color]
+        "rounded-[12px] p-4 shadow-note transition-all duration-300",
+        colorClasses[color],
       )}
     >
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Ecrivez votre note ici..."
-        className="resize-none bg-background/50 border-none focus-visible:ring-1 focus-visible:ring-foreground/20 mb-3 min-h-[100px] font-handwriting text-lg"
+        className="resize-none rounded-[8px] bg-white/50 border-none focus-visible:ring-1 focus-visible:ring-foreground/20 mb-3 min-h-[100px] font-handwriting text-lg"
         autoFocus
       />
 
@@ -79,7 +79,7 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
                 colorClasses[c],
                 color === c
                   ? "ring-2 ring-foreground ring-offset-1 scale-110"
-                  : "hover:scale-105"
+                  : "hover:scale-105",
               )}
             />
           ))}
@@ -94,10 +94,8 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
             onClick={() => setEmoji(undefined)}
             className={cn(
               "w-7 h-7 flex items-center justify-center rounded transition-colors text-xs",
-              emoji === undefined
-                ? "bg-background/70"
-                : "hover:bg-background/50",
-              "text-muted-foreground"
+              emoji === undefined ? "bg-white/70" : "hover:bg-white/50",
+              "text-muted-foreground",
             )}
           >
             ✕
@@ -108,7 +106,7 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
               onClick={() => setEmoji(e)}
               className={cn(
                 "w-7 h-7 flex items-center justify-center rounded transition-colors",
-                emoji === e ? "bg-background/70" : "hover:bg-background/50"
+                emoji === e ? "bg-white/70" : "hover:bg-white/50",
               )}
             >
               {e}
@@ -134,7 +132,7 @@ export function AddNoteForm({ onAdd }: AddNoteFormProps) {
           size="sm"
           onClick={handleSubmit}
           disabled={!content.trim()}
-          className="bg-foreground/90 text-background hover:bg-foreground"
+          className="bg-blue-500 rounded-[8px] text-white hover:bg-blue-600"
         >
           <Plus className="h-4 w-4 mr-1" />
           Ajouter une note

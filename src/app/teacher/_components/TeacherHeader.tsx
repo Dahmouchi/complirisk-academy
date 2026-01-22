@@ -14,7 +14,10 @@ export default function TeacherHeader() {
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border/50">
       <div className="container-custom mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => navigate.push("/teacher/dashboard")}
+          >
             <img src="/optimized/logoH.webp" className="w-24 h-auto" alt="" />
             <span className="hidden md:inline text-muted-foreground">
               | Espace Instructeur

@@ -49,14 +49,14 @@ export function NotesSheet({ open, onOpenChange, userId }: NotesSheetProps) {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex bg-muted rounded-lg p-1">
+              <div className="flex bg-muted p-1  rounded-[8px]">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setViewMode("board")}
                   className={cn(
-                    "h-8 w-8 rounded-md",
-                    viewMode === "board" && "bg-background shadow-soft"
+                    "h-8 w-8 rounded-[8px]",
+                    viewMode === "board" && "bg-white shadow-soft",
                   )}
                 >
                   <LayoutGrid className="h-4 w-4" />
@@ -66,8 +66,8 @@ export function NotesSheet({ open, onOpenChange, userId }: NotesSheetProps) {
                   size="icon"
                   onClick={() => setViewMode("list")}
                   className={cn(
-                    "h-8 w-8 rounded-md",
-                    viewMode === "list" && "bg-background shadow-soft"
+                    "h-8 w-8 rounded-[8px]",
+                    viewMode === "list" && "bg-white shadow-soft ",
                   )}
                 >
                   <List className="h-4 w-4" />

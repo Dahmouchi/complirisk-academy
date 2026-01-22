@@ -16,7 +16,7 @@ interface NoteCardProps {
   note: Note;
   onUpdate: (
     id: string,
-    updates: Partial<Pick<Note, "content" | "color" | "emoji">>
+    updates: Partial<Pick<Note, "content" | "color" | "emoji">>,
   ) => void;
   onDelete: (id: string) => void;
 }
@@ -49,10 +49,10 @@ export function NoteCard({ note, onUpdate, onDelete }: NoteCardProps) {
   return (
     <div
       className={cn(
-        "group relative rounded-lg p-4 shadow-note transition-all duration-300",
+        "group relative rounded-[12px] p-4 shadow-note transition-all duration-300",
         "hover:shadow-medium hover:-translate-y-1",
         "min-h-[140px] flex flex-col",
-        colorClasses[note.color]
+        colorClasses[note.color],
       )}
     >
       {/* Emoji Sticker */}
@@ -86,7 +86,7 @@ export function NoteCard({ note, onUpdate, onDelete }: NoteCardProps) {
                       "w-6 h-6 rounded-full transition-transform hover:scale-110",
                       colorClasses[color],
                       note.color === color &&
-                        "ring-2 ring-foreground ring-offset-2"
+                        "ring-2 ring-foreground ring-offset-2",
                     )}
                   />
                 ))}
@@ -107,7 +107,7 @@ export function NoteCard({ note, onUpdate, onDelete }: NoteCardProps) {
                     onClick={() => onUpdate(note.id, { emoji })}
                     className={cn(
                       "w-7 h-7 flex items-center justify-center rounded hover:bg-muted transition-colors",
-                      note.emoji === emoji && "bg-muted"
+                      note.emoji === emoji && "bg-muted",
                     )}
                   >
                     {emoji}

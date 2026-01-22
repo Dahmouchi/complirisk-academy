@@ -107,7 +107,7 @@ export const StudentHeader = ({
           className="relative h-14 cursor-pointer w-auto flex items-center justify-center"
         >
           <img
-            src="/optimized/logoH.  webp"
+            src="/optimized/logoH.webp"
             alt=""
             className=" lg:h-10 h-8 w-auto"
           />

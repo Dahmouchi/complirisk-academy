@@ -7,7 +7,7 @@ import EventsPanel from "@/components/newDash/EventsPanel";
 import { getStudentLiveRooms, isUserRegistered } from "@/actions/live-room";
 
 const IndexNewDash = ({ matieres, user }: any) => {
-  const [activeTab, setActiveTab] = useState<"courses" | "lives">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "lives">("lives");
   const [liveRooms, setLiveRooms] = useState<any>({
     live: [],
     scheduled: [],

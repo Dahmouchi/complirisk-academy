@@ -5,6 +5,8 @@ import QuickActions from "@/components/teacher/QuickActions";
 import AnalyticsCards from "@/components/teacher/AnalyticsCards";
 import CalendarView from "@/components/teacher/CalendarView";
 import RecentCourses from "@/components/teacher/RecentCourses";
+import LiveClassrooms from "@/components/teacher/LiveClassrooms";
+import ActualitiesPanel from "@/components/teacher/ActualitiesPanel";
 import { Button } from "@/components/ui/button";
 import { LogOut, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -45,9 +47,10 @@ const Teacher = ({ user }: any) => {
         {/* Profile Header */}
         <ProfileHeader
           user={user}
-          name={formattedName}
+          name={user.name}
+          prenom={user.prenom}
           role="Instructeur"
-          department="Département Génie Civil"
+          department="chez Cinq Cinq Sup"
         />
 
         {/* Quick Actions */}
@@ -58,18 +61,18 @@ const Teacher = ({ user }: any) => {
           <QuickActions />
         </div>
 
-        {/* Analytics */}
+        {/* Analytics 
         <section>
           <h3 className="text-lg font-semibold text-foreground mb-4">
             Statistiques
           </h3>
           <AnalyticsCards />
-        </section>
+        </section>*/}
 
-        {/* Two Column Layout */}
+        {/* Live Classrooms & Actualities - New Dynamic Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CalendarView />
-          <RecentCourses />
+          <LiveClassrooms userId={user.id} />
+          <ActualitiesPanel userId={user.id} />
         </div>
       </main>
     </div>

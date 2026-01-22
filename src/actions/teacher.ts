@@ -156,3 +156,66 @@ export async function getGrades() {
     return [];
   }
 }
+
+// Update teacher information
+export async function updateTeacherInfo(
+  teacherId: string,
+  name: string,
+  prenom: string,
+  email: string,
+  phone: string,
+) {
+  try {
+    // Check if the teacher exists
+    const teacher = await prisma.user.findUnique({
+      where: { id: teacherId, role: "TEACHER" },
+    });
+
+    if (!teacher) {
+      return {
+        success: false,
+        message: "Enseignant non trouvé",
+      };
+    }
+
+    // Check if email is already used by another user
+    if (email !== teacher.email) {
+      const existingEmail = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingEmail) {
+        return {
+          success: false,
+          message: "Cet email est déjà utilisé par un autre utilisateur",
+        };
+      }
+    }
+
+    // Update teacher information
+    await prisma.user.update({
+      where: { id: teacherId },
+      data: {
+        name,
+        prenom,
+        email,
+        phone,
+        username: email, // Update username to match email
+      },
+    });
+
+    revalidatePath("/teacher/dashboard/settings");
+    revalidatePath("/teacher/dashboard");
+
+    return {
+      success: true,
+      message: "Informations mises à jour avec succès",
+    };
+  } catch (error) {
+    console.error("Error updating teacher info:", error);
+    return {
+      success: false,
+      message: "Une erreur est survenue lors de la mise à jour",
+    };
+  }
+}

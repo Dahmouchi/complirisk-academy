@@ -942,3 +942,33 @@ section.active {
   initial-value: 0deg;
   inherits: false;
 }
+
+/* Add this to your globals.css file */
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: "#fff";
+}
+
+::-webkit-scrollbar-track {
+  background: "#fff";
+  color: "#fff";
+}
+
+::-webkit-scrollbar-thumb {
+  background: "#fff";
+  border-radius: 5px;
+  border: 2px solid hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: "#fff";
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.2) hsl(var(--background));
+}

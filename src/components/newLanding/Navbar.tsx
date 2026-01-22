@@ -28,7 +28,7 @@ export const Navbar = () => {
       <nav className="container-custom flex items-center justify-between h-16 md:h-20 px-4 md:px-8">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2">
-          <img src="/optimized/logoH.png" className="w-32 h-auto" alt="" />
+          <img src="/optimized/logoH.webp" className="w-32 h-auto" alt="" />
         </a>
 
         {/* Desktop Navigation */}
@@ -110,34 +110,100 @@ export const Navbar = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-border"
-          >
-            <ul className="flex flex-col py-4 px-4">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="block py-3 text-foreground hover:text-primary transition-colors font-medium"
-                    onClick={() => setIsOpen(false)}
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+              style={{
+                backgroundImage: "url('/optimized/bgblue2.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+              className="fixed top-0 right-0 bottom-0 w-full bg-white h-screen z-50 overflow-y-auto"
+            >
+              {/* Close Button & Logo */}
+              <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 bg-white">
+                <div className="w-10" /> {/* Spacer for centering */}
+                <a href="#" className="flex items-center gap-2">
+                  <img
+                    src="/optimized/logoH.webp"
+                    className="w-32 h-auto"
+                    alt=""
+                  />
+                </a>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Navigation Items - Centered */}
+              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] px-6">
+                <motion.ul
+                  className="flex flex-col items-center gap-2 w-full max-w-sm"
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                >
+                  {navLinks.map((link, index) => (
+                    <motion.li
+                      key={link.href}
+                      variants={{
+                        closed: { opacity: 0, x: 50 },
+                        open: { opacity: 1, x: 0 },
+                      }}
+                      transition={{ delay: index * 0.1 }}
+                      className="w-full"
+                    >
+                      <a
+                        href={link.href}
+                        className="block py-4 px-6 text-center text-lg font-bold text-primary hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {link.label}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+
+                {/* Buttons */}
+                <motion.div
+                  className="flex flex-col gap-3 w-full max-w-sm mt-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="w-full py-3 px-6 text-blue-800 bg-white font-medium border-2 border-primary rounded-full hover:bg-primary/10 transition-colors"
                   >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-              <li className="pt-4 flex flex-col gap-2">
-                <Button variant="ghost" className="w-full justify-center">
-                  Connexion
-                </Button>
-                <Button variant="hero" className="w-full justify-center">
-                  S&apos;inscrire
-                </Button>
-              </li>
-            </ul>
-          </motion.div>
+                    Connexion
+                  </button>
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="w-full py-3 px-6 text-white font-medium bg-primary rounded-full hover:bg-primary/80 transition-colors"
+                  >
+                    S'inscrire
+                  </button>
+                </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
