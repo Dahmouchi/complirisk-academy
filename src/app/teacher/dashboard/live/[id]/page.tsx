@@ -6,7 +6,6 @@ import { useParams, useRouter } from "next/navigation";
 import {
   LiveKitRoom,
   VideoConference,
-  useLocalParticipant,
   useRemoteParticipants,
 } from "@livekit/components-react";
 import "@livekit/components-styles";
@@ -27,9 +26,6 @@ import {
   Users,
   Clock,
   Settings,
-  Mic,
-  MicOff,
-  VideoOff,
   Monitor,
   BookOpen,
 } from "lucide-react";
@@ -37,12 +33,26 @@ import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import QuizDisplay from "@/app/(user)/_components/quizSection";
 
-// Teacher Room View Component
-function TeacherRoomView() {
+// Props for the internal view
+interface TeacherViewProps {
+  quiz: any[];
+  onEndSession: () => void;
+  isTeacher: boolean;
+  userId: string;
+}
+
+// Teacher Room View Component - REFACTORED FOR RESPONSIVENESS
+function TeacherRoomView({
+  quiz,
+  onEndSession,
+  isTeacher,
+  userId,
+}: TeacherViewProps) {
   const remoteParticipants = useRemoteParticipants();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [participantCount, setParticipantCount] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  // We keep controls always visible on mobile for better UX, toggle on desktop
   const [showControls, setShowControls] = useState(true);
 
   // Update participant count
@@ -78,13 +88,16 @@ function TeacherRoomView() {
     }
   };
 
-  // Auto-hide controls after 3 seconds of inactivity
+  // Auto-hide controls logic (Desktop only recommended)
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     const handleMouseMove = () => {
       setShowControls(true);
       clearTimeout(timeout);
-      timeout = setTimeout(() => setShowControls(false), 3000);
+      // Only auto-hide on larger screens to prevent mobile frustration
+      if (window.innerWidth > 768) {
+        timeout = setTimeout(() => setShowControls(false), 3000);
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -95,119 +108,108 @@ function TeacherRoomView() {
   }, []);
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white relative">
-      {/* Modern Header with Glass Effect */}
-      <div
-        className={` z-50 transition-all duration-300 ${
-          showControls
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-full opacity-0"
-        }`}
-      >
-        <div className="backdrop-blur-xl bg-slate-900/80 border-b border-slate-700/50 shadow-2xl">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
-              {/* Left Section - Branding & Status */}
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                    <Monitor className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-lg tracking-tight">
-                      E-Learning Live
-                    </span>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                      </span>
-                      <span className="text-xs text-red-400 font-semibold uppercase tracking-wider">
-                        En Direct
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Session Stats */}
-                <div className="flex items-center gap-6 pl-6 border-l border-slate-700">
-                  <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
-                    <Users className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm font-medium">
-                      {participantCount}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      participant{participantCount !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
-                    <Clock className="h-4 w-4 text-green-400" />
-                    <span className="text-sm font-medium font-mono">
-                      {formatTime(elapsedTime)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Section - Controls */}
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleFullscreen}
-                  className="hover:bg-slate-800 text-slate-300 hover:text-white"
-                >
-                  {isFullscreen ? (
-                    <Minimize className="h-4 w-4" />
-                  ) : (
-                    <Maximize className="h-4 w-4" />
-                  )}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="hover:bg-slate-800 text-slate-300 hover:text-white"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
+    <div className="h-screen w-full flex flex-col bg-slate-950 text-white overflow-hidden">
+      {/* 1. TOP HEADER (Fixed Height) */}
+      <div className="h-16 z-50 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 lg:px-6 shadow-md shrink-0">
+        {/* Left: Branding & Status */}
+        <div className="flex items-center gap-4">
+          <div className="p-2 bg-blue-600 rounded-lg hidden sm:block">
+            <Monitor className="h-4 w-4 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-base sm:text-lg tracking-tight">
+                E-Learning
+              </span>
+              <div className="flex items-center gap-1.5 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                <span className="text-[10px] text-red-400 font-bold uppercase tracking-wider">
+                  Live
+                </span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Center/Right: Stats */}
+        <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-md border border-slate-700">
+            <Users className="h-3.5 w-3.5 text-blue-400" />
+            <span className="text-sm font-medium">{participantCount}</span>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-md border border-slate-700">
+            <Clock className="h-3.5 w-3.5 text-green-400" />
+            <span className="text-sm font-medium font-mono">
+              {formatTime(elapsedTime)}
+            </span>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleFullscreen}
+            className="hidden sm:flex hover:bg-slate-800 text-slate-400 hover:text-white"
+          >
+            {isFullscreen ? (
+              <Minimize className="h-4 w-4" />
+            ) : (
+              <Maximize className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
 
-      {/* Main Video Content */}
-      <div className="flex-1 relative overflow-y-scroll">
-        <VideoConference />
-        <RoomAudioRenderer />
-
-        {/* Participant Count Overlay (Bottom Left) */}
-        {participantCount > 0 && (
-          <div className="absolute bottom-6 left-6 bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/50 shadow-xl">
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {[...Array(Math.min(3, participantCount))].map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 border-2 border-slate-900"
-                  />
-                ))}
-                {participantCount > 3 && (
-                  <div className="h-6 w-6 rounded-full bg-slate-700 border-2 border-slate-900 flex items-center justify-center">
-                    <span className="text-xs font-semibold">
-                      +{participantCount - 3}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <span className="text-sm font-medium text-slate-200">
-                {participantCount} viewer{participantCount !== 1 ? "s" : ""}
-              </span>
-            </div>
+      {/* 2. MAIN CONTENT SPLIT (Responsive Flex) */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        {/* A. VIDEO AREA (Top on Mobile, Left on Desktop) */}
+        <div className="w-full h-[50vh] lg:h-full lg:flex-1 bg-black relative flex flex-col">
+          <div className="flex-1 relative">
+            {/* Ensure LiveKit fits well */}
+            <VideoConference />
           </div>
-        )}
+        </div>
+
+        {/* B. SIDEBAR (Bottom on Mobile, Right on Desktop) */}
+        <div className="w-full lg:w-[400px] h-full bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col">
+          {/* Sidebar Tabs/Header */}
+          <div className="p-4 border-b border-slate-800 bg-slate-900/50">
+            <h3 className="font-semibold flex items-center gap-2 text-slate-200">
+              <BookOpen className="h-4 w-4 text-purple-400" />
+              Gestion de classe
+            </h3>
+          </div>
+
+          {/* Scrollable Content (Quiz) */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {quiz.length > 0 ? (
+              <QuizDisplay quizzes={quiz} userId={userId} />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-40 text-slate-500 text-center p-4 border border-dashed border-slate-800 rounded-xl">
+                <BookOpen className="h-8 w-8 mb-2 opacity-50" />
+                <p className="text-sm">Aucun quiz actif.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar Footer (Actions) */}
+          <div className="p-4 bg-slate-900 border-t border-slate-800">
+            {isTeacher && (
+              <Button
+                variant="destructive"
+                onClick={onEndSession}
+                className="w-full shadow-lg bg-red-600 hover:bg-red-700 text-white font-semibold py-6"
+                size="lg"
+              >
+                <Power className="h-5 w-5 mr-2" />
+                Terminer le Live
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -413,41 +415,31 @@ export default function LiveRoomPage() {
     );
   }
 
-  // 6. Live State (Connect LiveKit)
+  // 6. Live State (Connect LiveKit) - Passing Props correctly
   if (status === "LIVE" && token && roomName) {
     return (
-      <>
-        <LiveKitRoom
-          className="bg-white"
-          token={token}
-          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-          connect={true}
-          audio={true}
-          video={true}
-          onDisconnected={() => {
-            console.log("Teacher disconnected");
-            if (isTeacher) {
-              toast.info("Vous avez été déconnecté");
-            }
-          }}
-        >
-          <TeacherRoomView />
-          {isTeacher && (
-            <div className="absolute bottom-8 right-8 z-50">
-              <Button
-                variant="destructive"
-                onClick={handleEndLive}
-                className="shadow-2xl bg-red-600 hover:bg-red-700 px-6 py-6 text-base gap-2"
-                size="lg"
-              >
-                <Power className="h-5 w-5" />
-                Terminer le Live
-              </Button>
-            </div>
-          )}
-          <RoomAudioRenderer />
-        </LiveKitRoom>
-      </>
+      <LiveKitRoom
+        className="bg-slate-950"
+        token={token}
+        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+        connect={true}
+        audio={true}
+        video={true}
+        onDisconnected={() => {
+          console.log("Teacher disconnected");
+          if (isTeacher) {
+            toast.info("Vous avez été déconnecté");
+          }
+        }}
+      >
+        <TeacherRoomView
+          quiz={quiz}
+          onEndSession={handleEndLive}
+          isTeacher={isTeacher}
+          userId={session?.user.id || ""}
+        />
+        <RoomAudioRenderer />
+      </LiveKitRoom>
     );
   }
 

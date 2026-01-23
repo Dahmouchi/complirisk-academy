@@ -146,25 +146,30 @@ export default function StudentLiveRoomPage() {
     );
   }
 
-  // 4. Live State - Simple VideoConference View
+  // 4. Live State - RESPONSIVE FIX APPLIED HERE
   if (status === "LIVE" && token && roomName) {
     return (
-      <div className="h-full overflow-y-scroll w-full bg-white">
-        {/* Header */}
-        <div className="h-14 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white">
+      // Changed: Use flex-col and h-screen to manage layout without main page scroll
+      <div className="flex flex-col h-screen w-full bg-white overflow-hidden">
+        {/* Header - Fixed Height */}
+        <div className="h-14 shrink-0 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white z-10">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => router.push("/dashboard")}
-              className="text-slate-400 hover:text-white hover:bg-slate-700"
+              className="text-slate-400 hover:text-white hover:bg-slate-700 p-0 sm:px-3" // Adjusted padding for mobile
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour
+              <ArrowLeft className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Retour</span>
             </Button>
             <div className="flex flex-col">
-              <span className="font-semibold">Session en cours</span>
-              <span className="text-xs text-slate-400">Classe en direct</span>
+              <span className="font-semibold text-sm sm:text-base">
+                Session en cours
+              </span>
+              <span className="text-xs text-slate-400 hidden sm:inline">
+                Classe en direct
+              </span>
             </div>
           </div>
 
@@ -174,89 +179,60 @@ export default function StudentLiveRoomPage() {
           </div>
         </div>
 
-        {/* LiveKit Room */}
-        <div className="h-[calc(100vh-3.5rem)]">
-          <LiveKitRoom
-            className="bg-white"
-            token={token}
-            serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-            connect={true}
-            audio={true}
-            screen={false}
-            video={false} // Students don't share video
-            onDisconnected={() => {
-              console.log("Student disconnected");
-              router.push("/dashboard");
-            }}
-          >
-            <VideoConference />
-            <RoomAudioRenderer />
-          </LiveKitRoom>
+        {/* Content Area - Flex Container (Column on Mobile, Row on Desktop) */}
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+          {/* LiveKit Room - Top on Mobile (50%), Left on Desktop (Flex-1) */}
+          <div className="w-full h-[50vh] lg:h-full lg:flex-1 bg-white relative">
+            <LiveKitRoom
+              className="h-full w-full"
+              token={token}
+              serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+              connect={true}
+              audio={true}
+              screen={false}
+              video={false}
+              onDisconnected={() => {
+                console.log("Student disconnected");
+                router.push("/dashboard");
+              }}
+              // Ensure video conference fits the container
+              data-lk-theme="default"
+            >
+              <VideoConference />
+              <RoomAudioRenderer />
+            </LiveKitRoom>
+          </div>
+
+          {/* Quiz/Sidebar - Bottom on Mobile (Rest of height), Right on Desktop (Fixed Width) */}
+          <div className="w-full lg:w-[400px] overflow-y-scroll max-h-[50vh] lg:max-h-full h-full flex flex-col bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200">
+            <div className="flex-1 overflow-y-auto p-4 lg:p-6">
+              {quiz.length > 0 ? (
+                <QuizDisplay quizzes={quiz} userId={session?.user.id || ""} />
+              ) : (
+                <div className="bg-white rounded-xl border border-slate-200 p-6 text-center shadow-sm mt-4">
+                  <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+                  <h3 className="font-semibold text-slate-800 mb-1">Quiz</h3>
+                  <p className="text-slate-500 text-sm">
+                    Aucun quiz actif pour le moment. Concentrez-vous sur le
+                    cours !
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        {quiz.length > 0 ? (
-          <div className="lg:px-24 my-8">
-            {" "}
-            <QuizDisplay quizzes={quiz} userId={session?.user.id || ""} />
-          </div>
-        ) : (
-          <div className="bg-card rounded-2xl border border-border p-6 text-center">
-            <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-semibold text-foreground mb-2">Quiz</h3>
-            <p className="text-muted-foreground text-sm">
-              Prenez des quiz pour tester vos connaissances.
-            </p>
-          </div>
-        )}
       </div>
     );
   }
 
   // 5. Ended State with Recording
   if (status === "ENDED" && recordingUrl) {
-    return (
-      <div className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen flex flex-col items-center justify-start">
-        <div className="w-full flex justify-between items-center mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
-            <Video className="h-8 w-8 text-blue-600" />
-            Replay de la session
-          </h1>
-          <Button variant="outline" onClick={() => router.push("/dashboard")}>
-            Retour
-          </Button>
-        </div>
-
-        <div className="w-full aspect-video bg-black rounded-[8px] overflow-hidden shadow-2xl border border-slate-700">
-          <video
-            controls
-            className="w-full h-full"
-            src={recordingUrl}
-            preload="metadata"
-          >
-            Votre navigateur ne supporte pas la lecture vidéo.
-          </video>
-        </div>
-
-        <div className="mt-6 text-center text-muted-foreground">
-          <p>La session est terminée.</p>
-        </div>
-      </div>
-    );
+    router.push("/dashboard");
   }
 
   // 6. Ended State without Recording
   if (status === "ENDED" && !recordingUrl) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
-        <Video className="h-12 w-12 text-slate-400 mb-4" />
-        <h2 className="text-2xl font-bold">Session Terminée</h2>
-        <p className="text-muted-foreground mt-2">
-          L&apos;enregistrement sera bientôt disponible.
-        </p>
-        <Button className="mt-6" onClick={() => router.push("/dashboard")}>
-          Retour au Dashboard
-        </Button>
-      </div>
-    );
+    router.push("/dashboard");
   }
 
   // 7. Fallback

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
+import { getVideoToken } from "@/actions/live-room";
 
 export function SecureVideoPlayer({
   liveId,
@@ -20,7 +21,7 @@ export function SecureVideoPlayer({
   const [duration, setDuration] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const togglePlay = () => {
     if (!videoRef.current) return;
     isPlaying ? videoRef.current.pause() : videoRef.current.play();
@@ -71,6 +72,15 @@ export function SecureVideoPlayer({
   };
 
   useEffect(() => {
+    const initPlayer = async () => {
+      const token = await getVideoToken(liveId);
+      if (token) {
+        setVideoUrl(`/api/livekit/replay?id=${liveId}&token=${token}`);
+      }
+    };
+    initPlayer();
+  }, [liveId]);
+  useEffect(() => {
     const blockKeys = (e: KeyboardEvent) => {
       if (
         e.key === "PrintScreen" ||
@@ -102,7 +112,7 @@ export function SecureVideoPlayer({
       {/* VIDEO (NO POINTER EVENTS) */}
       <video
         ref={videoRef}
-        src={`/api/livekit/replay?id=${liveId}`}
+        src={`${videoUrl}`}
         playsInline
         preload="metadata"
         poster={poster}

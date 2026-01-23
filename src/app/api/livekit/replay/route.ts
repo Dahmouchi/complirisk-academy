@@ -1,8 +1,10 @@
+// app/api/livekit/replay/route.ts
 import { NextRequest } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/nextAuth";
+import { verifyVideoToken } from "@/lib/video-token"; // Import the function from Step 1
 
 const s3 = new S3Client({
   region: process.env.S3_REGION!,
@@ -11,13 +13,20 @@ const s3 = new S3Client({
     secretAccessKey: process.env.S3_KEY_SECRET!,
   },
 });
-function extractS3Key(url: string) {
-  const parsed = new URL(url);
-  return decodeURIComponent(parsed.pathname.slice(1));
-}
 
 export async function GET(req: NextRequest) {
-  // 🔐 AUTH
+  // 1. 🛡️ REFERER CHECK (Stops "New Tab" access)
+  const referer = req.headers.get("referer");
+  const host = req.headers.get("host"); // e.g., mydomain.com
+
+  // If there is no referer, or the referer doesn't match your domain, block it.
+  if (!referer || !referer.includes(host!)) {
+    return new Response("Access Denied: Direct access not allowed", {
+      status: 403,
+    });
+  }
+
+  // 2. 🔐 AUTH SESSION
   const session = await getServerSession(authOptions);
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
@@ -25,45 +34,64 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const liveId = searchParams.get("id");
+  const token = searchParams.get("token");
 
-  if (!liveId) {
-    return new Response("Missing id", { status: 400 });
+  if (!liveId || !token) {
+    return new Response("Missing parameters", { status: 400 });
   }
 
-  // 📦 FETCH LIVE
+  // 3. 🎫 TOKEN VERIFICATION
+  const isValid = verifyVideoToken(token, liveId, session.user.id);
+  if (!isValid) {
+    return new Response("Invalid or expired token", { status: 403 });
+  }
+
+  // 📦 FETCH LIVE & STREAM (Your existing logic)
   const live = await prisma.liveRoom.findUnique({
     where: { id: liveId },
-    include: {
-      participants: true,
-    },
   });
 
   if (!live || !live.recordingUrl) {
     return new Response("Not found", { status: 404 });
   }
 
-  // 🎥 RANGE SUPPORT
   const range = req.headers.get("range") || undefined;
-  const key = extractS3Key(live.recordingUrl);
+  const key = live.recordingUrl;
 
-  const command = new GetObjectCommand({
-    Bucket: process.env.S3_BUCKET!,
-    Key: key, // MUST BE "recordings/xxx.mp4"
-    Range: range,
-  });
+  try {
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET!,
+      Key: key,
+      Range: range,
+    });
 
-  const data = await s3.send(command);
+    const data = await s3.send(command);
 
-  const headers = new Headers();
-  headers.set("Content-Type", "video/mp4");
-  headers.set("Accept-Ranges", "bytes");
+    const headers = new Headers();
+    headers.set("Content-Type", "video/mp4");
+    headers.set("Accept-Ranges", "bytes");
 
-  if (data.ContentRange) {
-    headers.set("Content-Range", data.ContentRange);
+    // Add Cache-Control to prevent caching the video file on disk too easily
+    headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+
+    if (data.ContentRange) {
+      headers.set("Content-Range", data.ContentRange);
+    }
+    if (data.ContentLength) {
+      headers.set("Content-Length", data.ContentLength.toString());
+    }
+
+    return new Response(data.Body as any, {
+      status: range ? 206 : 200,
+      headers,
+    });
+  } catch (error: any) {
+    if (error.name === "NoSuchKey") {
+      return new Response("Video file not found", { status: 404 });
+    }
+    return new Response("Error streaming video", { status: 500 });
   }
-
-  return new Response(data.Body as any, {
-    status: range ? 206 : 200,
-    headers,
-  });
 }

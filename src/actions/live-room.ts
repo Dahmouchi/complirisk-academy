@@ -272,6 +272,9 @@ export async function endLiveRoom(liveRoomId: string, teacherId: string) {
       data: {
         status: "ENDED",
         endedAt: new Date(),
+        duration: liveRoom.startsAt
+          ? new Date().getTime() - liveRoom.startsAt.getTime()
+          : 0,
         recordingStatus: "PROCESSING", // We set this to PROCESSING. Webhook will set to COMPLETED.
       },
     });
@@ -696,6 +699,7 @@ import {
 } from "livekit-server-sdk";
 import { NextResponse } from "next/server";
 import { getSignedVideoUrl } from "@/lib/aws/s3";
+import { generateVideoToken } from "@/lib/video-token";
 // ... (keep your existing createLiveRoom action)
 
 export async function startLiveSession(liveRoomId: string) {
@@ -807,6 +811,7 @@ export async function startLiveSession(liveRoomId: string) {
         status: "LIVE",
         recordingStatus: "RECORDING",
         egressId: egressInfo.egressId,
+        startsAt: new Date(),
       },
     });
 
@@ -995,7 +1000,12 @@ export async function getLivesRegistred() {
 function extractS3Key(url: string) {
   return url.split(".amazonaws.com/")[1];
 }
+export async function getVideoToken(liveId: string) {
+  const session = await getServerSession(authOptions);
+  if (!session) return null;
 
+  return generateVideoToken(liveId, session.user.id);
+}
 export async function getLiveReplay(id: string) {
   try {
     const live = await prisma.liveRoom.findUnique({
@@ -1019,18 +1029,16 @@ export async function getLiveReplay(id: string) {
       return { success: false, error: "Live introuvable" };
     }
 
-    let signedRecordingUrl: string | null = null;
-
+    let finalUrl: string | null = null;
     if (live.recordingUrl) {
-      const key = extractS3Key(live.recordingUrl);
-      signedRecordingUrl = await getSignedVideoUrl(key);
+      finalUrl = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${live.recordingUrl}`;
     }
 
     return {
       success: true,
       live: {
         ...live,
-        signedRecordingUrl, // ✅ TEMPORARY URL
+        signedRecordingUrl: finalUrl,
       },
     };
   } catch (error) {
