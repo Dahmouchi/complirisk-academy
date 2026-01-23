@@ -181,12 +181,12 @@ const EditNewsPage = () => {
             <ArrowLeft className="h-4 w-4" />
             Retour
           </Button>
-          <h1 className="text-3xl font-bold">Modifier l'Actualité</h1>
+          <h1 className="text-3xl font-bold">Modifier l&apos;actualité</h1>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Informations de l'actualité</CardTitle>
+            <CardTitle>Informations de l&apos;actualité</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Title */}
@@ -232,7 +232,7 @@ const EditNewsPage = () => {
 
             {/* Image URL */}
             <div className="space-y-2">
-              <Label htmlFor="imageUrl">URL de l'image (optionnel)</Label>
+              <Label htmlFor="imageUrl">URL de l&apos;image (optionnel)</Label>
               <Input
                 id="imageUrl"
                 value={formData.imageUrl}

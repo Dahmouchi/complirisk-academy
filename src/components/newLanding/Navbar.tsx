@@ -198,7 +198,7 @@ export const Navbar = () => {
                     onClick={() => router.push("/login")}
                     className="w-full py-3 px-6 text-white font-medium bg-primary rounded-full hover:bg-primary/80 transition-colors"
                   >
-                    S'inscrire
+                    S&apos;inscrire
                   </button>
                 </motion.div>
               </div>

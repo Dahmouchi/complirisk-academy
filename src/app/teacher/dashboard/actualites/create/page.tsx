@@ -122,7 +122,7 @@ const CreateNewsPage = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Informations de l'actualité</CardTitle>
+            <CardTitle>Informations de l&apos;actualité</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Title */}
@@ -168,7 +168,7 @@ const CreateNewsPage = () => {
 
             {/* Image URL */}
             <div className="space-y-2">
-              <Label htmlFor="imageUrl">URL de l'image (optionnel)</Label>
+              <Label htmlFor="imageUrl">URL de l&apos;image (optionnel)</Label>
               <Input
                 id="imageUrl"
                 value={formData.imageUrl}
