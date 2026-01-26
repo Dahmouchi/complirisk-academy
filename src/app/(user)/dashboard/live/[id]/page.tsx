@@ -112,7 +112,7 @@ export default function StudentLiveRoomPage() {
           Soit la session a été annulée, soit vous n&apos;avez pas les droits
           d&apos;accès.
         </p>
-        <Button onClick={() => router.push("/dashboard")} className="mt-4">
+        <Button onClick={() => router.push("/dashboard/live")} className="mt-4">
           Retour au Tableau de bord
         </Button>
       </div>
@@ -137,7 +137,7 @@ export default function StudentLiveRoomPage() {
         </div>
         <Button
           variant="outline"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/dashboard/live")}
           className="mt-8"
         >
           Annuler
@@ -146,19 +146,18 @@ export default function StudentLiveRoomPage() {
     );
   }
 
-  // 4. Live State - RESPONSIVE FIX APPLIED HERE
+  // 4. Live State
   if (status === "LIVE" && token && roomName) {
     return (
-      // Changed: Use flex-col and h-screen to manage layout without main page scroll
       <div className="flex flex-col h-screen w-full bg-white overflow-hidden">
-        {/* Header - Fixed Height */}
-        <div className="h-14 shrink-0 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white z-10">
+        {/* Header */}
+        <div className="h-14 shrink-0 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-800 text-white z-50 relative">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push("/dashboard")}
-              className="text-slate-400 hover:text-white hover:bg-slate-700 p-0 sm:px-3" // Adjusted padding for mobile
+              onClick={() => router.push("/dashboard/live")}
+              className="text-slate-400 hover:text-white hover:bg-slate-700 p-0 sm:px-3"
             >
               <ArrowLeft className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Retour</span>
@@ -179,10 +178,11 @@ export default function StudentLiveRoomPage() {
           </div>
         </div>
 
-        {/* Content Area - Flex Container (Column on Mobile, Row on Desktop) */}
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
-          {/* LiveKit Room - Top on Mobile (50%), Left on Desktop (Flex-1) */}
-          <div className="w-full h-[50vh] lg:h-full lg:flex-1 bg-white relative">
+        {/* Content Area */}
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-scroll relative pb-24">
+          {/* A. LiveKit Room (Video & Chat) */}
+          {/* FIX: Added z-20 to ensure Video/Chat renders ON TOP of the Quiz section */}
+          <div className="w-full h-[50vh] lg:h-full lg:flex-1 bg-black relative z-20 shadow-xl">
             <LiveKitRoom
               className="h-full w-full"
               token={token}
@@ -193,9 +193,8 @@ export default function StudentLiveRoomPage() {
               video={false}
               onDisconnected={() => {
                 console.log("Student disconnected");
-                router.push("/dashboard");
+                router.push("/dashboard/live");
               }}
-              // Ensure video conference fits the container
               data-lk-theme="default"
             >
               <VideoConference />
@@ -203,8 +202,9 @@ export default function StudentLiveRoomPage() {
             </LiveKitRoom>
           </div>
 
-          {/* Quiz/Sidebar - Bottom on Mobile (Rest of height), Right on Desktop (Fixed Width) */}
-          <div className="w-full lg:w-[400px] overflow-y-scroll max-h-[50vh] lg:max-h-full h-full flex flex-col bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200">
+          {/* B. Quiz/Sidebar */}
+          {/* FIX: Added z-10 (lower than video) to ensure it stays behind chat overlays */}
+          <div className="w-full lg:w-[400px] mb-10 h-full flex flex-col bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200 relative z-10">
             <div className="flex-1 overflow-y-auto p-4 lg:p-6">
               {quiz.length > 0 ? (
                 <QuizDisplay quizzes={quiz} userId={session?.user.id || ""} />
@@ -227,12 +227,54 @@ export default function StudentLiveRoomPage() {
 
   // 5. Ended State with Recording
   if (status === "ENDED" && recordingUrl) {
-    router.push("/dashboard");
+    return (
+      <div className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen flex flex-col items-center justify-start">
+        <div className="w-full flex justify-between items-center mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+            <Video className="h-8 w-8 text-blue-600" />
+            <span className="hidden sm:inline">Replay de la session</span>
+            <span className="inline sm:hidden">Replay</span>
+          </h1>
+          <Button
+            variant="outline"
+            onClick={() => router.push("/dashboard/live")}
+          >
+            Retour
+          </Button>
+        </div>
+
+        <div className="w-full aspect-video bg-black rounded-[8px] overflow-hidden shadow-2xl border border-slate-700">
+          <video
+            controls
+            className="w-full h-full"
+            src={recordingUrl}
+            preload="metadata"
+          >
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
+        </div>
+
+        <div className="mt-6 text-center text-muted-foreground">
+          <p>La session est terminée.</p>
+        </div>
+      </div>
+    );
   }
 
   // 6. Ended State without Recording
   if (status === "ENDED" && !recordingUrl) {
-    router.push("/dashboard");
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+        <Video className="h-12 w-12 text-slate-400 mb-4" />
+        <h2 className="text-2xl font-bold">Session Terminée</h2>
+        <p className="text-muted-foreground mt-2">
+          L&apos;enregistrement sera bientôt disponible.
+        </p>
+        <Button className="mt-6" onClick={() => router.push("/dashboard/live")}>
+          Retour au Dashboard
+        </Button>
+      </div>
+    );
   }
 
   // 7. Fallback

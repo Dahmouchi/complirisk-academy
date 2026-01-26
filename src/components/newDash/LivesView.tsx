@@ -534,13 +534,13 @@ const LivesView = ({
                         {nextLive.name}
                       </h2>
                       {nextLive.description && (
-                        <p className="text-white/80 text-sm sm:text-base lg:text-lg line-clamp-2">
+                        <p className="text-white/90 text-sm sm:text-base lg:text-lg line-clamp-2">
                           {nextLive.description}
                         </p>
                       )}
 
                       {/* Instructor */}
-                      <div className="flex items-center gap-3 pt-2">
+                      <div className="flex items-center gap-3 p-2 bg-black/50 rounded-2xl">
                         <img
                           src={
                             nextLive.teacher?.image ||
@@ -580,7 +580,7 @@ const LivesView = ({
                                 : `/dashboard/live/${nextLive.id}`,
                             )
                           }
-                          className="group w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 rounded-[8px] shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+                          className="group w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-red-600 text-white border-red-600 border-2 hover:bg-red-600 hover:text-white font-bold px-8 py-4 rounded-[8px] shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
                         >
                           <>
                             <Video className="w-5 h-5 group-hover:animate-pulse" />
