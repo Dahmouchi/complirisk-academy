@@ -73,7 +73,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
         subject.courses.map(async (course: any) => {
           const res = await getCourseCompletionStatus(user.id, course.id);
           return { courseId: course.id, completed: res.completed };
-        })
+        }),
       );
 
       const statusMap: { [key: string]: boolean } = {};
@@ -187,13 +187,13 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                       <BookOpen className="w-4 h-4 mr-2" />
                       Quiz ({selectedCourse.quizzes?.length || 0})
                     </TabsTrigger>
-                    <TabsTrigger
+                    {/*<TabsTrigger
                       value="discussions"
                       className="gap-2 data-[state=active]:bg-background rounded-lg"
                     >
                       <MessageSquare className="w-4 h-4" />
                       Discussions
-                    </TabsTrigger>
+                    </TabsTrigger>*/}
                   </TabsList>
                   <TabsContent value="overview" className="mt-6">
                     <div className="space-y-6">
@@ -227,17 +227,17 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="discussions" className="mt-6">
+                  {/*<TabsContent value="discussions" className="mt-6">
                     <div className="bg-card rounded-2xl border border-border p-6 text-center">
                       <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground">coming soon</p>
                     </div>
-                    {/*<CourseChat
+                    <CourseChat
                       courseId={selectedCourse.id}
                       currentUserId={user.id}
                       currentUserRole={user.role}
-                    />*/}
-                  </TabsContent>
+                    />
+                  </TabsContent>*/}
                   <TabsContent value="notes" className="mt-4">
                     {selectedCourse?.quizzes.length > 0 ? (
                       <div>
@@ -274,7 +274,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                   <p className="text-sm text-muted-foreground mt-1">
                     {
                       subject.courses.filter(
-                        (v: { isCompleted: any }) => v.isCompleted
+                        (v: { isCompleted: any }) => v.isCompleted,
                       ).length
                     }{" "}
                     / {subject.courses.length} leçons terminées

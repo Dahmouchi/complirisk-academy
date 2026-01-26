@@ -1,20 +1,26 @@
-import { getStudentRegister } from "@/actions/client";
-import StudentLivesPage from "@/components/cinq/Lives";
-import Lives from "@/components/cinq/NewLive";
+import React from "react";
+import { getStudentById } from "@/actions/client";
+import { getQuizzesGroupedByMatiere } from "@/actions/quizResults";
+import { getStudentDashboardStats } from "@/actions/student";
+import IndexNewDash from "@/components/newDash/Dashboard";
+import IndexNewDashLive from "@/components/newDash/DashboardLive";
 
-export default async function Live() {
-  const user = await getStudentRegister();
+const page = async () => {
+  const user = await getStudentById();
+  if (!user) {
+    return <div className="text-center">User not found</div>;
+  }
+  //const quizzes = await getQuizzesGroupedByMatiere(user.id);
+  //const stats = await getStudentDashboardStats(user.id);
+
   return (
-    <div className="mt-8">
-      {user ? (
-        <div>
-          <StudentLivesPage />
-        </div>
-      ) : (
-        <div className="lg:px-16 px-2">
-          <Lives />
-        </div>
-      )}
-    </div>
+    <>
+      <IndexNewDashLive matieres={user.grade?.subjects} user={user} />
+      {/*<IndexCinq matieres={user.grade?.subjects} user={user} />
+      <ModernStudentSpace user = {user} quizzes = {quizzes.data}/>
+      <StudentDashboard user={user} quizzes={quizzes.data} stats={stats} />*/}
+    </>
   );
-}
+};
+
+export default page;

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface LeftSidebarProps {
   activeTab: "courses" | "lives";
@@ -16,6 +17,7 @@ interface LeftSidebarProps {
 }
 
 const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
+  const router = useRouter();
   return (
     <>
       {/* Mobile: Fixed top bar */}
@@ -24,7 +26,7 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
           <Button
             variant="ghost"
             size="lg"
-            onClick={() => onTabChange("courses")}
+            onClick={() => router.push("/dashboard")}
             className={cn(
               "transition-all w-1/2 duration-200 gap-2 rounded-[8px]",
               activeTab === "courses"
@@ -39,7 +41,7 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
           <Button
             variant="ghost"
             size="lg"
-            onClick={() => onTabChange("lives")}
+            onClick={() => router.push("/dashboard/live")}
             className={cn(
               "rounded-[8px] transition-all w-1/2 duration-200 gap-2",
               activeTab === "lives"
@@ -59,7 +61,7 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onTabChange("courses")}
+          onClick={() => router.push("/dashboard")}
           className={cn(
             "w-12 h-12 rounded-2xl transition-all duration-200",
             activeTab === "courses"
@@ -74,7 +76,7 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onTabChange("lives")}
+          onClick={() => router.push("/dashboard/live")}
           className={cn(
             "w-12 h-12 rounded-2xl transition-all duration-200",
             activeTab === "lives"

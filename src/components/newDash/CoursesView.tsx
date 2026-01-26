@@ -71,7 +71,7 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
               {/* Removed z-50 from this div as it's not needed */}
               <div className="flex flex-wrap gap-4 pt-2">
                 <Button
-                  onClick={() => onTabChange("lives")}
+                  onClick={() => router.push("/dashboard/live")}
                   size="lg"
                   className="cursor-pointer rounded-full text-foreground hover:bg-card/90 gap-2 hover:text-blue-700 shadow relative z-10"
                 >

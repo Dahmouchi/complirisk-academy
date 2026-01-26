@@ -1,13 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import LeftSidebar from "@/components/newDash/LeftSidebar";
-import CoursesView from "@/components/newDash/CoursesView";
 import LivesView from "@/components/newDash/LivesView";
-import EventsPanel from "@/components/newDash/EventsPanel";
 import { getStudentLiveRooms, isUserRegistered } from "@/actions/live-room";
+import LivePanel from "./LivePanel";
 
-const IndexNewDash = ({ matieres, user }: any) => {
-  const [activeTab, setActiveTab] = useState<"courses" | "lives">("courses");
+const IndexNewDashLive = ({ matieres, user }: any) => {
+  const [activeTab, setActiveTab] = useState<"courses" | "lives">("lives");
   const [liveRooms, setLiveRooms] = useState<any>({
     live: [],
     scheduled: [],
@@ -66,20 +65,21 @@ const IndexNewDash = ({ matieres, user }: any) => {
             <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
         </aside>
-
-        {/* Main Content */}
-        <CoursesView
+        <LivesView
+          liveRooms={liveRooms}
+          registeredLives={registeredLives}
+          user={user}
           onTabChange={setActiveTab}
-          matieres={matieres}
-          registeredUser={user.registerCode}
+          loading={loading}
         />
-        {/* Right Events Panel */}
+
+        {/* Right Events Panel*/}
         <aside className="w-96 p-4 hidden lg:block">
-          <EventsPanel registeredUser={user.registerCode} />
+          <LivePanel registeredUser={user.registerCode} userId={user.id} />
         </aside>
       </div>
     </div>
   );
 };
 
-export default IndexNewDash;
+export default IndexNewDashLive;

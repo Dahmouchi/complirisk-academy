@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import LiveCard from "./LiveCard";
 import SearchBar from "./SearchBar";
 import { UnlockedLive } from "@/actions/client";
 import { toast } from "react-toastify";
 import { UnlockCodeInput } from "../cinq/UnlockCodeInput";
+import useEmblaCarousel from "embla-carousel-react";
 
 import {
   Bell,
@@ -20,11 +21,14 @@ import {
   Send,
   Users,
   Video,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { StudentLiveCard } from "../cinq/StudentLiveCard";
 import { useRouter } from "next/navigation";
+import { StudentLiveCardWithTiming } from "../cinq/StudentLiveCardwithTiming";
 const steps = [
   {
     number: 1,
@@ -61,6 +65,104 @@ const steps = [
     description: "Entrez le code reçu pour débloquer tous les cours live.",
   },
 ];
+
+// RecordedLivesCarousel Component
+const RecordedLivesCarousel = ({
+  subjectId,
+  recordedLives,
+  userId,
+  registeredLives,
+  carouselRefs,
+  setCarouselRefs,
+  canScrollPrev,
+  canScrollNext,
+  updateScrollState,
+  scrollPrev,
+  scrollNext,
+}: any) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    breakpoints: {
+      "(min-width: 768px)": { slidesToScroll: 2 },
+    },
+  });
+
+  useEffect(() => {
+    if (emblaApi) {
+      // Store the embla API instance for this subject
+      setCarouselRefs((prev: any) => ({ ...prev, [subjectId]: emblaApi }));
+
+      // Update scroll state initially and on select
+      updateScrollState(subjectId, emblaApi);
+      emblaApi.on("select", () => updateScrollState(subjectId, emblaApi));
+      emblaApi.on("reInit", () => updateScrollState(subjectId, emblaApi));
+    }
+  }, [emblaApi, subjectId, setCarouselRefs, updateScrollState]);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <div className="flex items-center gap-2">
+          <div className="text-sm font-semibold text-muted-foreground">
+            Lives enregistrés
+          </div>
+          <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+            {recordedLives.length}
+          </span>
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => scrollPrev(subjectId)}
+            disabled={!canScrollPrev[subjectId]}
+            className={`p-2 rounded-full transition-all ${
+              canScrollPrev[subjectId]
+                ? "bg-primary hover:bg-primary/70 text-white cursor-pointer"
+                : "bg-secondary/30 text-muted-foreground/30 cursor-not-allowed"
+            }`}
+            aria-label="Previous"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scrollNext(subjectId)}
+            disabled={!canScrollNext[subjectId]}
+            className={`p-2 rounded-full transition-all ${
+              canScrollNext[subjectId]
+                ? "bg-primary hover:bg-primary/70 text-white cursor-pointer"
+                : "bg-secondary/30 text-muted-foreground/30 cursor-not-allowed"
+            }`}
+            aria-label="Next"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Carousel */}
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-4">
+          {recordedLives.map((room: any) => (
+            <div
+              key={room.id}
+              className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] min-w-0"
+            >
+              <StudentLiveCard
+                isProgrammed={false}
+                room={room}
+                userId={userId}
+                isRegistered={registeredLives.has(room.id)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LivesView = ({
   liveRooms,
   registeredLives,
@@ -68,52 +170,6 @@ const LivesView = ({
   onTabChange,
   loading,
 }: any) => {
-  const lives = [
-    {
-      title: "Advanced Patient Assessment Techniques",
-      instructor: "Dr. Emily Chen",
-      instructorImage:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop",
-      date: "Today",
-      time: "14:00",
-      participants: 45,
-      isLive: true,
-      variant: "accent" as const,
-    },
-    {
-      title: "Clinical Decision Making Workshop",
-      instructor: "Prof. James Miller",
-      instructorImage:
-        "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop",
-      date: "Tomorrow",
-      time: "10:00",
-      participants: 32,
-      isLive: false,
-      variant: "mint" as const,
-    },
-    {
-      title: "Emergency Response Protocols",
-      instructor: "Dr. Sarah Williams",
-      instructorImage:
-        "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop",
-      date: "Wed, 26.03",
-      time: "15:30",
-      participants: 28,
-      isLive: false,
-      variant: "lavender" as const,
-    },
-    {
-      title: "Mental Health First Aid",
-      instructor: "Dr. Michael Brown",
-      instructorImage:
-        "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&h=100&fit=crop",
-      date: "Thu, 27.03",
-      time: "11:00",
-      participants: 56,
-      isLive: false,
-      variant: "cream" as const,
-    },
-  ];
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -122,6 +178,46 @@ const LivesView = ({
     minutes: 0,
     seconds: 0,
   });
+
+  // Carousel state for recorded lives - stores carousel instances per subject
+  const [carouselRefs, setCarouselRefs] = useState<{ [key: string]: any }>({});
+  const [canScrollPrev, setCanScrollPrev] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [canScrollNext, setCanScrollNext] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  // Function to update scroll states for a specific subject
+  const updateScrollState = useCallback((subjectId: string, emblaApi: any) => {
+    if (!emblaApi) return;
+    setCanScrollPrev((prev) => ({
+      ...prev,
+      [subjectId]: emblaApi.canScrollPrev(),
+    }));
+    setCanScrollNext((prev) => ({
+      ...prev,
+      [subjectId]: emblaApi.canScrollNext(),
+    }));
+  }, []);
+
+  // Function to scroll to previous slide
+  const scrollPrev = useCallback(
+    (subjectId: string) => {
+      const emblaApi = carouselRefs[subjectId];
+      if (emblaApi) emblaApi.scrollPrev();
+    },
+    [carouselRefs],
+  );
+
+  // Function to scroll to next slide
+  const scrollNext = useCallback(
+    (subjectId: string) => {
+      const emblaApi = carouselRefs[subjectId];
+      if (emblaApi) emblaApi.scrollNext();
+    },
+    [carouselRefs],
+  );
 
   // Get the next live session dynamically (earliest live or scheduled)
   const nextLive = (() => {
@@ -366,7 +462,7 @@ const LivesView = ({
                 }}
               >
                 {/* Background overlay - gradient changes direction based on screen size */}
-                <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-blue-500/70 via-blue-500/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-blue-500/90 via-blue-500/40 to-transparent" />
 
                 {/* Decorative elements */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
@@ -475,29 +571,25 @@ const LivesView = ({
                           </div>
                         </div>
                       </div>
-
-                      <Button
-                        onClick={() =>
-                          router.push(
-                            nextLive.status === "LIVE"
-                              ? `/dashboard/live/${nextLive.id}`
-                              : `/dashboard/live/${nextLive.id}`,
-                          )
-                        }
-                        className="group w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 rounded-[8px] shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
-                      >
-                        {nextLive.status === "LIVE" ? (
+                      {nextLive.status === "LIVE" ? (
+                        <Button
+                          onClick={() =>
+                            router.push(
+                              nextLive.status === "LIVE"
+                                ? `/dashboard/live/${nextLive.id}`
+                                : `/dashboard/live/${nextLive.id}`,
+                            )
+                          }
+                          className="group w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 rounded-[8px] shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+                        >
                           <>
                             <Video className="w-5 h-5 group-hover:animate-pulse" />
                             Rejoindre le Live
                           </>
-                        ) : (
-                          <>
-                            <Bell className="w-5 h-5" />
-                            Activer le rappel
-                          </>
-                        )}
-                      </Button>
+                        </Button>
+                      ) : (
+                        <></>
+                      )}
                     </div>
 
                     {/* Right - Countdown Timer */}
@@ -510,7 +602,7 @@ const LivesView = ({
                           {/* Hours */}
                           <div className="flex flex-col items-center">
                             <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
-                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                              <span className="text-xl sm:text-2xl lg:text-4xl font-bold tabular-nums">
                                 {formatTime(timeLeft.hours)}
                               </span>
                             </div>
@@ -526,7 +618,7 @@ const LivesView = ({
                           {/* Minutes */}
                           <div className="flex flex-col items-center">
                             <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
-                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                              <span className="text-xl sm:text-2xl lg:text-4xl font-bold tabular-nums">
                                 {formatTime(timeLeft.minutes)}
                               </span>
                             </div>
@@ -542,7 +634,7 @@ const LivesView = ({
                           {/* Seconds */}
                           <div className="flex flex-col items-center">
                             <div className="bg-black/20 backdrop-blur-md rounded-[8px] sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 min-w-[60px] sm:min-w-[70px] lg:min-w-[90px] text-center border border-white/10">
-                              <span className="text-2xl sm:text-3xl lg:text-5xl font-bold tabular-nums">
+                              <span className="text-xl sm:text-2xl lg:text-4xl font-bold tabular-nums">
                                 {formatTime(timeLeft.seconds)}
                               </span>
                             </div>
@@ -719,7 +811,7 @@ const LivesView = ({
                                     </span>
                                   )}
                                 </div>
-                                <StudentLiveCard
+                                <StudentLiveCardWithTiming
                                   isProgrammed={true}
                                   room={subjectData.upcomingLive}
                                   userId={user.id}
@@ -732,31 +824,19 @@ const LivesView = ({
 
                             {/* Recorded Lives */}
                             {subjectData.recordedLives.length > 0 && (
-                              <div>
-                                <div className="flex items-center gap-2 mb-3">
-                                  <div className="text-sm font-semibold text-muted-foreground">
-                                    Lives enregistrés
-                                  </div>
-                                  <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
-                                    {subjectData.recordedLives.length}
-                                  </span>
-                                </div>
-                                <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
-                                  {subjectData.recordedLives.map(
-                                    (room: any) => (
-                                      <StudentLiveCard
-                                        isProgrammed={false}
-                                        key={room.id}
-                                        room={room}
-                                        userId={user.id}
-                                        isRegistered={registeredLives.has(
-                                          room.id,
-                                        )}
-                                      />
-                                    ),
-                                  )}
-                                </div>
-                              </div>
+                              <RecordedLivesCarousel
+                                subjectId={subjectData.subject.id}
+                                recordedLives={subjectData.recordedLives}
+                                userId={user.id}
+                                registeredLives={registeredLives}
+                                carouselRefs={carouselRefs}
+                                setCarouselRefs={setCarouselRefs}
+                                canScrollPrev={canScrollPrev}
+                                canScrollNext={canScrollNext}
+                                updateScrollState={updateScrollState}
+                                scrollPrev={scrollPrev}
+                                scrollNext={scrollNext}
+                              />
                             )}
 
                             {/* Empty state for subject with no lives */}
