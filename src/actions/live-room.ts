@@ -172,15 +172,15 @@ export async function createLiveRoom(data: CreateLiveRoomInput) {
         
         <!-- Header Section -->
         <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); padding: 40px 30px; text-align: center; color: #ffffff;">
-            <div style="margin-bottom: 20px;">
-                <img src="https://happytrip-test-cinq.puunoo.easypanel.host/logoH.webp" alt="Logo" style="max-width: 180px; height: auto;">
+            <div style="margin-bottom: 20px; background-color: #ffffff; padding: 10px; border-radius: 10px;">
+                <img src="https://happytrip-test-cinq.puunoo.easypanel.host/logoH.jpg" alt="Logo" style="max-width: 180px; height: auto;">
             </div>
             <h1 style="font-size: 28px; font-weight: 700; margin: 0 0 8px 0; letter-spacing: -0.5px; color: #ffffff;">Nouvelle Session Live !</h1>
             <p style="font-size: 16px; opacity: 0.95; font-weight: 400; margin: 0; color: #ffffff;">Une nouvelle opportunité d'apprentissage vous attend</p>
         </div>
         
         <!-- Main Content -->
-        <div style="padding: 40px 30px;">
+        <div style="padding: 20px 10px;">
             <p style="font-size: 18px; color: #2d3748; margin: 0 0 20px 0; font-weight: 500;">Bonjour ${studentName},</p>
             
             <p style="font-size: 16px; color: #4a5568; margin: 0 0 30px 0; line-height: 1.7;">
@@ -236,20 +236,9 @@ export async function createLiveRoom(data: CreateLiveRoomInput) {
             
             <!-- Call to Action -->
             <div style="text-align: center; margin: 35px 0;">
-                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/dashboard/student/lives" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/dashboard/live" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
                     Accéder à mes Lives →
                 </a>
-            </div>
-            
-            <!-- Tip Box -->
-            <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 6px; padding: 18px; margin: 25px 0;">
-                <div style="font-size: 15px; font-weight: 600; color: #92400e; margin-bottom: 8px;">
-                    💡 Conseil pratique
-                </div>
-                <p style="font-size: 14px; color: #78350f; line-height: 1.5; margin: 0;">
-                    Préparez vos questions à l'avance et assurez-vous d'avoir une connexion internet stable 
-                    pour profiter pleinement de cette session interactive !
-                </p>
             </div>
         </div>
         
