@@ -139,6 +139,7 @@ export async function createLiveRoom(data: CreateLiveRoomInput) {
         where: {
           gradeId: subject.gradeId,
           role: "USER", // Only students
+          NOT: { registerCode: null },
         },
         select: {
           email: true,
