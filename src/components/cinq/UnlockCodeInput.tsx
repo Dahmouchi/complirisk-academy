@@ -61,7 +61,7 @@ export function UnlockCodeInput({ onUnlock }: UnlockCodeInputProps) {
 
   return (
     <>
-      <Card className="relative border-2 border-primary/30 bg-card rounded-3xl shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] before:absolute before:right-0 before:bottom-0 before:w-full before:h-full before:rounded-3xl before:bg-gradient-to-b before:from-transparent before:via-transparent before:to-blue-500/20 before:bg-gradient-to-l before:from-transparent before:via-transparent before:to-blue-500/20 before:border-r-[3px] before:border-b-[3px] before:border-blue-500/60 before:-z-10">
+      <Card className="relative   border-2 border-primary/30 bg-card rounded-3xl shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] before:absolute before:right-0 before:bottom-0 before:w-full before:h-full before:rounded-3xl before:bg-gradient-to-b before:from-transparent before:via-transparent before:to-blue-500/20 before:bg-gradient-to-l before:from-transparent before:via-transparent before:to-blue-500/20 before:border-r-[3px] before:border-b-[3px] before:border-blue-500/60 before:-z-10">
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-3 w-full">
             <label className="text-sm font-medium text-center w-full text-foreground">
