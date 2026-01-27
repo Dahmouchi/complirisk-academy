@@ -92,13 +92,13 @@ export default async function NewsPage() {
                 className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                <span>S'abonner au pack premium</span>
+                <span>S&apos;abonner au pack premium</span>
                 <Sparkles className="w-5 h-5 group-hover:-rotate-12 transition-transform" />
               </Link>
 
               {/* Help Text */}
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Vous avez déjà un code d'inscription ?{" "}
+                Vous avez déjà un code d&apos;inscription ?{" "}
                 <Link
                   href="/contact"
                   className="text-purple-600 dark:text-purple-400 hover:underline font-medium"
