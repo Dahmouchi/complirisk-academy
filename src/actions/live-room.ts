@@ -12,6 +12,7 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextAuth";
 import { uploadImage } from "./cours";
+import sendEmail from "@/lib/sendemail";
 
 const roomService = new RoomServiceClient(
   process.env.LIVEKIT_URL!,
@@ -131,6 +132,164 @@ export async function createLiveRoom(data: CreateLiveRoomInput) {
         }
       }
     }
+
+    // Send email notifications to students in the grade
+    if (subject.gradeId) {
+      const students = await prisma.user.findMany({
+        where: {
+          gradeId: subject.gradeId,
+          role: "USER", // Only students
+        },
+        select: {
+          email: true,
+          name: true,
+          prenom: true,
+        },
+      });
+
+      // Filter students with valid emails and send email to each student
+      for (const student of students.filter((s) => s.email)) {
+        const studentName =
+          `${student.prenom || ""} ${student.name || ""}`.trim() || "Étudiant";
+        const liveStartDate = data.startsAt
+          ? new Date(data.startsAt).toLocaleString("fr-FR", {
+              dateStyle: "long",
+              timeStyle: "short",
+            })
+          : "À déterminer";
+
+        const emailHtml = `
+        <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Nouvelle Session Live</title>
+</head>
+<body style="margin: 0; padding: 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; background-color: #f5f7fa;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);">
+        
+        <!-- Header Section -->
+        <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); padding: 40px 30px; text-align: center; color: #ffffff;">
+            <div style="margin-bottom: 20px;">
+                <img src="https://happytrip-test-cinq.puunoo.easypanel.host/logoH.webp" alt="Logo" style="max-width: 180px; height: auto;">
+            </div>
+            <h1 style="font-size: 28px; font-weight: 700; margin: 0 0 8px 0; letter-spacing: -0.5px; color: #ffffff;">Nouvelle Session Live !</h1>
+            <p style="font-size: 16px; opacity: 0.95; font-weight: 400; margin: 0; color: #ffffff;">Une nouvelle opportunité d'apprentissage vous attend</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 40px 30px;">
+            <p style="font-size: 18px; color: #2d3748; margin: 0 0 20px 0; font-weight: 500;">Bonjour ${studentName},</p>
+            
+            <p style="font-size: 16px; color: #4a5568; margin: 0 0 30px 0; line-height: 1.7;">
+                Nous avons le plaisir de vous informer qu'une nouvelle session live vient d'être programmée. 
+                Préparez-vous à enrichir vos connaissances !
+            </p>
+            
+            <!-- Live Session Card -->
+            <div style="background: #fef3c7; border: 2px solid #3b82f6; border-radius: 10px; padding: 25px; margin: 25px 0;">
+                <h2 style="font-size: 22px; color: #1a202c; font-weight: 700; margin: 0 0 15px 0;">📚 ${data.name}</h2>
+                
+                ${data.description ? `<p style="font-size: 15px; color: #4a5568; margin: 0 0 20px 0; line-height: 1.6;">${data.description}</p>` : ""}
+                
+                <div style="height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent); margin: 20px 0;"></div>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 6px 0; font-size: 15px;">
+                            <span style="font-size: 18px; margin-right: 12px;">👨‍🏫</span>
+                            <span style="font-weight: 600; color: #2d3748;">Enseignant :</span>
+                            <span style="color: #4a5568;"> ${teacherFullName}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; font-size: 15px;">
+                            <span style="font-size: 18px; margin-right: 12px;">📖</span>
+                            <span style="font-weight: 600; color: #2d3748;">Matière :</span>
+                            <span style="color: #4a5568;"> ${subject.name}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; font-size: 15px;">
+                            <span style="font-size: 18px; margin-right: 12px;">📅</span>
+                            <span style="font-weight: 600; color: #2d3748;">Date :</span>
+                            <span style="color: #4a5568;"> ${liveStartDate}</span>
+                        </td>
+                    </tr>
+                    ${
+                      data.duration
+                        ? `
+                    <tr>
+                        <td style="padding: 6px 0; font-size: 15px;">
+                            <span style="font-size: 18px; margin-right: 12px;">⏱️</span>
+                            <span style="font-weight: 600; color: #2d3748;">Durée :</span>
+                            <span style="color: #4a5568;"> ${data.duration} minutes</span>
+                        </td>
+                    </tr>
+                    `
+                        : ""
+                    }
+                </table>
+            </div>
+            
+            <!-- Call to Action -->
+            <div style="text-align: center; margin: 35px 0;">
+                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/dashboard/student/lives" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                    Accéder à mes Lives →
+                </a>
+            </div>
+            
+            <!-- Tip Box -->
+            <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 6px; padding: 18px; margin: 25px 0;">
+                <div style="font-size: 15px; font-weight: 600; color: #92400e; margin-bottom: 8px;">
+                    💡 Conseil pratique
+                </div>
+                <p style="font-size: 14px; color: #78350f; line-height: 1.5; margin: 0;">
+                    Préparez vos questions à l'avance et assurez-vous d'avoir une connexion internet stable 
+                    pour profiter pleinement de cette session interactive !
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="background-color: #f7fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="font-size: 13px; color: #718096; line-height: 1.6; margin: 0 0 15px 0;">
+                Cet email a été envoyé automatiquement par votre plateforme d'apprentissage.<br>
+                Merci de ne pas répondre directement à ce message.
+            </p>
+            
+            <div style="margin-top: 15px;">
+                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/dashboard" style="color: #3b82f6; text-decoration: none; font-size: 13px; margin: 0 10px;">Tableau de bord</a>
+                <span style="color: #cbd5e0;">•</span>
+                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/support" style="color: #3b82f6; text-decoration: none; font-size: 13px; margin: 0 10px;">Support</a>
+                <span style="color: #cbd5e0;">•</span>
+                <a href="${process.env.NEXTAUTH_URL || "https://cinqcinq.ma"}/settings" style="color: #3b82f6; text-decoration: none; font-size: 13px; margin: 0 10px;">Préférences</a>
+            </div>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #718096;">
+                © ${new Date().getFullYear()} CINQCINQ. Tous droits réservés.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+        `;
+
+        try {
+          await sendEmail(
+            student.email,
+            `📚 Nouveau Live: ${data.name}`,
+            emailHtml,
+          );
+        } catch (emailError) {
+          console.error(`Error sending email to ${student.email}:`, emailError);
+          // Continue sending to other students even if one fails
+        }
+      }
+    }
+
     revalidatePath("/dashboard/teacher/lives");
 
     return { success: true, liveRoom };

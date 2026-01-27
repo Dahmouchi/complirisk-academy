@@ -1,11 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { redirect, useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { ChevronRight } from "lucide-react";
 const GoogleLoginButton = () => {
@@ -43,7 +39,6 @@ const GoogleLoginButton = () => {
   );
 };
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
 
@@ -146,13 +141,12 @@ const Auth = () => {
           </div>
         </div>
 
-        {/* Right Side - Form */}
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-          <div className="text-right mb-8">
+          {/*<div className="text-right mb-8">
             <span className="text-sm text-muted-foreground">
               {isLogin ? "Pas encore de compte?" : "Déjà inscrit?"}
             </span>
-            <Button
+              Right Side - Form <Button
               variant="outline"
               size="sm"
               className="ml-2"
@@ -160,7 +154,7 @@ const Auth = () => {
             >
               {isLogin ? "S'inscrire" : "Se connecter"}
             </Button>
-          </div>
+          </div>*/}
           <div className="">
             {/* Header mobile */}
             <div className=" text-center mb-4 flex items-center justify-center ">
