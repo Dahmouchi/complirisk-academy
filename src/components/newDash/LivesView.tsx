@@ -322,64 +322,144 @@ const LivesView = ({
     <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pt-8 pt-[54px]">
       <div className="max-w-5xl">
         {!user.registerCode ? (
-          <div className="w-full">
-            <div className="w-full space-y-2">
-              <h1 className="text-2xl font-bold text-foreground">
-                Inscription Pro
-              </h1>
-              <p className="text-muted-foreground text-sm">
-                Débloquez tous les cours live
-              </p>
-            </div>
-            <div className="my-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <UnlockCodeInput onUnlock={handleUnlock} />
-              <div className="w-full h-[30vh] ">
+          <div className="w-full ">
+            <div className="w-full grid grid-cols-1 mb-5 lg:grid-cols-2 gap-4">
+              {/* Premium Pack Card - Gold 3D Design */}
+              <div className="w-full perspective-1000">
                 <div
-                  className="bg-card/10 backdrop-blur-sm h-full relative rounded-2xl p-6 border border-primary-foreground/20"
+                  className="relative rounded-3xl p-8 overflow-hidden shadow-xl transform transition-all duration-500 hover:scale-[1.02] hover:-rotate-y-1"
                   style={{
-                    backgroundImage: "url(/optimized/bgnew.webp)",
+                    backgroundImage: "url('/premium3.jpg')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
                   }}
                 >
-                  <div className="absolute inset-0 w-full h-full rounded-2xl top-0 left-0 bg-black/50 opacity-50 pointer-events-none"></div>
+                  {/* Animated gold particles */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute top-4 left-10 w-2 h-2 bg-yellow-400/60 rounded-full animate-pulse" />
+                    <div className="absolute top-20 right-20 w-1.5 h-1.5 bg-amber-300/50 rounded-full animate-pulse delay-300" />
+                    <div className="absolute bottom-10 left-1/4 w-1 h-1 bg-yellow-300/40 rounded-full animate-pulse delay-700" />
+                    <div className="absolute top-1/2 right-10 w-2 h-2 bg-amber-400/30 rounded-full animate-pulse delay-500" />
+                  </div>
 
-                  <div className="relative z-10">
-                    <h3 className="text-primary-foreground font-semibold text-lg mb-4">
-                      Fonctionnalités Premium en Direct
-                    </h3>
-                    <ul className="space-y-3">
-                      {[
-                        "Connectez-vous directement avec votre instructeur",
-                        "Sessions individuelles en direct",
-                        "Disponible 24h/24 et 7j/7",
-                      ].map((feature, index) => (
-                        <li
-                          key={index}
-                          className="flex items-center gap-3 text-primary-foreground/90"
-                        >
-                          <div className="w-6 h-6 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                  {/* Gold gradient border glow */}
+                  <div
+                    className="absolute inset-0 rounded-3xl opacity-50"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, transparent 40%, rgba(212, 175, 55, 0.1) 50%, transparent 60%)",
+                    }}
+                  />
+
+                  {/* Premium badge */}
+
+                  <div className="relative z-10 grid grid-cols-1 gap-8 items-center">
+                    {/* Left Content */}
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="z-20">
+                          <div
+                            className="px-2 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%)",
+                              color: "#1a1a2e",
+                              boxShadow: "0 4px 15px rgba(212, 175, 55, 0.4)",
+                            }}
+                          >
                             <svg
-                              className="w-3.5 h-3.5"
-                              fill="none"
+                              className="w-4 h-4"
                               viewBox="0 0 24 24"
-                              stroke="currentColor"
+                              fill="currentColor"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
+                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                             </svg>
                           </div>
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                        </div>
+                        <h3
+                          className="text-2xl font-bold"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #d4af37 0%, #f4e4bc 30%, #d4af37 60%, #f4e4bc 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
+                          }}
+                        >
+                          Pack LIVE PREMIUM
+                        </h3>
+                        <div className="z-20">
+                          <div
+                            className="px-2 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%)",
+                              color: "#1a1a2e",
+                              boxShadow: "0 4px 15px rgba(212, 175, 55, 0.4)",
+                            }}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      <ul className="space-y-3 mt-3">
+                        {[
+                          { text: "Séances/Cours LIVE", icon: "🎥" },
+                          { text: "Quiz en Temps réel", icon: "⚡" },
+                          {
+                            text: "Disponibilité plateforme 24h/7",
+                            icon: "🌐",
+                          },
+                        ].map((feature, index) => (
+                          <li
+                            key={index}
+                            className="flex items-center gap-4 text-sm text-white/90 group"
+                          >
+                            <div
+                              className="w-10 h-10 rounded-[8px] flex items-center justify-center transition-transform group-hover:scale-110"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(244, 228, 188, 0.1) 100%)",
+                                border: "1px solid rgba(212, 175, 55, 0.3)",
+                              }}
+                            >
+                              <span className="text-lg">{feature.icon}</span>
+                            </div>
+                            <span className="text-base font-medium">
+                              {feature.text}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
+
+                  {/* Decorative 3D elements */}
+                  <div
+                    className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full opacity-20"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%)",
+                    }}
+                  />
+                  <div
+                    className="absolute -top-10 -left-10 w-40 h-40 rounded-full opacity-10"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(244, 228, 188, 0.5) 0%, transparent 70%)",
+                    }}
+                  />
                 </div>
               </div>
+              <UnlockCodeInput onUnlock={handleUnlock} />
             </div>
             <div className="">
               <div className="w-full  space-y-6">
