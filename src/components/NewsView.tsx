@@ -75,13 +75,13 @@ export function NewsView() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "HIGH":
-        return "bg-red-500 text-white";
+        return "bg-red-500 text-white rounded-full";
       case "MEDIUM":
-        return "bg-orange-500 text-white";
+        return "bg-orange-500 text-white rounded-full";
       case "LOW":
-        return "bg-blue-500 text-white";
+        return "bg-blue-500 text-white rounded-full";
       default:
-        return "bg-gray-500 text-white";
+        return "bg-gray-500 text-white rounded-full";
     }
   };
 

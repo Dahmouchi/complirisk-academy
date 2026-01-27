@@ -57,7 +57,7 @@ export function CreateNewsDialog({
     excerpt: "",
     imageUrl: "",
     priority: "MEDIUM",
-    published: false,
+    published: true,
     gradeIds: [],
   });
 
@@ -103,7 +103,7 @@ export function CreateNewsDialog({
         excerpt: "",
         imageUrl: "",
         priority: "MEDIUM",
-        published: false,
+        published: true,
         gradeIds: [],
       });
       onNewsCreated?.();
@@ -151,19 +151,6 @@ export function CreateNewsDialog({
               required
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="excerpt">Résumé (optionnel)</Label>
-            <Input
-              id="excerpt"
-              value={formData.excerpt}
-              onChange={(e) =>
-                setFormData({ ...formData, excerpt: e.target.value })
-              }
-              placeholder="Court résumé pour l'aperçu"
-            />
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="content">Contenu *</Label>
             <Textarea
@@ -177,20 +164,6 @@ export function CreateNewsDialog({
               required
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">URL de l&apos;image (optionnel)</Label>
-            <Input
-              id="imageUrl"
-              type="url"
-              value={formData.imageUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, imageUrl: e.target.value })
-              }
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="priority">Priorité</Label>
             <Select

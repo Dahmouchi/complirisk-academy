@@ -12,6 +12,7 @@ import {
   Laptop,
   CheckCircle,
   Users,
+  Megaphone,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -223,6 +224,13 @@ export const StudentHeader = ({
               </div>
             </div>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer relative"
+              onClick={() => navigate.push("/dashboard/actualites")}
+            >
+              <Megaphone className="mr-2 h-4 w-4" />
+              <span>Mes annonces</span>
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer relative"
               onClick={() => navigate.push("/dashboard/profile")}

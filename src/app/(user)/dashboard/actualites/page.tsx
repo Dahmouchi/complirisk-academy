@@ -2,7 +2,7 @@ import { NewsView } from "@/components/NewsView";
 
 export default function NewsPage() {
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 h-[calc(100vh-100px)] overflow-y-scroll">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Actualités & Événements</h1>
         <p className="text-muted-foreground">
