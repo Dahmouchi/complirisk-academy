@@ -1,56 +1,23 @@
 "use client";
-import { useState } from "react";
-import { RoleSelector } from "@/components/RoleSelector";
-import { RoomSetup } from "@/components/RoomSetup";
-import { Classroom } from "@/components/Classroom";
-import { RoomCredentials, UserRole } from "@/lib/livekit copy";
 
-type AppState = "role-select" | "room-setup" | "classroom";
+import Companies from "@/components/complirisk/Companies";
+import NamesList from "@/components/complirisk/Courses";
+import Hero from "@/components/complirisk/Hero";
+import Mentor from "@/components/complirisk/Mentor";
+import Newsletter from "@/components/complirisk/Newsletter";
+import Testimonial from "@/components/complirisk/Testimonial";
 
 const Index = () => {
-  const [appState, setAppState] = useState<AppState>("role-select");
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [roomCredentials, setRoomCredentials] =
-    useState<RoomCredentials | null>(null);
-
-  const handleSelectRole = (role: UserRole) => {
-    setSelectedRole(role);
-    setAppState("room-setup");
-  };
-
-  const handleJoinRoom = (credentials: RoomCredentials) => {
-    setRoomCredentials(credentials);
-    setAppState("classroom");
-  };
-
-  const handleLeaveRoom = () => {
-    setRoomCredentials(null);
-    setSelectedRole(null);
-    setAppState("role-select");
-  };
-
-  const handleBack = () => {
-    setSelectedRole(null);
-    setAppState("role-select");
-  };
-
-  if (appState === "classroom" && roomCredentials) {
-    return (
-      <Classroom credentials={roomCredentials} onLeave={handleLeaveRoom} />
-    );
-  }
-
-  if (appState === "room-setup" && selectedRole) {
-    return (
-      <RoomSetup
-        role={selectedRole}
-        onBack={handleBack}
-        onJoin={handleJoinRoom}
-      />
-    );
-  }
-
-  return <RoleSelector onSelectRole={handleSelectRole} />;
+  return (
+    <div>
+      <Hero />
+      <Companies />
+      <NamesList />
+      <Mentor />
+      <Testimonial />
+      <Newsletter />
+    </div>
+  );
 };
 
 export default Index;

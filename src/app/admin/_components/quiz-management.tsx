@@ -101,20 +101,20 @@ const QuizForm: React.FC<QuizFormProps> = ({
 
       if (!question.answer.trim()) {
         newErrors.push(
-          `La question ${qIndex + 1} doit avoir une réponse/explication`
+          `La question ${qIndex + 1} doit avoir une réponse/explication`,
         );
       }
 
       if (question.options.length < 2) {
         newErrors.push(
-          `La question ${qIndex + 1} doit avoir au moins 2 options`
+          `La question ${qIndex + 1} doit avoir au moins 2 options`,
         );
       }
 
       const correctOptions = question.options.filter((opt) => opt.isCorrect);
       if (correctOptions.length === 0) {
         newErrors.push(
-          `La question ${qIndex + 1} doit avoir au moins une option correcte`
+          `La question ${qIndex + 1} doit avoir au moins une option correcte`,
         );
       }
 
@@ -123,7 +123,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
           newErrors.push(
             `L'option ${oIndex + 1} de la question ${
               qIndex + 1
-            } doit avoir un texte`
+            } doit avoir un texte`,
           );
         }
       });
@@ -169,7 +169,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
               ...question,
               options: [...question.options, { text: "", isCorrect: false }],
             }
-          : question
+          : question,
       ),
     }));
   };
@@ -183,10 +183,10 @@ const QuizForm: React.FC<QuizFormProps> = ({
           ? {
               ...question,
               options: question.options.filter(
-                (_, oIndex) => oIndex !== optionIndex
+                (_, oIndex) => oIndex !== optionIndex,
               ),
             }
-          : question
+          : question,
       ),
     }));
   };
@@ -195,12 +195,12 @@ const QuizForm: React.FC<QuizFormProps> = ({
   const updateQuestion = (
     questionIndex: number,
     field: keyof Question,
-    value: string
+    value: string,
   ) => {
     setFormData((prev) => ({
       ...prev,
       questions: prev.questions.map((question, index) =>
-        index === questionIndex ? { ...question, [field]: value } : question
+        index === questionIndex ? { ...question, [field]: value } : question,
       ),
     }));
   };
@@ -210,7 +210,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
     questionIndex: number,
     optionIndex: number,
     field: keyof Option,
-    value: string | boolean
+    value: string | boolean,
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -219,10 +219,10 @@ const QuizForm: React.FC<QuizFormProps> = ({
           ? {
               ...question,
               options: question.options.map((option, oIndex) =>
-                oIndex === optionIndex ? { ...option, [field]: value } : option
+                oIndex === optionIndex ? { ...option, [field]: value } : option,
               ),
             }
-          : question
+          : question,
       ),
     }));
   };
@@ -249,7 +249,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-[6px] shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
@@ -410,7 +410,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                               questionIndex,
                               optionIndex,
                               "isCorrect",
-                              e.target.checked
+                              e.target.checked,
                             )
                           }
                           className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
@@ -423,7 +423,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                               questionIndex,
                               optionIndex,
                               "text",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -529,7 +529,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
         if (editingQuiz) {
           // Mise à jour
           const updatedQuizzes = quizzes.map((quiz) =>
-            quiz.id === editingQuiz.id ? result.data : quiz
+            quiz.id === editingQuiz.id ? result.data : quiz,
           );
           setQuizzes(updatedQuizzes);
           onQuizzesUpdate?.(updatedQuizzes);
@@ -561,7 +561,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
   const handleDeleteQuiz = async (quizId: string) => {
     if (
       !window.confirm(
-        "Êtes-vous sûr de vouloir supprimer ce quiz ? Cette action est irréversible."
+        "Êtes-vous sûr de vouloir supprimer ce quiz ? Cette action est irréversible.",
       )
     ) {
       return;
@@ -694,7 +694,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
       </AnimatePresence>
 
       {/* Header */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+      <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-gray-900">
@@ -720,7 +720,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
       {/* Liste des quiz */}
       <div className="space-y-4">
         {quizzes.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-12 text-center">
             <HelpCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Aucun quiz
@@ -747,7 +747,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+                className="bg-white rounded-[6px] shadow-lg border border-gray-200 overflow-hidden"
               >
                 {/* Header du quiz */}
                 <div className="p-6 border-b border-gray-200">
@@ -766,7 +766,7 @@ const QuizManagement: React.FC<QuizManagementProps> = ({
                           <span>
                             {quiz.questions.reduce(
                               (sum, q) => sum + q.options.length,
-                              0
+                              0,
                             )}{" "}
                             option(s)
                           </span>

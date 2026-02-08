@@ -15,6 +15,10 @@ import {
   Sparkles,
   GraduationCap,
   Award,
+  Briefcase,
+  MapPin,
+  X,
+  Mail,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
@@ -22,7 +26,7 @@ import { redirect, useRouter } from "next/navigation";
 import {
   getClientById,
   updateClientProfile1,
-  updateClientProfile2,
+  createDemandeInscription,
 } from "@/actions/client";
 import { toast } from "react-toastify";
 import Header from "@/components/Layout/Header";
@@ -33,12 +37,13 @@ interface PersonalInfo {
   nom: string;
   prenom: string;
   phone: string;
+  fonction: string;
+  email: string;
+  lieuEtudeTravail: string;
 }
 
 interface StudyInfo {
-  gradeId: string;
-  universiteId: string;
-  universiteCity: string;
+  selectedGrades: string[]; // Array of grade IDs
   niveau: string;
 }
 
@@ -56,6 +61,7 @@ const InputField = ({
   placeholder,
   icon: Icon,
   error,
+  readOnly = false,
   required = false,
 }: {
   label: string;
@@ -65,6 +71,7 @@ const InputField = ({
   placeholder: string;
   icon: any;
   error?: string;
+  readOnly?: boolean;
   required?: boolean;
 }) => {
   return (
@@ -84,14 +91,168 @@ const InputField = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full px-4 py-3.5 bg-white border-2 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 outline-none ${
+          readOnly={readOnly}
+          className={`w-full px-4 py-2 bg-white border-2 rounded-[6px] focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 outline-none ${
             error
               ? "border-red-400 bg-red-50"
               : "border-gray-200 hover:border-blue-300"
           }`}
         />
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 rounded-[6px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 text-red-500 text-sm bg-red-50 px-3 py-2 rounded-lg"
+        >
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+// MultiSelect Field amélioré
+const MultiSelectField = ({
+  label,
+  selectedValues,
+  onChange,
+  options,
+  placeholder,
+  icon: Icon,
+  error,
+  required = false,
+}: {
+  label: string;
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+  options: { id: string; name: string }[];
+  placeholder: string;
+  icon: any;
+  error?: string;
+  required?: boolean;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOption = (id: string) => {
+    const newValues = selectedValues.includes(id)
+      ? selectedValues.filter((v) => v !== id)
+      : [...selectedValues, id];
+    onChange(newValues);
+  };
+
+  return (
+    <motion.div
+      className="space-y-2"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <Icon className="h-4 w-4 text-blue-500" />
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+
+      {/* Selected Items as Tickets */}
+      <AnimatePresence>
+        {selectedValues.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex flex-wrap gap-2 mb-2"
+          >
+            {options
+              .filter((opt) => selectedValues.includes(opt.id))
+              .map((option) => (
+                <motion.div
+                  key={option.id}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full border border-blue-100 text-sm font-medium"
+                >
+                  {option.name}
+                  <button
+                    type="button"
+                    onClick={() => toggleOption(option.id)}
+                    className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </motion.div>
+              ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={`w-full px-4 py-3.5 bg-white border-2 rounded-[6px] text-left focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 flex items-center justify-between outline-none ${
+            error
+              ? "border-red-400 bg-red-50"
+              : "border-gray-200 hover:border-blue-300"
+          }`}
+        >
+          <span
+            className={`block truncate ${selectedValues.length === 0 ? "text-gray-400" : "text-gray-800"}`}
+          >
+            {selectedValues.length > 0
+              ? `Ajouter d'autres niveaux...`
+              : placeholder}
+          </span>
+          <ChevronRight
+            className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-90" : "rotate-0"}`}
+          />
+        </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setIsOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-100 rounded-[6px] shadow-xl max-h-60 overflow-y-auto"
+              >
+                {options.map((option) => (
+                  <div
+                    key={option.id}
+                    onClick={() => toggleOption(option.id)}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                  >
+                    <div
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                        selectedValues.includes(option.id)
+                          ? "bg-blue-600 border-blue-600"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      {selectedValues.includes(option.id) && (
+                        <Check className="w-3 h-3 text-white" />
+                      )}
+                    </div>
+                    <span
+                      className={`text-sm ${selectedValues.includes(option.id) ? "text-blue-600 font-medium" : "text-gray-700"}`}
+                    >
+                      {option.name}
+                    </span>
+                  </div>
+                ))}
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+
       {error && (
         <motion.div
           initial={{ opacity: 0, x: -10 }}
@@ -133,7 +294,7 @@ const SelectField = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+      <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
         <Icon className="h-4 w-4 text-blue-500" />
         {label} {required && <span className="text-red-500">*</span>}
       </label>
@@ -141,7 +302,7 @@ const SelectField = ({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full px-4 py-3.5 bg-white border-2 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 appearance-none outline-none ${
+          className={`w-full px-4 py-3.5 bg-white border-2 rounded-[6px] focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 appearance-none outline-none ${
             error
               ? "border-red-400 bg-red-50"
               : "border-gray-200 hover:border-blue-300"
@@ -265,7 +426,7 @@ const PersonalInfoStep = ({
         <p className="text-gray-600">Commençons par vos informations de base</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <InputField
           label="Nom"
           value={data.nom}
@@ -284,29 +445,59 @@ const PersonalInfoStep = ({
           error={errors.prenom}
           required
         />
+        <InputField
+          label="Téléphone"
+          type="tel"
+          value={data.phone}
+          onChange={(value) => onChange({ ...data, phone: value })}
+          placeholder="+212 6 12 34 56 78"
+          icon={Phone}
+          error={errors.phone}
+          required
+        />
       </div>
 
-      <InputField
-        label="Téléphone"
-        type="tel"
-        value={data.phone}
-        onChange={(value) => onChange({ ...data, phone: value })}
-        placeholder="+212 6 12 34 56 78"
-        icon={Phone}
-        error={errors.phone}
-        required
-      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <InputField
+          label="Email"
+          value={data.email}
+          onChange={(value) => onChange({ ...data, email: value })}
+          placeholder="[EMAIL_ADDRESS]"
+          icon={Mail}
+          error={errors.email}
+          required
+          readOnly={true}
+        />
+        <InputField
+          label="Fonction"
+          value={data.fonction}
+          onChange={(value) => onChange({ ...data, fonction: value })}
+          placeholder="Ex: Étudiant, Consultant..."
+          icon={Briefcase}
+          error={errors.fonction}
+          required
+        />
+        <InputField
+          label="Lieu d'études / Travail"
+          value={data.lieuEtudeTravail}
+          onChange={(value) => onChange({ ...data, lieuEtudeTravail: value })}
+          placeholder="Ex: Université de Casablanca"
+          icon={MapPin}
+          error={errors.lieuEtudeTravail}
+          required
+        />
+      </div>
     </motion.div>
   );
 };
 
-// Étape 2: Informations d'étude
+// Étape 2: Informations d'étude - Grade Selection
 const StudyInfoStep = ({
   data,
   onChange,
   errors,
 }: {
-  data: StudyInfo & { gradeId?: string };
+  data: StudyInfo;
   onChange: (data: StudyInfo) => void;
   errors: Partial<StudyInfo>;
 }) => {
@@ -314,42 +505,9 @@ const StudyInfoStep = ({
   const FIXED_NIVEAU_ID = "cmk1e7ue6000h0sroci9i2ev2";
 
   const [gradeOptions, setGradeOptions] = useState<
-    { value: string; label: string }[]
+    { id: string; name: string; price: number }[]
   >([]);
   const [loading, setLoading] = useState(true);
-
-  // Mapping of cities to universities based on the provided image
-  const villesUniversites: {
-    [key: string]: { value: string; label: string }[];
-  } = {
-    Rabat: [{ value: "um5", label: "Université Mohammed V" }],
-    Salé: [{ value: "um5-sale", label: "Université Mohammed V" }],
-    Casablanca: [{ value: "uh2c", label: "Université Hassan II" }],
-    Fès: [
-      { value: "usmba", label: "Université Sidi Mohamed Ben Abdellah" },
-      { value: "uaq", label: "Université Al Quaraouiyine" },
-    ],
-    Marrakech: [{ value: "uca", label: "Université Cadi Ayyad" }],
-    Meknès: [{ value: "ump", label: "Université Moulay Ismail" }],
-    Oujda: [{ value: "uma", label: "Université Mohammed Premier" }],
-    Tanger: [{ value: "uae", label: "Université Abdelmalek Essaâdi" }],
-    Tétouan: [{ value: "uae-tetouan", label: "Université Abdelmalek Essaâdi" }],
-    "El Jadida": [{ value: "ucam", label: "Université Chouaib Doukkali" }],
-    Kénitra: [{ value: "uit", label: "Université Ibn Tofail" }],
-    Agadir: [{ value: "uiz", label: "Université Ibn Zohr" }],
-    Settat: [{ value: "uh1", label: "Université Hassan Ier" }],
-    "Beni Mellal": [
-      { value: "usms", label: "Université Sultan Moulay Slimane" },
-    ],
-  };
-
-  // List of cities for the dropdown
-  const villes = Object.keys(villesUniversites)
-    .sort()
-    .map((ville) => ({
-      value: ville,
-      label: ville,
-    }));
 
   useEffect(() => {
     const fetchGrades = async () => {
@@ -363,8 +521,9 @@ const StudyInfoStep = ({
 
           if (targetNiveau && targetNiveau.grades) {
             const grades = targetNiveau.grades.map((grade: any) => ({
-              value: grade.id,
-              label: grade.name,
+              id: grade.id,
+              name: grade.name,
+              price: grade.price || 0,
             }));
             setGradeOptions(grades);
             // Automatically set the niveau ID
@@ -380,15 +539,26 @@ const StudyInfoStep = ({
     fetchGrades();
   }, []);
 
-  const handleCityChange = (value: string) => {
-    // Reset university when city changes
-    onChange({ ...data, universiteCity: value, universiteId: "" });
+  const handleGradeToggle = (gradeId: string) => {
+    const currentGrades = data.selectedGrades || [];
+    const isSelected = currentGrades.includes(gradeId);
+
+    const newGrades = isSelected
+      ? currentGrades.filter((id) => id !== gradeId)
+      : [...currentGrades, gradeId];
+
+    onChange({ ...data, selectedGrades: newGrades });
   };
 
-  // Get universities for the selected city
-  const getUniversitiesForCity = () => {
-    if (!data.universiteCity) return [];
-    return villesUniversites[data.universiteCity] || [];
+  const calculateTotalPrice = () => {
+    const selectedGrades = data.selectedGrades || [];
+    return gradeOptions
+      .filter((grade) => selectedGrades.includes(grade.id))
+      .reduce((total, grade) => total + grade.price, 0);
+  };
+
+  const isGradeSelected = (gradeId: string) => {
+    return (data.selectedGrades || []).includes(gradeId);
   };
 
   return (
@@ -397,14 +567,14 @@ const StudyInfoStep = ({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6"
+      className="space-y-6 w-full"
     >
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent mb-2">
-          Votre Parcours
+          Sélectionnez vos Niveaux
         </h2>
         <p className="text-gray-600">
-          Dites-nous en plus sur vos études actuelles
+          Choisissez les niveaux pour lesquels vous souhaitez vous inscrire
         </p>
       </div>
 
@@ -417,63 +587,18 @@ const StudyInfoStep = ({
           />
         </div>
       ) : (
-        <>
-          {/* Step 1: Select City */}
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <SelectField
-              label="Ville de l'université"
-              value={data.universiteCity}
-              onChange={handleCityChange}
-              options={villes}
-              placeholder="Sélectionnez votre ville"
-              icon={School}
-              error={errors.universiteCity}
-              required
-            />
-          </motion.div>
-
-          {/* Step 2: Select University (appears after city selection) */}
-          <AnimatePresence>
-            {data.universiteCity && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SelectField
-                  label="Université"
-                  value={data.universiteId}
-                  onChange={(value) =>
-                    onChange({ ...data, universiteId: value })
-                  }
-                  options={getUniversitiesForCity()}
-                  placeholder="Sélectionnez votre université"
-                  icon={GraduationCap}
-                  error={errors.universiteId}
-                  required
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Step 3: Select Niveaux (formerly Class) */}
-          <SelectField
-            label="Niveaux"
-            value={data.gradeId}
-            onChange={(value) => onChange({ ...data, gradeId: value })}
+        <div className="max-w-md mx-auto">
+          <MultiSelectField
+            label="Niveaux d'études"
+            selectedValues={data.selectedGrades || []}
+            onChange={(values) => onChange({ ...data, selectedGrades: values })}
             options={gradeOptions}
-            placeholder="Sélectionnez votre niveau"
-            icon={Award}
-            error={errors.gradeId}
+            placeholder="Sélectionnez vos niveaux..."
+            icon={BookOpen}
+            error={errors.selectedGrades as any}
             required
           />
-        </>
+        </div>
       )}
     </motion.div>
   );
@@ -548,6 +673,16 @@ const ConfirmationStep = ({ data }: { data: FormData }) => {
             },
             { label: "Téléphone", value: data.personal.phone, icon: Phone },
             {
+              label: "Fonction",
+              value: data.personal.fonction,
+              icon: Briefcase,
+            },
+            {
+              label: "Lieu",
+              value: data.personal.lieuEtudeTravail,
+              icon: MapPin,
+            },
+            {
               label: "Niveau",
               value: niveauLabels[data.study.niveau] || data.study.niveau,
               icon: GraduationCap,
@@ -574,7 +709,7 @@ const ConfirmationStep = ({ data }: { data: FormData }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300"
+        className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-[6px] font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300"
         whileHover={{ scale: 1.05, y: -2 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => redirect("/dashboard")}
@@ -590,8 +725,15 @@ const MultiStepForm = () => {
   const { data: session, status, update } = useSession();
   const [currentStep, setCurrentStep] = useState(session?.user.step || 0);
   const [formData, setFormData] = useState<FormData>({
-    personal: { nom: "", prenom: "", phone: "" },
-    study: { niveau: "", gradeId: "", universiteId: "", universiteCity: "" },
+    personal: {
+      nom: "",
+      prenom: "",
+      phone: "",
+      email: "",
+      fonction: "",
+      lieuEtudeTravail: "",
+    },
+    study: { niveau: "", selectedGrades: [] },
   });
   const [errors, setErrors] = useState<{
     personal: Partial<PersonalInfo>;
@@ -613,12 +755,13 @@ const MultiStepForm = () => {
                 nom: res.name || "",
                 prenom: res.prenom || "",
                 phone: res.phone?.toString() || "",
+                email: res.email || "",
+                fonction: res.fonction || "",
+                lieuEtudeTravail: res.lieuEtudeTravail || "",
               },
               study: {
-                gradeId: "",
+                selectedGrades: [],
                 niveau: "",
-                universiteId: "",
-                universiteCity: "",
               },
             });
           }
@@ -635,6 +778,10 @@ const MultiStepForm = () => {
     if (!data.nom.trim()) errors.nom = "Le nom est requis";
     if (!data.prenom.trim()) errors.prenom = "Le prénom est requis";
     if (!data.phone.trim()) errors.phone = "Le téléphone est requis";
+    if (!data.fonction.trim()) errors.fonction = "La fonction est requise";
+    if (!data.email.trim()) errors.email = "L'email est requis";
+    if (!data.lieuEtudeTravail.trim())
+      errors.lieuEtudeTravail = "Le lieu est requis";
     else if (!/^[\+]?[0-9\s\-\(\)]{8,}$/.test(data.phone))
       errors.phone = "Format de téléphone invalide";
     return errors;
@@ -642,9 +789,9 @@ const MultiStepForm = () => {
 
   const validateStudyInfo = (data: StudyInfo): Partial<StudyInfo> => {
     const errors: Partial<StudyInfo> = {};
-    if (!data.universiteCity) errors.universiteCity = "La ville est requise";
-    if (!data.universiteId) errors.universiteId = "L'université est requise";
-    if (!data.gradeId) errors.gradeId = "Le niveau est requis";
+    if (!data.selectedGrades || data.selectedGrades.length === 0) {
+      errors.selectedGrades = "Veuillez sélectionner au moins un niveau" as any;
+    }
     return errors;
   };
 
@@ -674,11 +821,19 @@ const MultiStepForm = () => {
       }
       try {
         if (session) {
-          const res = await updateClientProfile2(session?.user.id, formData);
-          if (res) {
+          const res = await createDemandeInscription(
+            session?.user.id,
+            formData,
+          );
+          if (res.success) {
             await update({ step: 2 });
+            toast.success(
+              "Votre demande d'inscription a été soumise avec succès!",
+            );
             router.push("/dashboard");
-          } else toast.error("Échec de la mise à jour du profil");
+          } else {
+            toast.error("Échec de la soumission de la demande");
+          }
         }
       } catch (error) {
         console.error("Update failed", error);
@@ -691,124 +846,129 @@ const MultiStepForm = () => {
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   if (status === "loading") return <Loading />;
-  if (!session) redirect("/login");
+  if (!session) redirect("/");
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen relative overflow-hidden h-screen"
       style={{
-        backgroundImage: `url("/optimized/bgnew.webp")`,
+        backgroundImage: `url("/compli/bg-login.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay gradient */}
-      <div className="absolute inset-0" />
-
-      {/* Animated blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-0 left-0 w-96 h-96 bg-blue-400/30 rounded-full blur-3xl"
-          animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
-          transition={{ repeat: Infinity, duration: 20 }}
-        />
-        <motion.div
-          className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/30 rounded-full blur-3xl"
-          animate={{ x: [0, -100, 0], y: [0, -50, 0] }}
-          transition={{ repeat: Infinity, duration: 15 }}
-        />
-      </div>
-
       <Header visible={false} />
 
-      <div className="relative max-w-3xl mx-auto pt-32 p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 md:p-12"
-        >
-          {currentStep < 2 && (
-            <ProgressIndicator currentStep={currentStep} totalSteps={2} />
-          )}
-
-          <AnimatePresence mode="wait">
-            {currentStep === 0 && (
-              <PersonalInfoStep
-                key="personal"
-                data={formData.personal}
-                onChange={(data) => {
-                  setFormData((prev) => ({ ...prev, personal: data }));
-                  setErrors((prev) => ({ ...prev, personal: {} }));
-                }}
-                errors={errors.personal}
-              />
-            )}
-            {currentStep === 1 && (
-              <StudyInfoStep
-                key="study"
-                data={formData.study}
-                onChange={(data) => {
-                  setFormData((prev) => ({ ...prev, study: data }));
-                  setErrors((prev) => ({ ...prev, study: {} }));
-                }}
-                errors={errors.study}
-              />
-            )}
-            {currentStep === 2 && (
-              <ConfirmationStep key="confirmation" data={formData} />
-            )}
-          </AnimatePresence>
-
-          {currentStep < 2 && (
+      <div className="flex items-center justify-center h-full lg:p-0 p-3">
+        <div className="relative max-w-7xl grid grid-cols-1 lg:grid-cols-3  bg-white/95 backdrop-blur-xl rounded-[6px] shadow-lg ">
+          <div className="lg:col-span-2 w-full">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="flex justify-between mt-10 gap-4"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="p-8 md:p-12"
             >
-              <motion.button
-                onClick={prevStep}
-                disabled={currentStep === 0}
-                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-semibold transition-all duration-300 ${
-                  currentStep === 0
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:shadow-lg hover:scale-105 active:scale-95"
-                }`}
-                whileHover={currentStep > 0 ? { x: -5 } : {}}
-                whileTap={currentStep > 0 ? { scale: 0.95 } : {}}
-              >
-                <ChevronLeft className="w-5 h-5" />
-                <span className="hidden sm:inline">Précédent</span>
-              </motion.button>
+              {currentStep < 2 && (
+                <ProgressIndicator currentStep={currentStep} totalSteps={2} />
+              )}
 
-              <motion.button
-                onClick={nextStep}
-                className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
-                whileHover={{ scale: 1.05, x: 5 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative flex items-center gap-2">
-                  {currentStep === 1 ? "Terminer" : "Suivant"}
-                  <ChevronRight className="w-5 h-5" />
-                </span>
-              </motion.button>
+              <AnimatePresence mode="wait">
+                {currentStep === 0 && (
+                  <PersonalInfoStep
+                    key="personal"
+                    data={formData.personal}
+                    onChange={(data) => {
+                      setFormData((prev) => ({ ...prev, personal: data }));
+                      setErrors((prev) => ({ ...prev, personal: {} }));
+                    }}
+                    errors={errors.personal}
+                  />
+                )}
+                {currentStep === 1 && (
+                  <StudyInfoStep
+                    key="study"
+                    data={formData.study}
+                    onChange={(data) => {
+                      setFormData((prev) => ({ ...prev, study: data }));
+                      setErrors((prev) => ({ ...prev, study: {} }));
+                    }}
+                    errors={errors.study}
+                  />
+                )}
+                {currentStep === 2 && (
+                  <ConfirmationStep key="confirmation" data={formData} />
+                )}
+              </AnimatePresence>
+
+              {currentStep < 2 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="flex justify-between mt-10 gap-4"
+                >
+                  <motion.button
+                    onClick={prevStep}
+                    disabled={currentStep === 0}
+                    className={`flex items-center gap-2 px-6 py-2 rounded-[6px] font-semibold transition-all duration-300 ${
+                      currentStep === 0
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:shadow-lg hover:scale-105 active:scale-95"
+                    }`}
+                    whileHover={currentStep > 0 ? { x: -5 } : {}}
+                    whileTap={currentStep > 0 ? { scale: 0.95 } : {}}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    <span className="hidden sm:inline">Précédent</span>
+                  </motion.button>
+
+                  <motion.button
+                    onClick={nextStep}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-8 py-2 rounded-[6px] font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
+                    whileHover={{ scale: 1.05, x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative flex items-center gap-2">
+                      {currentStep === 1 ? "Terminer" : "Suivant"}
+                      <ChevronRight className="w-5 h-5" />
+                    </span>
+                  </motion.button>
+                </motion.div>
+              )}
             </motion.div>
-          )}
-        </motion.div>
 
-        {/* Indicateur d'étape textuel */}
-        {currentStep < 2 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-center mt-6 text-white/80 text-sm"
+            {/* Indicateur d'étape textuel 
+            {currentStep < 2 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="text-center mt-6 text-white/80 text-sm"
+              >
+                Étape {currentStep + 1} sur 2
+              </motion.div>
+            )}*/}
+          </div>
+          <div
+            className="w-full items-center justify-center hidden lg:flex flex-col h-full rounded-r-[6px] bg-blue-600"
+            style={{
+              backgroundImage: `url("/compli/test.jpg")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
           >
-            Étape {currentStep + 1} sur 2
-          </motion.div>
-        )}
+            <div className="bg-white p-3 rounded-full px-8 w-1/2 flex items-center justify-center">
+              <img src="/compli/logo.png" className="w-full h-auto" alt="" />
+            </div>
+            <p className="p-4 text-white text-sm">
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              Distinctio quidem rerum beatae debitis nisi dicta. Obcaecati
+              assumenda expedita numquam doloribus, at laudantium ducimus
+              consectetur animi, fugit quia adipisci accusamus deserunt.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

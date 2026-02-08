@@ -185,7 +185,7 @@ export default function CoursesPage({ classe, subject, coures }: any) {
             {/* Grade filter */}
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Par niveau :
+                Par norme :
               </label>
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -197,7 +197,7 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                   }}
                   className="flex items-center gap-2"
                 >
-                  Tous les niveaux ({courses.length})
+                  Toutes les normes ({courses.length})
                 </Button>
                 {grades.map((grade) => (
                   <Button
@@ -219,7 +219,7 @@ export default function CoursesPage({ classe, subject, coures }: any) {
             {/* Subject filter */}
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Par matière :
+                Par Section :
               </label>
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -228,11 +228,11 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                   onClick={() => setSelectedSubject("all")}
                   className="flex items-center gap-2"
                 >
-                  Toutes les matières (
+                  Toutes les sections (
                   {selectedGrade === "all"
                     ? courses.length
                     : courses.filter(
-                        (c) => subjectGradeMap[c.subjectId] === selectedGrade
+                        (c) => subjectGradeMap[c.subjectId] === selectedGrade,
                       ).length}
                   )
                 </Button>
@@ -305,7 +305,7 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Titre</TableHead>
-                    <TableHead>Matière</TableHead>
+                    <TableHead>section</TableHead>
                     <TableHead className="text-center">
                       <ArrowUpDown className="h-4 w-4 inline" /> Ordre
                     </TableHead>
@@ -326,7 +326,9 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                               <Image className="h-4 w-4 text-blue-500" />
                             )}
                             <div>
-                              <div className="font-medium">{course.title}</div>
+                              <div className="font-medium max-w-sm truncate">
+                                {course.title}
+                              </div>
                               {course.content && (
                                 <div className="text-sm text-gray-500 truncate max-w-xs">
                                   {course.content}
@@ -375,7 +377,7 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                               size="sm"
                               onClick={() =>
                                 router.push(
-                                  `/admin/dashboard/cours/${course.handler}`
+                                  `/admin/dashboard/cours/${course.handler}`,
                                 )
                               }
                               className="text-blue-600 hover:text-blue-800"

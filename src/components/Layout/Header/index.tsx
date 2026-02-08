@@ -1,44 +1,36 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react-hooks/exhaustive-deps */
-
 "use client";
-import Link from "next/link";
-import { redirect, usePathname, useRouter } from "next/navigation";
+
 import { useEffect, useRef, useState } from "react";
-import { headerData } from "../Header/Navigation/menuData";
 import Logo from "./Logo";
 import HeaderLink from "../Header/Navigation/HeaderLink";
 import MobileHeaderLink from "../Header/Navigation/MobileHeaderLink";
 import Signin from "@/components/Auth/SignIn";
 import SignUp from "@/components/Auth/SignUp";
-import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import ThemeToggler from "./ThemeToggler";
+import { HeaderItem } from "@/types/menu";
+import { signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 import {
-  BookOpenText,
   ChevronDown,
-  ChevronsDown,
-  ChevronsUpDown,
-  LogIn,
+  LayoutDashboard,
   LogOut,
+  Megaphone,
+  Settings,
   User,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { signOut, useSession } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { LanguageSelector } from "@/components/LangSwitcher";
-const Header = ({ visible }: { visible: any }) => {
+const Header = ({ visible }: { visible: boolean }) => {
+  const [headerData, setHeaderData] = useState<HeaderItem[]>([]);
   const { data: session } = useSession();
-
+  const user = session?.user;
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -48,9 +40,23 @@ const Header = ({ visible }: { visible: any }) => {
   const signInRef = useRef<HTMLDivElement>(null);
   const signUpRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/data");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setHeaderData(data.HeaderData);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleScroll = () => {
-    setSticky(window.scrollY >= 80);
+    setSticky(window.scrollY >= 10);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -74,7 +80,6 @@ const Header = ({ visible }: { visible: any }) => {
       setNavbarOpen(false);
     }
   };
-  const router = useRouter();
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -84,6 +89,16 @@ const Header = ({ visible }: { visible: any }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [navbarOpen, isSignInOpen, isSignUpOpen]);
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
+  const initials = user
+    ?.username!.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   useEffect(() => {
     if (isSignInOpen || isSignUpOpen || navbarOpen) {
@@ -94,139 +109,311 @@ const Header = ({ visible }: { visible: any }) => {
   }, [isSignInOpen, isSignUpOpen, navbarOpen]);
 
   return (
-    <header
-      className={`fixed top-0 z-50 w-full transition-all bg-white duration-300 ${
-        sticky ? "shadow-lg lg:py-5" : "shadow-none py-4"
-      }`}
-    >
-      {/* Background Image */}
-      <div className="absolute -top-8 inset-0 z-0 overflow-hidden">
-        {/* Optional overlay if you need to darken the background */}
-        <div className="absolute inset-0 bg-opacity-20"></div>
+    <>
+      <div
+        className={`${sticky ? "hidden" : "block"} m-2 rounded-[8px] bg-primary hover:text-blue-400 cursor-pointer  text-primary-foreground py-2 text-center text-sm`}
+        onClick={() => {
+          router.push("/courses");
+        }}
+      >
+        Cours gratuits 🎉 Offre limitée, inscrivez-vous vite !
+        <span className="ml-2 cursor-pointer hover:underline">→</span>
       </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <div className="lg:py-0 py-0">
-          <div className="container mx-auto lg:max-w-screen-xl md:max-w-screen-md flex items-center justify-between px-4">
-            <img
-              onClick={() => router.push("/")}
-              src="/optimized/logoH.webp"
-              className="h-auto w-26 lg:w-28 cursor-pointer"
-              alt=""
-            />
-            {visible === true && (
-              <nav className="hidden lg:flex flex-grow items-center gap-8 justify-center">
+      <header
+        className={`fixed top-0 z-40 w-full transition-all duration-300 ${
+          sticky ? " shadow-lg bg-white py-4" : "shadow-none py-4 mt-8"
+        }`}
+      >
+        <div>
+          <div className="container mx-auto max-w-7xl px-4 flex items-center justify-between">
+            <Logo />
+            {visible && (
+              <nav className="hidden lg:flex grow items-center gap-8 justify-start ml-14">
                 {headerData.map((item, index) => (
                   <HeaderLink key={index} item={item} />
                 ))}
               </nav>
             )}
-
-            {/* Button content */}
-            <div className="flex gap-2 items-center">
-              {session?.user ? (
-                <div className=" flex items-center gap-2">
+            {user ? (
+              <>
+                <div className="flex items-center gap-4 lg:hidden">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
-                        size="lg"
-                        className="bg-white text-slate-800 hover:text-white cursor-pointer data-[state=open]:text-sidebar-accent-foreground dark:bg-slate-700"
+                        variant="ghost"
+                        className="flex items-center  gap-2 px-2 hover:bg-muted/50"
                       >
-                        <Avatar className="h-8 w-8 rounded-lg">
-                          <AvatarImage
-                            src={"/userProfile.png"}
-                            alt={"user.name"}
-                          />
-                        </Avatar>
-
-                        <ChevronDown className="ml-auto size-4 lg:block hidden" />
+                        <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+                          <div className="relative">
+                            {!user?.image && (
+                              <div className="absolute top-0 right-0 z-50 bg-red-500 rounded-full w-2 h-2" />
+                            )}
+                            <Avatar className="w-10 h-10 border-2 border-gray-200">
+                              <AvatarImage
+                                src={`${user?.image}`}
+                                alt={user?.username}
+                              />
+                              <AvatarFallback>{initials}</AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div className="hidden md:block text-left">
+                            <p className="text-sm font-semibold">
+                              {" "}
+                              {user?.username}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Étudiant
+                            </p>
+                          </div>
+                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                        </div>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                      className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
                       align="end"
-                      sideOffset={4}
+                      className="w-56 rounded-[6px]"
                     >
-                      <DropdownMenuLabel className="p-0 font-normal">
-                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                          <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarFallback className="rounded-lg">
-                              {" "}
-                              {session?.user.username
-                                ?.slice(0, 2)
-                                .toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-semibold">
-                              {session?.user.username || "Utilisateur"}
-                            </span>
-                            <span className="truncate text-xs">
-                              {session?.user.email || "vous êtes connecté"}
-                            </span>
-                          </div>
+                      <div className="flex items-center gap-2 p-2">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage
+                            src={`${user?.image}`}
+                            alt={user?.username}
+                          />
+                          <AvatarFallback className="bg-blue-600/10 text-blue-600">
+                            {initials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {user?.username}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            Étudiant
+                          </span>
                         </div>
-                      </DropdownMenuLabel>
-
+                      </div>
                       <DropdownMenuSeparator />
-
                       <DropdownMenuItem
-                        onClick={() => signOut({ callbackUrl: "/login" })}
-                        className="cursor-pointer"
+                        className="cursor-pointer relative"
+                        onClick={() => router.push("/dashboard")}
                       >
-                        <LogOut />
-                        Log out
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="cursor-pointer relative"
+                        onClick={() => router.push("/dashboard/profile")}
+                      >
+                        {!user?.image && (
+                          <div className="absolute top-0 right-0 z-50 bg-red-500 rounded-full w-2 h-2" />
+                        )}
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Mon profil</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => router.push("/dashboard/profile")}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Paramètres</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer text-destructive focus:text-destructive"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Se déconnecter</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <button
+                    onClick={() => setNavbarOpen(!navbarOpen)}
+                    className="block lg:hidden p-2 rounded-lg"
+                    aria-label="Toggle mobile menu"
+                  >
+                    <span className="block w-6 h-0.5 bg-black"></span>
+                    <span className="block w-6 h-0.5 bg-black mt-1.5"></span>
+                    <span className="block w-6 h-0.5 bg-black mt-1.5"></span>
+                  </button>
+                </div>
+
+                <div className="items-center gap-4 lg:flex hidden">
+                  <Button
+                    variant="default"
+                    className="w-fit justify-center"
+                    onClick={() => {
+                      router.push("/dashboard");
+                    }}
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-fit justify-center bg-white"
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Déconnexion
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-4">
+                <button
+                  className="hidden lg:block bg-transparent text-primary border hover:bg-primary border-primary hover:text-white duration-300 px-6 py-2 rounded-lg hover:cursor-pointer"
+                  onClick={() => {
+                    setIsSignInOpen(true);
+                  }}
+                >
+                  Sign In
+                </button>
+                {isSignInOpen && (
+                  <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50">
+                    <div
+                      ref={signInRef}
+                      className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg px-8 pt-14 pb-8 text-center bg-dark_grey/90 backdrop-blur-md bg-white"
+                    >
+                      <button
+                        onClick={() => setIsSignInOpen(false)}
+                        className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+                        aria-label="Close Sign In Modal"
+                      >
+                        <Icon
+                          icon="material-symbols:close-rounded"
+                          width={24}
+                          height={24}
+                          className="text-black hover:text-primary inline-block hover:cursor-pointer"
+                        />
+                      </button>
+                      <Signin />
+                    </div>
+                  </div>
+                )}
+                <button
+                  className="hidden lg:block bg-primary text-white text-base font-medium hover:bg-transparent duration-300 hover:text-primary border border-primary px-6 py-2 rounded-lg hover:cursor-pointer"
+                  onClick={() => {
+                    router.push("/login");
+                  }}
+                >
+                  Sign Up
+                </button>
+                {isSignUpOpen && (
+                  <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50">
+                    <div
+                      ref={signUpRef}
+                      className="relative mx-auto bg-white w-full max-w-md overflow-hidden rounded-lg bg-dark_grey/90 backdrop-blur-md px-8 pt-14 pb-8 text-center"
+                    >
+                      <button
+                        onClick={() => setIsSignUpOpen(false)}
+                        className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+                        aria-label="Close Sign Up Modal"
+                      >
+                        <Icon
+                          icon="material-symbols:close-rounded"
+                          width={24}
+                          height={24}
+                          className="text-black hover:text-primary inline-block hover:cursor-pointer"
+                        />
+                      </button>
+                      <SignUp />
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={() => setNavbarOpen(!navbarOpen)}
+                  className="block lg:hidden p-2 rounded-lg"
+                  aria-label="Toggle mobile menu"
+                >
+                  <span className="block w-6 h-0.5 bg-black"></span>
+                  <span className="block w-6 h-0.5 bg-black mt-1.5"></span>
+                  <span className="block w-6 h-0.5 bg-black mt-1.5"></span>
+                </button>
+              </div>
+            )}
+          </div>
+          {navbarOpen && (
+            <div className="fixed top-0 left-0 w-full h-full bg-black/50 z-40" />
+          )}
+          <div
+            ref={mobileMenuRef}
+            className={`lg:hidden fixed top-0 right-0 h-full w-full bg-white shadow-lg transform transition-transform duration-300 max-w-xs ${
+              navbarOpen ? "translate-x-0" : "translate-x-full"
+            } z-50`}
+          >
+            <div className="flex items-center justify-between p-4">
+              <h2 className="text-lg font-bold text-midnight_text">
+                <Logo />
+              </h2>
+              {/*  */}
+              <button
+                onClick={() => setNavbarOpen(false)}
+                className="bg-black/30 rounded-full p-1 text-white"
+                aria-label="Close menu Modal"
+              >
+                <Icon
+                  icon={"material-symbols:close-rounded"}
+                  width={24}
+                  height={24}
+                />
+              </button>
+            </div>
+            <nav className="flex flex-col items-start p-4">
+              {headerData.map((item, index) => (
+                <MobileHeaderLink key={index} item={item} />
+              ))}
+              {user ? (
+                <div className="flex flex-col mt-5 gap-4 w-full">
+                  <Button
+                    variant="default"
+                    className="w-full justify-center "
+                    onClick={() => {
+                      router.push("/dashboard");
+                    }}
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-center bg-white"
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Déconnexion
+                  </Button>
                 </div>
               ) : (
-                <motion.button
-                  onClick={() => router.push(`/login`)}
-                  className="relative group px-6 lg:py-3 py-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg overflow-hidden"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {/* Glow effect */}
-                  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></span>
-                  {/* Inner glow */}
-                  <span className="absolute inset-0 border-2 border-white/20 rounded-lg group-hover:border-white/40 transition-all duration-300"></span>
-                  {/* Shadow animation */}
-                  <motion.span
-                    className="absolute inset-0 rounded-lg shadow-lg"
-                    initial={{
-                      boxShadow:
-                        "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
+                <div className="mt-4 flex flex-col gap-4 w-full">
+                  <button
+                    className="bg-primary text-white px-4 py-2 rounded-lg border  border-primary hover:text-primary hover:bg-transparent hover:cursor-pointer transition duration-300 ease-in-out"
+                    onClick={() => {
+                      setIsSignInOpen(true);
+                      setNavbarOpen(false);
                     }}
-                    animate={{
-                      boxShadow: [
-                        "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
-                        "0 20px 25px -5px rgba(99, 102, 241, 0.4), 0 10px 10px -5px rgba(99, 102, 241, 0.2)",
-                        "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1)",
-                      ],
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    className="bg-primary text-white px-4 py-2 rounded-lg border  border-primary hover:text-primary hover:bg-transparent hover:cursor-pointer transition duration-300 ease-in-out"
+                    onClick={() => {
+                      router.push("/login");
                     }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3,
-                      ease: "easeInOut",
-                    }}
-                  />
-                  <div className="relative z-10 flex items-center justify-center gap-2">
-                    <LogIn className="lg:text-lg text-sm" />
-                    <span>Connexion</span>
-                  </div>{" "}
-                </motion.button>
+                  >
+                    Sign Up
+                  </button>
+                </div>
               )}
-              {/*<LanguageSelector />*/}
-            </div>
+            </nav>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 };
 

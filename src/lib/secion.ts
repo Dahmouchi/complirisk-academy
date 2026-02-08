@@ -186,7 +186,7 @@ export const THEME_STYLES = {
       glassmorphism: true,
       animations: "dynamic",
       shadows: "dramatic",
-      borderRadius: "rounded-2xl",
+      borderRadius: "rounded-[6px]",
     },
   },
 
@@ -274,7 +274,7 @@ export const getThemeConfig = (theme: ThemeStyle) => {
  */
 export const getThemeColor = (
   theme: ThemeStyle,
-  colorKey: keyof (typeof THEME_STYLES)[ThemeStyle]["colors"]
+  colorKey: keyof (typeof THEME_STYLES)[ThemeStyle]["colors"],
 ) => {
   return THEME_STYLES[theme].colors[colorKey];
 };

@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   webpack: (
     config,
-    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack },
   ) => {
     config.resolve.alias.canvas = false;
     return config;
@@ -29,7 +29,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "images.pexels.com",
+      },
+      {
+        protocol: "https",
         hostname: "pub-8e718d4717894c2d8394aa3ab82551f4.r2.dev",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

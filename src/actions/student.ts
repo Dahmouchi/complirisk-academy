@@ -26,7 +26,7 @@ export async function updateUserInfo(
     prenom: string;
     phone: string;
     location: string;
-  }
+  },
 ): Promise<UpdateResult> {
   try {
     // Get authenticated user
@@ -118,7 +118,7 @@ export async function updateStudentPicture(file: any, userId: string) {
     console.error("Error updating student picture:", error);
     return NextResponse.json(
       { error: "Failed to update student picture" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -132,7 +132,7 @@ export async function getNotesGlobal(userId: string) {
     console.error("Error fetching notes global:", error);
     return NextResponse.json(
       { error: "Failed to fetch notes global" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -150,7 +150,7 @@ export async function addNotesGlobal(userId: string, note: any) {
     console.error("Error adding notes global:", error);
     return NextResponse.json(
       { error: "Failed to add notes global" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -165,7 +165,7 @@ export async function updateNotesGlobal(noteId: string, note: any) {
     console.error("Error updating notes global:", error);
     return NextResponse.json(
       { error: "Failed to update notes global" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -179,7 +179,7 @@ export async function deleteNotesGlobal(noteId: string) {
     console.error("Error deleting notes global:", error);
     return NextResponse.json(
       { error: "Failed to delete notes global" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -191,7 +191,7 @@ export async function GET(request: NextRequest) {
     if (!userId) {
       return NextResponse.json(
         { error: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -202,7 +202,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching dashboard stats:", error);
     return NextResponse.json(
       { error: "Failed to fetch dashboard statistics" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -276,12 +276,11 @@ export async function updateLoginStreak(userId: string) {
 // 1. Get Current Series (Série en cours)
 async function getCurrentSeries(userId: string) {
   try {
-    // Get user's grade to find their level/subjects
+    // Get user's grades to find their level/subjects
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        gradeId: true,
-        grade: {
+        grades: {
           select: {
             niveauId: true,
             subjects: {
@@ -301,30 +300,35 @@ async function getCurrentSeries(userId: string) {
       },
     });
 
-    if (!user?.grade) return null;
+    if (!user?.grades || user.grades.length === 0) return null;
 
     // Find the first course that's not completed yet
     let currentCourse = null;
     let nextCourse = null;
     let subjectWithProgress = null;
 
-    // Loop through subjects to find the current course
-    for (const subject of user.grade.subjects) {
-      for (const course of subject.courses) {
-        const userProgress = course.progress.find((p) => p.userId === userId);
+    // Loop through all grades
+    for (const grade of user.grades) {
+      // Loop through subjects to find the current course
+      for (const subject of grade.subjects) {
+        for (const course of subject.courses) {
+          const userProgress = course.progress.find((p) => p.userId === userId);
 
-        if (!userProgress?.completed) {
-          currentCourse = course;
-          subjectWithProgress = subject;
-          break;
+          if (!userProgress?.completed) {
+            currentCourse = course;
+            subjectWithProgress = subject;
+            break;
+          }
         }
+        if (currentCourse) break;
       }
       if (currentCourse) break;
     }
 
     if (!currentCourse) {
-      // All courses are completed, get the last one
-      const lastSubject = user.grade.subjects[user.grade.subjects.length - 1];
+      // All courses are completed, get the last one from the last grade
+      const lastGrade = user.grades[user.grades.length - 1];
+      const lastSubject = lastGrade.subjects[lastGrade.subjects.length - 1];
       const lastCourse = lastSubject?.courses[lastSubject.courses.length - 1];
       return {
         subject: lastSubject?.name || "Completed",
@@ -337,7 +341,7 @@ async function getCurrentSeries(userId: string) {
     // Find next course in sequence
     const subjectCourses = subjectWithProgress?.courses || [];
     const currentIndex = subjectCourses.findIndex(
-      (c) => c.id === currentCourse.id
+      (c) => c.id === currentCourse.id,
     );
     nextCourse = subjectCourses[currentIndex + 1] || null;
 
@@ -399,7 +403,7 @@ async function getAverageQuizScore(userId: string) {
 
     const totalPercentage = quizResults.reduce(
       (sum, result) => sum + result.percentage,
-      0
+      0,
     );
     const average = Math.round(totalPercentage / quizResults.length);
 
@@ -414,8 +418,7 @@ async function getTotalCoursesCount(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        gradeId: true,
-        grade: {
+        grades: {
           select: {
             niveauId: true,
             subjects: {
@@ -427,11 +430,17 @@ async function getTotalCoursesCount(userId: string) {
         },
       },
     });
-    const totalCourses = user?.grade?.subjects.reduce((total, subject) => {
-      return total + subject.courses.length;
-    }, 0);
 
-    return totalCourses;
+    if (!user?.grades) return 0;
+
+    let total = 0;
+    for (const grade of user.grades) {
+      total += grade.subjects.reduce((subTotal, subject) => {
+        return subTotal + subject.courses.length;
+      }, 0);
+    }
+
+    return total;
   } catch (error) {
     console.error("Error getting total courses:", error);
     return 0;
@@ -505,7 +514,7 @@ async function getStudyStreak(userId: string): Promise<number> {
           AND completed = true
           AND "completedAt" >= ${startDate}
         ORDER BY study_date DESC
-      `
+      `,
     );
 
     // Convert the array of Date objects into a Set of YYYY-MM-DD strings for fast lookup.
@@ -571,7 +580,7 @@ export async function getCompletedCoursesEndpoint(userId: string) {
 export async function saveLogs(
   userId: string,
   description: string,
-  activity: ActivityType
+  activity: ActivityType,
 ) {
   try {
     const res = await prisma.userActivity.create({

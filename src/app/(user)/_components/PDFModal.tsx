@@ -132,7 +132,7 @@ const PDFModal: React.FC<PDFModalProps> = ({
 
   const contentClasses = isFullscreen
     ? "w-full h-full bg-white flex flex-col"
-    : "bg-white rounded-2xl shadow-2xl max-w-6xl h-[90vh] w-full flex flex-col";
+    : "bg-white rounded-[6px] shadow-2xl max-w-6xl h-[90vh] w-full flex flex-col";
 
   return (
     <div
@@ -144,7 +144,6 @@ const PDFModal: React.FC<PDFModalProps> = ({
         <div className="flex flex-col xs:flex-row lg:flex-row items-center justify-between gap-3 p-3 sm:p-4 border-b border-gray-200 bg-gray-50">
           {/* Document info - left side */}
           <div className="flex items-center gap-3 w-full xs:w-auto min-w-0">
-            
             <div className="min-w-0">
               {" "}
               {/* Prevents text overflow */}
@@ -193,8 +192,6 @@ const PDFModal: React.FC<PDFModalProps> = ({
             >
               <X className="w-4 h-4" />
             </Button>
-
-            
           </div>
         </div>
 
@@ -245,7 +242,7 @@ const PDFModal: React.FC<PDFModalProps> = ({
               onError={() => {
                 setIsLoading(false);
                 setError(
-                  "Impossible de charger le document PDF. Le fichier pourrait être corrompu ou inaccessible."
+                  "Impossible de charger le document PDF. Le fichier pourrait être corrompu ou inaccessible.",
                 );
               }}
             />

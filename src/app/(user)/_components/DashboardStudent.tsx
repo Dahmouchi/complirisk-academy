@@ -96,7 +96,7 @@ const SubjectCard = ({
   return (
     <motion.div
       onClick={() => router.push(`/dashboard/matiere/${subject.handler}`)}
-      className="bg-white h-full rounded-2xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer group"
+      className="bg-white h-full rounded-[6px] shadow-lg border border-gray-100 overflow-hidden cursor-pointer group"
       whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}
@@ -281,7 +281,7 @@ const StudentDashboard = ({ user, quizzes, stats }: any) => {
         filteredSubjects.map(async (subject: any) => {
           const progress = await getSubjectProgress(user.id, subject.id);
           return { ...subject, progress };
-        })
+        }),
       );
 
       // Prevent re-render loop if data is the same
@@ -300,8 +300,8 @@ const StudentDashboard = ({ user, quizzes, stats }: any) => {
     ? Math.round(
         subjectsWithProgress.reduce(
           (acc: any, s: any) => acc + (s.progress?.percentage || 0),
-          0
-        ) / subjectsWithProgress.length
+          0,
+        ) / subjectsWithProgress.length,
       )
     : 0;
 
@@ -431,7 +431,7 @@ const StudentDashboard = ({ user, quizzes, stats }: any) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl bg-card border border-gray-300 shadow-sm p-6"
+              className="rounded-[6px] bg-card border border-gray-300 shadow-sm p-6"
             >
               <h3 className="text-lg font-semibold text-foreground font-display mb-6">
                 Progression globale

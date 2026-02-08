@@ -63,13 +63,13 @@ const CourseCard = ({
       className={cn(
         "rounded-3xl overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-300 animate-fade-in cursor-pointer",
         variantClasses[variant],
-        className
+        className,
       )}
     >
       {/* Content */}
       <div className="p-2 grid grid-cols-5 gap-4">
         <div
-          className="col-span-2 w-full h-full rounded-2xl "
+          className="col-span-2 w-full h-full rounded-[6px] "
           style={{
             backgroundImage: `url(${thumbnail})`,
             backgroundSize: "cover",

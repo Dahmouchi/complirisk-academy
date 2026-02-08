@@ -101,20 +101,16 @@ export const StudentHeader = ({
   return (
     <>
       {/* Top Header */}
-      <div className="flex bg-[#fbfaf6] items-center justify-between px-6 lg:py-2  border-b border-gray-400/40 ">
+      <div className="flex bg-[#ffffff] items-center justify-between px-6 py-2  border-b border-gray-400/40 ">
         {/* Logo */}
         <div
           onClick={() => navigate.push("/dashboard")}
           className="relative h-14 cursor-pointer w-auto flex items-center justify-center"
         >
-          <img
-            src="/optimized/logoH.webp"
-            alt=""
-            className=" lg:h-10 h-8 w-auto"
-          />
+          <img src="/compli/logo.png" alt="" className=" lg:h-10 h-14 w-auto" />
         </div>
 
-        <nav className="lg:flex hidden items-center gap-2 bg-white backdrop-blur-lg rounded-full px-4 shadow py-2  border border-white/20">
+        {/*<nav className="lg:flex hidden items-center gap-2 bg-white backdrop-blur-lg rounded-full px-4 shadow py-2  border border-white/20">
           {navItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = index === activeIndex;
@@ -185,7 +181,7 @@ export const StudentHeader = ({
         }
       `}</style>
 
-        {/* User Profile */}
+         User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -210,7 +206,7 @@ export const StudentHeader = ({
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 rounded-2xl">
+          <DropdownMenuContent align="end" className="w-56 rounded-[6px]">
             <div className="flex items-center gap-2 p-2">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={userAvatar} alt={userName} />

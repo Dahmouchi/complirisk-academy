@@ -173,7 +173,7 @@ export function BadgeNotification() {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     className="relative"
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                    <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-[6px] flex items-center justify-center shadow-lg shadow-orange-500/30">
                       <Trophy className="w-7 h-7 text-white" />
                     </div>
                     <motion.div
@@ -203,7 +203,7 @@ export function BadgeNotification() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="relative bg-white/5 backdrop-blur-md rounded-2xl p-5 mb-5 border border-white/10 overflow-hidden"
+                  className="relative bg-white/5 backdrop-blur-md rounded-[6px] p-5 mb-5 border border-white/10 overflow-hidden"
                 >
                   {/* Inner glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
@@ -244,8 +244,8 @@ export function BadgeNotification() {
                           index === currentBadgeIndex
                             ? "w-6 bg-gradient-to-r from-purple-400 to-pink-400"
                             : index < currentBadgeIndex
-                            ? "w-1.5 bg-green-400"
-                            : "w-1.5 bg-white/20"
+                              ? "w-1.5 bg-green-400"
+                              : "w-1.5 bg-white/20"
                         }`}
                       />
                     ))}

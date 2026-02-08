@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import { Award, BookOpen, ChevronRight, Users } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const AuthForm = () => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const GoogleLoginButton = ({ onClick }: { onClick: () => void }) => {
     return (
@@ -110,13 +111,13 @@ const AuthForm = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           {/* Carte de connexion */}
-          <div className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
+          <div className="bg-white rounded-[6px] shadow-2xl p-8 backdrop-blur-sm">
             {/* Header mobile */}
             <div className=" text-center mb-4 flex items-center justify-center ">
               <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
-                  onClick={() => redirect("/")}
-                  src="/optimized/logoH.webp"
+                  onClick={() => router.push("/")}
+                  src="/compli/complirisk-academy.png"
                   alt=""
                   className="w-52 h-auto cursor-pointer"
                 />{" "}
@@ -138,7 +139,11 @@ const AuthForm = () => {
                   <span>Connexion en cours...</span>
                 </div>
               ) : (
-                <GoogleLoginButton onClick={() => signIn("google")} />
+                <GoogleLoginButton
+                  onClick={() =>
+                    signIn("google", { callbackUrl: "/dashboard" })
+                  }
+                />
               )}
             </div>
 

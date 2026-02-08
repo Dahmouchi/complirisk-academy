@@ -62,7 +62,7 @@ const ProfileHeader = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-6 bg-card rounded-2xl border border-border/50 shadow-sm">
+    <div className="flex items-center justify-between p-6 bg-card rounded-[6px] border border-border/50 shadow-sm">
       <div className="flex items-center gap-4">
         <div className="relative">
           <Avatar className="h-24 w-24 border-2 border-primary shadow-xl">
@@ -96,7 +96,7 @@ const ProfileHeader = ({
           <p className="text-muted-foreground">{department}</p>
           {image.length > 0 && (
             <Button
-              className="gap-2 mt-2 cursor-pointer rounded-2xl bg-green-600 text-white"
+              className="gap-2 mt-2 cursor-pointer rounded-[6px] bg-green-600 text-white"
               onClick={handleSaveImage}
             >
               <Edit2 className="h-4 w-4" />

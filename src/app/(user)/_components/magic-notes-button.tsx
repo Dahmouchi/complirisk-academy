@@ -215,7 +215,7 @@ const MagicNotesButton = ({
             }</h1>
              <img
              
-              src="/optimized/logoH.webp"
+              src="/compli/complirisk-academy.png"
               class="imgg"
               alt=""
             />

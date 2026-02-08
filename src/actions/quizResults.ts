@@ -6,7 +6,7 @@ export async function getQuizzesGroupedByMatiere(userId: string) {
   const userWithQuizzes = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      grade: {
+      grades: {
         include: {
           subjects: {
             include: {
@@ -36,7 +36,7 @@ export async function getQuizzesGroupedByMatiere(userId: string) {
 
   // Group quizzes by subject (matière)
   const grouped =
-    userWithQuizzes.grade?.subjects.map((subject) => ({
+    userWithQuizzes.grades?.[0]?.subjects.map((subject) => ({
       matiereId: subject.id,
       matiereName: subject.name,
       quizzes: subject.courses.flatMap((course) => course.quizzes),
@@ -47,12 +47,12 @@ export async function getQuizzesGroupedByMatiere(userId: string) {
 
 export async function getQuizzesGroupedByMatiereandUser(
   userId: string,
-  subjectId: string
+  subjectId: string,
 ) {
   const userWithQuizzes = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      grade: {
+      grades: {
         include: {
           subjects: {
             where: { handler: subjectId }, // ✅ Filter by subjectId
@@ -83,7 +83,7 @@ export async function getQuizzesGroupedByMatiereandUser(
 
   // Group quizzes by subject (matière)
   const grouped =
-    userWithQuizzes.grade?.subjects.map((subject) => ({
+    userWithQuizzes.grades?.[0]?.subjects.map((subject) => ({
       matiereId: subject.id,
       matiereName: subject.name,
       quizzes: subject.courses.flatMap((course) => course.quizzes),
@@ -249,7 +249,7 @@ function validateQuizData(data: QuizCreateData): {
         const correctOptions = question.options.filter((opt) => opt.isCorrect);
         if (correctOptions.length === 0) {
           errors.push(
-            `La question ${qIndex + 1} doit avoir au moins une option correcte`
+            `La question ${qIndex + 1} doit avoir au moins une option correcte`,
           );
         }
 
@@ -258,7 +258,7 @@ function validateQuizData(data: QuizCreateData): {
             errors.push(
               `L'option ${oIndex + 1} de la question ${
                 qIndex + 1
-              } doit avoir un texte`
+              } doit avoir un texte`,
             );
           }
         });
@@ -428,7 +428,7 @@ export async function getQuizById(quizId: string): Promise<QuizResult> {
 
 // Fonction pour récupérer tous les quiz d'un cours
 export async function getQuizzesByCourse(
-  courseId: string
+  courseId: string,
 ): Promise<QuizResult> {
   try {
     if (!courseId || !courseId.trim()) {
@@ -471,7 +471,7 @@ export async function getQuizzesByCourse(
 // Fonction pour mettre à jour un quiz
 export async function updateQuiz(
   quizId: string,
-  data: QuizUpdateData
+  data: QuizUpdateData,
 ): Promise<QuizResult> {
   try {
     if (!quizId || !quizId.trim()) {
@@ -520,7 +520,7 @@ export async function updateQuiz(
 
         // Supprimer les questions qui ne sont plus dans la liste
         const questionsToDelete = existingQuestionIds.filter(
-          (id) => !updatedQuestionIds.includes(id)
+          (id) => !updatedQuestionIds.includes(id),
         );
         if (questionsToDelete.length > 0) {
           await tx.question.deleteMany({
@@ -544,11 +544,11 @@ export async function updateQuiz(
 
             // Gérer les options de cette question
             const existingQuestion = existingQuiz.questions.find(
-              (q) => q.id === questionData.id
+              (q) => q.id === questionData.id,
             );
             if (existingQuestion) {
               const existingOptionIds = existingQuestion.options.map(
-                (o) => o.id
+                (o) => o.id,
               );
               const updatedOptionIds = questionData.options
                 .filter((o) => o.id)
@@ -556,7 +556,7 @@ export async function updateQuiz(
 
               // Supprimer les options qui ne sont plus dans la liste
               const optionsToDelete = existingOptionIds.filter(
-                (id) => !updatedOptionIds.includes(id)
+                (id) => !updatedOptionIds.includes(id),
               );
               if (optionsToDelete.length > 0) {
                 await tx.option.deleteMany({
@@ -695,7 +695,7 @@ export async function deleteQuiz(quizId: string): Promise<QuizResult> {
 // Fonction pour dupliquer un quiz
 export async function duplicateQuiz(
   quizId: string,
-  newTitle?: string
+  newTitle?: string,
 ): Promise<QuizResult> {
   try {
     if (!quizId || !quizId.trim()) {
@@ -822,7 +822,7 @@ export async function getQuizStats(quizId: string): Promise<QuizResult> {
       totalQuestions: quiz._count.questions,
       totalOptions: quiz.questions.reduce(
         (sum, q) => sum + q.options.length,
-        0
+        0,
       ),
       averageOptionsPerQuestion:
         quiz.questions.length > 0
@@ -833,7 +833,7 @@ export async function getQuizStats(quizId: string): Promise<QuizResult> {
           : 0,
       totalAttempts: quiz._count.quizResult,
       questionsWithMultipleCorrectAnswers: quiz.questions.filter(
-        (q) => q.options.filter((o) => o.isCorrect).length > 1
+        (q) => q.options.filter((o) => o.isCorrect).length > 1,
       ).length,
     };
 
@@ -859,7 +859,7 @@ export async function getQuizStats(quizId: string): Promise<QuizResult> {
 
 // Fonction pour supprimer tous les quiz d'un cours
 export async function deleteAllCourseQuizzes(
-  courseId: string
+  courseId: string,
 ): Promise<QuizResult> {
   try {
     if (!courseId || !courseId.trim()) {
@@ -905,7 +905,7 @@ export async function deleteAllCourseQuizzes(
 // Fonction pour valider les réponses d'un quiz (pour les résultats)
 export async function validateQuizAnswers(
   quizId: string,
-  answers: { questionId: string; selectedOptionIds: string[] }[]
+  answers: { questionId: string; selectedOptionIds: string[] }[],
 ): Promise<QuizResult> {
   try {
     if (!quizId || !quizId.trim()) {

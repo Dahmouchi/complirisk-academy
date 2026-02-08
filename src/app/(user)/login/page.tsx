@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { ChevronRight } from "lucide-react";
 const GoogleLoginButton = () => {
   return (
     <motion.button
       onClick={() => {
-        signIn("google");
-        redirect("/dashboard");
+        signIn("google", { callbackUrl: "/dashboard" });
       }}
       className="w-full bg-white border-2 cursor-pointer border-gray-200 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-700 font-semibold lg:text-lg text-xs hover:border-blue-500 hover:shadow-lg transition-all duration-300 group"
       whileHover={{ scale: 1.02 }}
@@ -41,6 +40,7 @@ const GoogleLoginButton = () => {
 const Auth = () => {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
 
   if (session?.user) {
     redirect("/dashboard");
@@ -53,7 +53,7 @@ const Auth = () => {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: "url('/optimized/bgnew.webp')",
+          backgroundImage: "url('/compli/bg-login.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -70,7 +70,9 @@ const Auth = () => {
             {/* Row 1 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login5.webp"}
+                src={
+                  "https://leseco.ma/wp-content/uploads/2024/12/Certificat-de-conformite-COCs.jpg"
+                }
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -88,7 +90,9 @@ const Auth = () => {
             </motion.div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login6.webp"}
+                src={
+                  "https://afflatus.consulting/web/image/1691-8fe1e765/image.png?access_token=bd50f5da-1f9f-4fbf-b05b-4bc01e1ffdde"
+                }
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -97,14 +101,14 @@ const Auth = () => {
             {/* Row 2 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login2.webp"}
+                src={"/compli/login3.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login3.webp"}
+                src={"/compli/login6.jpg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -113,7 +117,7 @@ const Auth = () => {
             {/* Row 3 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login10.webp"}
+                src={"/compli/login4.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -126,14 +130,14 @@ const Auth = () => {
             >
               <span className="text-4xl font-bold">+500</span>
               <p className="text-xs mt-2 leading-tight">
-                étudiants formés aux métiers depuis 2010
+                personnes formées aux métiers depuis 2010
               </p>
             </motion.div>
 
             {/* Row 4 */}
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/optimized/login9.webp"}
+                src={"/compli/login5.webp"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -160,8 +164,8 @@ const Auth = () => {
             <div className=" text-center mb-4 flex items-center justify-center ">
               <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
                 <img
-                  onClick={() => redirect("/")}
-                  src="/optimized/logoH.webp"
+                  onClick={() => router.push("/")}
+                  src="/compli/logo.png"
                   alt=""
                   className="w-52 h-auto cursor-pointer"
                 />{" "}

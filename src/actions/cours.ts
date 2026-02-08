@@ -21,6 +21,7 @@ interface CourseData {
   description: string;
   videoUrl?: string;
   handler: string;
+  isFree: boolean;
   index: number;
   subjectId: string;
   coverImage: File | null;
@@ -111,7 +112,7 @@ function validateCourseData(data: CourseData): {
 
       if (!quiz.questions || quiz.questions.length === 0) {
         errors.push(
-          `Le quiz ${quizIndex + 1} doit contenir au moins une question`
+          `Le quiz ${quizIndex + 1} doit contenir au moins une question`,
         );
       } else {
         quiz.questions.forEach((question, questionIndex) => {
@@ -119,24 +120,24 @@ function validateCourseData(data: CourseData): {
             errors.push(
               `La question ${questionIndex + 1} du quiz ${
                 quizIndex + 1
-              } est requise`
+              } est requise`,
             );
           }
 
           // Validate options instead of single answer
           if (!question.options || question.options.length < 2) {
             errors.push(
-              `La question ${questionIndex + 1} doit avoir au moins 2 options`
+              `La question ${questionIndex + 1} doit avoir au moins 2 options`,
             );
           } else {
             const correctOptions = question.options.filter(
-              (opt) => opt.isCorrect
+              (opt) => opt.isCorrect,
             );
             if (correctOptions.length !== 1) {
               errors.push(
                 `La question ${
                   questionIndex + 1
-                } doit avoir exactement une option correcte`
+                } doit avoir exactement une option correcte`,
               );
             }
 
@@ -145,7 +146,7 @@ function validateCourseData(data: CourseData): {
                 errors.push(
                   `L'option ${optionIndex + 1} de la question ${
                     questionIndex + 1
-                  } est requise`
+                  } est requise`,
                 );
               }
             });
@@ -164,7 +165,7 @@ function validateCourseData(data: CourseData): {
 // Fonction helper pour vérifier l'unicité du handler
 async function checkHandlerUniqueness(
   handler: string,
-  excludeId?: string
+  excludeId?: string,
 ): Promise<boolean> {
   const existingCourse = await prisma.course.findUnique({
     where: { handler },
@@ -245,6 +246,7 @@ export async function createCourse(data: CourseData) {
         videoUrl: data.videoUrl || null,
         coverImage: coverImageUrl,
         handler: data.handler,
+        isFree: data.isFree,
         index: data.index,
         subjectId: data.subjectId,
       },
@@ -317,7 +319,7 @@ export async function createCourse(data: CourseData) {
 // Fonction helper pour mettre à jour un cours existant
 export async function updateCourse(
   courseId: string,
-  data: Partial<CourseData>
+  data: Partial<CourseData>,
 ) {
   try {
     // Vérifier que le cours existe
@@ -363,7 +365,7 @@ export async function updateCourse(
       } catch (error) {
         console.error(
           "Erreur lors de l'upload de l'image de couverture:",
-          error
+          error,
         );
         return {
           success: false,
@@ -377,6 +379,9 @@ export async function updateCourse(
       where: { id: courseId },
       data: {
         ...(data.title !== undefined && { title: data.title }),
+        ...(data.content !== undefined && { content: data.content }),
+        ...(data.isFree !== undefined && { isFree: data.isFree }),
+        ...(data.index !== undefined && { index: data.index }),
         ...(data.videoUrl !== undefined && { videoUrl: data.videoUrl || null }),
         ...(coverImageUrl && { coverImage: coverImageUrl }),
         ...(data.subjectId !== undefined && { subjectId: data.subjectId }),
@@ -406,7 +411,7 @@ export async function updateCourse(
 // Example in /actions/cours.ts
 export async function updateCourseDocuments(
   courseId: string,
-  docs: { name: string; url: string; courseId: string; id?: string }[]
+  docs: { name: string; url: string; courseId: string; id?: string }[],
 ) {
   try {
     // Get current documents from DB
@@ -416,7 +421,7 @@ export async function updateCourseDocuments(
 
     // Find docs to delete (in DB but not in the new list)
     const toDelete = existingDocs.filter(
-      (dbDoc) => !docs.some((d) => d.id === dbDoc.id)
+      (dbDoc) => !docs.some((d) => d.id === dbDoc.id),
     );
 
     // Delete removed docs

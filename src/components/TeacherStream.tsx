@@ -109,7 +109,7 @@ const TeacherStream: React.FC<TeacherStreamProps> = ({
     room.on(RoomEvent.ParticipantDisconnected, (participant) => {
       console.log("Participant disconnected:", participant.identity);
       setParticipants((prev) =>
-        prev.filter((p) => p.identity !== participant.identity)
+        prev.filter((p) => p.identity !== participant.identity),
       );
     });
 
@@ -124,7 +124,7 @@ const TeacherStream: React.FC<TeacherStreamProps> = ({
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <div className="bg-white rounded-[6px] shadow-xl p-8 max-w-md w-full">
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg

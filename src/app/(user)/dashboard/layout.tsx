@@ -18,7 +18,7 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
   console.log(session?.user);
   if (!session) {
-    redirect("/login");
+    redirect("/");
   }
   if (session && session.user.step < 2) {
     redirect("/steps");
@@ -36,7 +36,7 @@ export default async function AdminLayout({
         userAvatar={user?.image || ""}
         userEmail={user?.email || ""}
       />
-      <div className="bg-[#fbfaf6] flex-1 overflow-hidden">{children}</div>
+      <div className="bg-[#efefef] flex-1 overflow-hidden">{children}</div>
       <FloatingNotesButton userId={session.user.id} />
       <BadgeNotification />
     </div>

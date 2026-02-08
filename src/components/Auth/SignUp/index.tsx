@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
-
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -47,8 +45,8 @@ const SignUp = () => {
 
       <SocialSignUp />
 
-      <span className="z-1 relative my-8 block text-center before:content-[''] before:absolute before:h-px before:w-40% before:bg-black/60 before:left-0 before:top-3 after:content-[''] after:absolute after:h-px after:w-40% after:bg-black/60 after:top-3 after:right-0">
-        <span className="relative z-10 inline-block px-3 text-base text-black">
+      <span className="z-1 relative my-8 block text-center before:content-[''] before:absolute before:h-px before:w-[40%] before:bg-black/20 before:left-0 before:top-3 after:content-[''] after:absolute after:h-px after:w-[40%] after:bg-black/20 after:top-3 after:right-0">
+        <span className="text-body-secondary relative z-10 inline-block px-3 text-base text-black">
           OR
         </span>
       </span>
@@ -60,7 +58,7 @@ const SignUp = () => {
             placeholder="Name"
             name="name"
             required
-            className="w-full rounded-md border border-black/20 border-solid bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-grey focus:border-primary focus-visible:shadow-none text-white dark:focus:border-primary"
+            className="w-full rounded-md border border-solid bg-transparent px-5 py-3 text-base text-dark outline-hidden transition border-gray-200 placeholder:text-black/30 focus:border-primary focus-visible:shadow-none text-black"
           />
         </div>
         <div className="mb-[22px]">
@@ -69,7 +67,7 @@ const SignUp = () => {
             placeholder="Email"
             name="email"
             required
-            className="w-full rounded-md border border-black/20 border-solid bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-grey focus:border-primary focus-visible:shadow-none text-white dark:focus:border-primary"
+            className="w-full rounded-md border border-solid bg-transparent px-5 py-3 text-base text-dark outline-hidden transition border-gray-200 placeholder:text-black/30 focus:border-primary focus-visible:shadow-none text-black"
           />
         </div>
         <div className="mb-[22px]">
@@ -78,31 +76,31 @@ const SignUp = () => {
             placeholder="Password"
             name="password"
             required
-            className="w-full rounded-md border border-black/20 border-solid bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-grey focus:border-primary focus-visible:shadow-none text-white dark:focus:border-primary"
+            className="w-full rounded-md border border-solid bg-transparent px-5 py-3 text-base text-dark outline-hidden transition border-gray-200 placeholder:text-black/30 focus:border-primary focus-visible:shadow-none text-black"
           />
         </div>
         <div className="mb-9">
           <button
             type="submit"
-            className="flex w-full items-center text-18 font-medium justify-center rounded-md bg-primary px-5 py-3 text-darkmode transition duration-300 ease-in-out hover:bg-transparent hover:text-primary border-primary border "
+            className="flex w-full items-center text-18 font-medium justify-center rounded-md  text-white bg-primary px-5 py-3 text-darkmode transition duration-300 ease-in-out hover:bg-transparent hover:text-primary border-primary border hover:cursor-pointer"
           >
             Sign Up {loading && <Loader />}
           </button>
         </div>
       </form>
 
-      <p className="text-body-secondary mb-4 text-white text-base">
+      <p className="text-body-secondary mb-4 text-black text-base">
         By creating an account you are agree with our{" "}
-        <a href="/#" className="text-primary hover:underline">
+        <Link href="/#" className="text-primary hover:underline">
           Privacy
-        </a>{" "}
+        </Link>{" "}
         and{" "}
-        <a href="/#" className="text-primary hover:underline">
+        <Link href="/#" className="text-primary hover:underline">
           Policy
-        </a>
+        </Link>
       </p>
 
-      <p className="text-body-secondary text-white text-base">
+      <p className="text-body-secondary text-black text-base">
         Already have an account?
         <Link href="/" className="pl-2 text-primary hover:underline">
           Sign In

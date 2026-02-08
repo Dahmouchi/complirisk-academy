@@ -26,7 +26,7 @@ interface GradeDialogProps {
   onOpenChange: (open: boolean) => void;
   grade: Grade | null;
   niveaux: Niveau[];
-  onSave: (data: { name: string; niveauId: string }) => void;
+  onSave: (data: { name: string; niveauId: string; price: number }) => void;
 }
 
 export default function GradeDialog({
@@ -37,6 +37,7 @@ export default function GradeDialog({
   onSave,
 }: GradeDialogProps) {
   const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
   const [niveauId, setNiveauId] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +54,7 @@ export default function GradeDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !niveauId) {
+    if (!name.trim()) {
       return;
     }
 
@@ -62,19 +63,19 @@ export default function GradeDialog({
     // Simulation d'une requête API
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    onSave({ name: name.trim(), niveauId });
+    onSave({ name: name.trim(), niveauId, price });
     setLoading(false);
     setName("");
+    setPrice(0);
     setNiveauId("");
   };
 
   const handleCancel = () => {
     setName("");
+    setPrice(0);
     setNiveauId("");
     onOpenChange(false);
   };
-
-  const isValid = name.trim() && niveauId;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -105,6 +106,19 @@ export default function GradeDialog({
                 required
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="price" className="text-right">
+                Prix *
+              </Label>
+              <Input
+                id="price"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                placeholder="Ex: 10000"
+                className="col-span-3"
+                required
+              />
+            </div>
           </div>
 
           <DialogFooter>
@@ -116,7 +130,7 @@ export default function GradeDialog({
             >
               Annuler
             </Button>
-            <Button type="submit" disabled={loading || !isValid}>
+            <Button type="submit" disabled={loading}>
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

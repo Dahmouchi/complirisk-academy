@@ -50,11 +50,11 @@ export const RoleSelector = ({ onSelectRole }: RoleSelectorProps) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
             whileHover={{ y: -4 }}
-            className="glass-card rounded-2xl p-8 cursor-pointer group"
+            className="glass-card rounded-[6px] p-8 cursor-pointer group"
             onClick={() => onSelectRole("teacher")}
           >
             <div className="mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-teacher/10 flex items-center justify-center group-hover:bg-teacher/20 transition-colors">
+              <div className="w-16 h-16 rounded-[6px] bg-teacher/10 flex items-center justify-center group-hover:bg-teacher/20 transition-colors">
                 <GraduationCap className="w-8 h-8 text-teacher" />
               </div>
             </div>
@@ -93,11 +93,11 @@ export const RoleSelector = ({ onSelectRole }: RoleSelectorProps) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             whileHover={{ y: -4 }}
-            className="glass-card rounded-2xl p-8 cursor-pointer group"
+            className="glass-card rounded-[6px] p-8 cursor-pointer group"
             onClick={() => onSelectRole("student")}
           >
             <div className="mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-student/10 flex items-center justify-center group-hover:bg-student/20 transition-colors">
+              <div className="w-16 h-16 rounded-[6px] bg-student/10 flex items-center justify-center group-hover:bg-student/20 transition-colors">
                 <Users className="w-8 h-8 text-student" />
               </div>
             </div>

@@ -27,6 +27,7 @@ import {
   Boxes,
   Heart,
   GraduationCap,
+  Ticket,
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -62,23 +63,28 @@ const datas = {
       icon: House,
     },
     {
+      title: "Demandes",
+      url: "/admin/dashboard/demandes",
+      icon: Ticket,
+    },
+    {
       title: "Codes",
       url: "/admin/dashboard/codes",
       icon: Key,
     },
 
     {
-      title: "Niveaux",
+      title: "Les Normes",
       url: "/admin/dashboard/classes",
       icon: Shapes,
     },
     {
-      title: "Matieres",
+      title: "Les Chapitres",
       url: "/admin/dashboard/matieres",
       icon: LibraryBig,
     },
     {
-      title: "Cours",
+      title: "Les Cours",
       url: "/admin/dashboard/cours",
       icon: BookText,
     },
@@ -117,10 +123,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-start rounded-t-xl ">
         <Image
-          src={`${state === "expanded" ? "/optimized/logoH.webp" : "/logo.png"}`}
+          src={`${state === "expanded" ? "/compli/complirisk-academy.png" : "/compli/complirisk-academy.png"}`}
           alt="logo"
-          width={state === "expanded" ? 100 : 100}
-          height={state === "expanded" ? 100 : 100}
+          width={state === "expanded" ? 200 : 200}
+          height={state === "expanded" ? 200 : 200}
         />
       </SidebarHeader>
       <SidebarContent className="dark:bg-slate-900 pl-0 bg-white rounded-b-xl mt-3">

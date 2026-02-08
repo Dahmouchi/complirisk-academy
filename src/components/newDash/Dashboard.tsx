@@ -1,63 +1,79 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LeftSidebar from "@/components/newDash/LeftSidebar";
 import CoursesView from "@/components/newDash/CoursesView";
-import LivesView from "@/components/newDash/LivesView";
 import EventsPanel from "@/components/newDash/EventsPanel";
-import { getStudentLiveRooms, isUserRegistered } from "@/actions/live-room";
+import { CourseCard } from "@/app/(user)/_components/compli/CourseCard";
+import { CategoryFilter } from "@/app/(user)/_components/compli/CategoryFilter";
+import { StatCard } from "@/app/(user)/_components/compli/StatCard";
+import { categories, courses, freeCourses } from "@/data/courses";
+import {
+  Award,
+  BookOpen,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  Loader2,
+  TrendingUp,
+  Search,
+} from "lucide-react";
+import { UpcomingDeadlines } from "@/app/(user)/_components/compli/UpcomingDeadlines";
+import { RecentActivity } from "@/app/(user)/_components/compli/RecentActivity";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { formatDurationFromSeconds } from "@/app/(user)/_components/DashboardStudent";
+import { PaymentContactSection } from "@/app/(user)/_components/compli/PaymentContactSection";
+import { Input } from "../ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible";
 
-const IndexNewDash = ({ matieres, user }: any) => {
+const IndexNewDash = ({ matieres, user, stats }: any) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Courses");
+  const [courseType, setCourseType] = useState<"free" | "paid">("paid");
+  const filteredGrades = useMemo(() => {
+    return matieres
+      .filter((grade: any) => {
+        return (
+          selectedCategory === "All Courses" || grade.name === selectedCategory
+        );
+      })
+      .map((grade: any) => {
+        const filteredSubjects = grade.subjects
+          ?.map((subject: any) => {
+            const dynamicCourses = subject.courses?.filter((course: any) => {
+              const matchesSearch = course.title
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+              const matchesType = courseType === "free" ? course.isFree : true;
+              return matchesSearch && matchesType;
+            });
+            return { ...subject, courses: dynamicCourses };
+          })
+          .filter(
+            (subject: any) => subject.courses && subject.courses.length > 0,
+          );
+
+        return { ...grade, subjects: filteredSubjects };
+      })
+      .filter((grade: any) => grade.subjects && grade.subjects.length > 0);
+  }, [matieres, searchQuery, selectedCategory, courseType]);
+  const hoursLearned = formatDurationFromSeconds(stats.totalStudyTime);
+
+  const gradeNames = useMemo<string[]>(() => {
+    if (!matieres) return [];
+    return Array.from(
+      new Set(matieres.map((grade: any) => grade.name as string)),
+    );
+  }, [matieres]);
+
   const [activeTab, setActiveTab] = useState<"courses" | "lives">("courses");
-  const [liveRooms, setLiveRooms] = useState<any>({
-    live: [],
-    scheduled: [],
-    past: [],
-  });
-  const [registeredLives, setRegisteredLives] = useState<Set<string>>(
-    new Set(),
-  );
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user?.registerCode && user?.id) {
-      loadLiveRooms();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
-
-  const loadLiveRooms = async () => {
-    if (!user?.id) return;
-    setLoading(true);
-    try {
-      const rooms = await getStudentLiveRooms(user.id);
-      setLiveRooms(rooms);
-
-      // Load registrations
-      const allLives = [...rooms.live, ...rooms.scheduled];
-      const registrations = await Promise.all(
-        allLives.map((live) => isUserRegistered(live.id, user.id)),
-      );
-
-      const registered = new Set(
-        allLives
-          .filter((_, index) => registrations[index])
-          .map((live) => live.id),
-      );
-      setRegisteredLives(registered);
-    } catch (error) {
-      console.error("Error loading live rooms:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <div className="min-h-screen overflow-hidden pb-[50px]">
-      {/* Mobile Navigation - Rendered separately */}
-      <div className="md:hidden">
-        <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      </div>
-
       {/* Left Sidebar */}
       <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 ">
         {/* Left Sidebar - Desktop only */}
@@ -66,17 +82,283 @@ const IndexNewDash = ({ matieres, user }: any) => {
             <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
         </aside>
+        <div className="space-y-8 p-4 overflow-y-scroll w-full">
+          {/* Welcome Section */}
+          <div className="animate-slide-up">
+            <h1 className="font-display text-3xl font-bold text-foreground">
+              Welcome {user.name}! 👋
+            </h1>
+            <p className="mt-1 text-muted-foreground">
+              Continue your compliance learning journey. You&apos;re making
+              great progress!
+            </p>
+          </div>
 
-        {/* Main Content */}
+          {/* Stats Grid */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="all courses"
+              value={stats.totalCourses}
+              subtitle="Keep going!"
+              icon={BookOpen}
+              variant="primary"
+            />
+            <StatCard
+              title="Completed Courses"
+              value={stats.completedCourses}
+              subtitle="Well done!"
+              icon={Award}
+              variant="success"
+            />
+            <StatCard
+              title="Learning Hours"
+              value={hoursLearned}
+              subtitle="Hours invested"
+              icon={Clock}
+            />
+            <StatCard
+              title="Certifications"
+              value={2}
+              subtitle="Active certificates"
+              icon={TrendingUp}
+            />
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Courses Section */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 className="font-display text-xl font-semibold text-foreground">
+                  Continue Learning
+                </h2>
+                <ToggleGroup
+                  type="single"
+                  value={courseType}
+                  onValueChange={(value) => {
+                    if (value) {
+                      setCourseType(value as "free" | "paid");
+                      setSelectedCategory("All Courses");
+                    }
+                  }}
+                  className="bg-muted p-1 rounded-lg"
+                >
+                  <ToggleGroupItem
+                    value="paid"
+                    className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground px-4 py-2 rounded-md transition-all"
+                  >
+                    Cours Payants
+                  </ToggleGroupItem>
+                  <ToggleGroupItem
+                    value="free"
+                    className="data-[state=on]:bg-success data-[state=on]:text-success-foreground px-4 py-2 rounded-md transition-all"
+                  >
+                    Cours Gratuits
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search courses..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-background"
+                  />
+                </div>
+                <CategoryFilter
+                  categories={["All Courses", ...gradeNames]}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
+                />
+              </div>
+
+              {courseType === "paid" &&
+              user.demandeInscription[0]?.status === "PENDING" ? (
+                <Card className="border-warning/30  bg-warning/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <Loader2 className="h-5 w-5 text-warning animate-spin" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg text-foreground">
+                          Votre demande est en cours de traitement
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Nous examinons votre demande d&apos;accès aux cours.
+                          Vous serez notifié par email une fois approuvé.
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-success" />
+                        <span className="text-muted-foreground">
+                          Demande reçue
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 text-warning animate-spin" />
+                        <span className="text-muted-foreground">
+                          Vérification en cours
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 opacity-50">
+                        <div className="h-4 w-4 rounded-full border-2 border-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          Accès accordé
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6">
+                  {filteredGrades.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>
+                        No {courseType} courses found matching your criteria.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {filteredGrades.map((grade: any, gradeIndex: any) => (
+                        <div key={grade.id} className="space-y-4">
+                          {grade.subjects?.map(
+                            (subject: any, subjectIndex: any) => (
+                              <Collapsible
+                                key={subject.id}
+                                className="group w-full rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-md"
+                                defaultOpen={
+                                  gradeIndex === 0 && subjectIndex === 0
+                                }
+                              >
+                                <CollapsibleTrigger className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors">
+                                  <div className="flex items-center gap-4">
+                                    <div
+                                      className="w-1.5 h-8 rounded-full shadow-sm"
+                                      style={{
+                                        backgroundColor:
+                                          subject.color || "#3b82f6",
+                                      }}
+                                    />
+                                    <div>
+                                      <h3 className="font-display text-lg font-bold text-foreground">
+                                        {subject.name}
+                                      </h3>
+                                      <p className="text-xs text-muted-foreground mt-0.5">
+                                        {subject.courses?.length || 0} Modules
+                                        available
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <Badge
+                                      variant="outline"
+                                      className="hidden sm:inline-flex bg-muted/30 text-[10px] font-medium uppercase tracking-wider"
+                                    >
+                                      {grade.name}
+                                    </Badge>
+                                    <div className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center transition-transform duration-300 group-data-[state=open]:rotate-180">
+                                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                    </div>
+                                  </div>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent className="animate-slide-down">
+                                  <div className="p-5 pt-0">
+                                    <div className="grid gap-6 md:grid-cols-2 mt-4">
+                                      {subject.courses?.map(
+                                        (dbCourse: any, courseIndex: any) => (
+                                          <div
+                                            key={dbCourse.id}
+                                            style={{
+                                              animationDelay: `${courseIndex * 50}ms`,
+                                            }}
+                                            className="animate-fade-in"
+                                          >
+                                            <CourseCard
+                                              course={
+                                                {
+                                                  id: dbCourse.id,
+                                                  title: dbCourse.title,
+                                                  description:
+                                                    dbCourse.content || "",
+                                                  category: subject.name,
+                                                  duration: "8 hours",
+                                                  lessons:
+                                                    dbCourse.quizzes?.length ||
+                                                    0,
+                                                  enrolled: 0,
+                                                  progress:
+                                                    dbCourse.progress?.find(
+                                                      (p: any) =>
+                                                        p.userId === user.id,
+                                                    )?.completed
+                                                      ? 100
+                                                      : 0,
+                                                  level: grade.name as any,
+                                                  isFree: dbCourse.isFree,
+                                                  image:
+                                                    dbCourse.coverImage ||
+                                                    "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=800&auto=format&fit=crop&q=60",
+                                                  instructor: "Expert",
+                                                  price: dbCourse.isFree
+                                                    ? 0
+                                                    : 1500,
+                                                } as any
+                                              }
+                                            />
+                                          </div>
+                                        ),
+                                      )}
+                                    </div>
+                                  </div>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            ),
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {user.demandeInscription[0].status === "PENDING" ? (
+                <PaymentContactSection
+                  selectedCourses={user.grades}
+                  totalPrice={user.grades.reduce(
+                    (acc: any, course: any) => acc + course.price,
+                    0,
+                  )}
+                />
+              ) : (
+                <>
+                  <UpcomingDeadlines />
+                  <RecentActivity />
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Main Content 
         <CoursesView
           onTabChange={setActiveTab}
           matieres={matieres}
           registeredUser={user.registerCode}
-        />
-        {/* Right Events Panel */}
+        />*/}
+        {/* Right Events Panel 
         <aside className="w-96 p-4 hidden lg:block">
           <EventsPanel registeredUser={user.registerCode} />
-        </aside>
+        </aside>*/}
       </div>
     </div>
   );

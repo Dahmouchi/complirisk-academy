@@ -150,7 +150,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                 key={selectedCourse.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative group rounded-2xl overflow-hidden bg-foreground/95 shadow-xl"
+                className="relative group rounded-[6px] overflow-hidden bg-foreground/95 shadow-xl"
               >
                 {selectedCourse?.videoUrl && selectedCourse?.coverImage ? (
                   <div>
@@ -228,7 +228,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                   </TabsContent>
 
                   {/*<TabsContent value="discussions" className="mt-6">
-                    <div className="bg-card rounded-2xl border border-border p-6 text-center">
+                    <div className="bg-card rounded-[6px] border border-border p-6 text-center">
                       <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground">coming soon</p>
                     </div>
@@ -248,7 +248,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                         />
                       </div>
                     ) : (
-                      <div className="bg-card rounded-2xl border border-border p-6 text-center">
+                      <div className="bg-card rounded-[6px] border border-border p-6 text-center">
                         <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="font-semibold text-foreground mb-2">
                           Quiz
@@ -266,7 +266,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
             {/* Sidebar */}
             <div className="space-y-6 ">
               {/* All Courses List */}
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
+              <div className="bg-card rounded-[6px] border border-border overflow-hidden">
                 <div className="p-4 border-b border-border bg-muted/30">
                   <h3 className="font-semibold text-foreground">
                     Contenu du cours
@@ -364,7 +364,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                   </div>
                 </ScrollArea>
               </div>
-              <div className="bg-card rounded-2xl border border-border overflow-hidden">
+              <div className="bg-card rounded-[6px] border border-border overflow-hidden">
                 <div className="p-4 border-b border-border bg-muted/30">
                   <h3 className="font-semibold text-foreground">
                     Matériel du cours

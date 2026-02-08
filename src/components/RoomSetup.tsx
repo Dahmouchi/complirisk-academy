@@ -20,7 +20,7 @@ interface RoomSetupProps {
 export const RoomSetup = ({ role, onBack, onJoin }: RoomSetupProps) => {
   const [name, setName] = useState("");
   const [roomCode, setRoomCode] = useState(
-    role === "teacher" ? generateRoomCode() : ""
+    role === "teacher" ? generateRoomCode() : "",
   );
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -50,7 +50,7 @@ export const RoomSetup = ({ role, onBack, onJoin }: RoomSetupProps) => {
       const credentials = await getLiveKitToken(
         roomCode.toUpperCase(),
         name.trim(),
-        isTeacher
+        isTeacher,
       );
       onJoin(credentials);
     } catch (error) {
@@ -82,7 +82,7 @@ export const RoomSetup = ({ role, onBack, onJoin }: RoomSetupProps) => {
           Back
         </Button>
 
-        <div className="glass-card rounded-2xl p-8">
+        <div className="glass-card rounded-[6px] p-8">
           <h1 className="font-display text-2xl font-bold mb-2 text-foreground">
             {isTeacher ? "Create Your Classroom" : "Join a Classroom"}
           </h1>

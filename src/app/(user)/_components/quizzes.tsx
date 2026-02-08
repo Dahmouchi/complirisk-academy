@@ -171,7 +171,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
           quizScores.sort(
             (a, b) =>
               new Date(b.completedAt).getTime() -
-              new Date(a.completedAt).getTime()
+              new Date(a.completedAt).getTime(),
           );
           const latestScore = quizScores[0];
           newQuizScores[quizId] = {
@@ -226,7 +226,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
       setQuizScores(updatedScores);
       localStorage.setItem(
         `quiz-scores-${userId}`,
-        JSON.stringify(updatedScores)
+        JSON.stringify(updatedScores),
       );
       setCurrentScore(score);
     } finally {
@@ -276,7 +276,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
       const selectedOptionId = selectedAnswers[question.id];
       if (selectedOptionId) {
         const selectedOption = question.options.find(
-          (option) => option.id === selectedOptionId
+          (option) => option.id === selectedOptionId,
         );
         if (selectedOption && selectedOption.isCorrect) {
           correctAnswers++;
@@ -285,7 +285,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
     });
 
     const percentage = Math.round(
-      (correctAnswers / selectedQuiz.questions.length) * 100
+      (correctAnswers / selectedQuiz.questions.length) * 100,
     );
     const existingScore = quizScores[selectedQuiz.id];
     // The attempts should be incremented based on the number of existing results for this quiz
@@ -357,7 +357,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                         return (
                           <div
                             key={quiz.id}
-                            className="group relative bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            className="group relative bg-white border-2 border-gray-100 rounded-[6px] p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                           >
                             {/* Badge de statut */}
                             {hasCompleted && (
@@ -390,7 +390,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                                       <span>
                                         Dernière tentative:{" "}
                                         {new Date(
-                                          score.completedAt
+                                          score.completedAt,
                                         ).toLocaleDateString()}
                                       </span>
                                     </div>
@@ -491,7 +491,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                         return (
                           <div
                             key={quiz.id}
-                            className="group relative bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            className="group relative bg-white border-2 border-gray-100 rounded-[6px] p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                           >
                             {/* Badge de statut */}
                             {hasCompleted && (
@@ -524,7 +524,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
                                       <span>
                                         Dernière tentative:{" "}
                                         {new Date(
-                                          score.completedAt
+                                          score.completedAt,
                                         ).toLocaleDateString()}
                                       </span>
                                     </div>
@@ -629,7 +629,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
     const { icon: ResultIcon } = getBadgeConfig(currentScore.percentage);
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 shadow-xl text-center">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-50 to-indigo-100 rounded-[6px] p-8 shadow-xl text-center">
         <div className={`p-5 rounded-full  bg-opacity-20 mb-6`}>
           <ResultIcon className={`w-16 h-16  transform scale-105`} />
         </div>
@@ -705,7 +705,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({
   const isAnswerSelected = selectedAnswers[currentQuestion.id] !== undefined;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto my-8">
+    <div className="bg-white rounded-[6px] shadow-xl p-8 max-w-3xl mx-auto my-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">
           {selectedQuiz.title}

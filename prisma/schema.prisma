@@ -369,16 +369,19 @@ model CourseProgress {
 }
 
 model Grade {
-  id              String           @id @default(cuid())
-  handler         String           @unique // short readable identifier (e.g. "fractions-course")
-  name            String // "CE1", "2AC", "1Bac"...
-  niveauId        String
-  niveau          Niveau           @relation(fields: [niveauId], references: [id], onDelete: Cascade)
-  users           User[]
-  subjects        Subject[]
-  liveRooms       LiveRoom[]
-  teacherSubjects TeacherSubject[]
-  newsGrades      NewsGrade[]
+  id                       String                    @id @default(cuid())
+  handler                  String                    @unique // short readable identifier (e.g. "fractions-course")
+  name                     String // "CE1", "2AC", "1Bac"...
+  niveauId                 String
+  price                    Int                       @default(0)
+  niveau                   Niveau                    @relation(fields: [niveauId], references: [id], onDelete: Cascade)
+  users                    User[]
+  subjects                 Subject[]
+  liveRooms                LiveRoom[]
+  teacherSubjects          TeacherSubject[]
+  newsGrades               NewsGrade[]
+  demandeInscriptionGrades DemandeInscriptionGrade[]
+  demandeInscriptions      DemandeInscription[]
 }
 
 model Subject {
@@ -461,6 +464,7 @@ model Course {
   handler    String              @unique
   index      Int
   subjectId  String
+  isFree     Boolean             @default(false)
   subject    Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   documents  Document[]
   quizzes    Quiz[]
@@ -549,6 +553,8 @@ model User {
   password         String?
   universite       String?
   universiteCity   String?
+  fonction         String?
+  lieuEtudeTravail String?
   prenom           String?
   qrSecret         String?
   role             Role       @default(USER)
@@ -563,8 +569,7 @@ model User {
   lastLoginDate    DateTime?
 
   // Relations
-  gradeId              String?
-  grade                Grade?                @relation(fields: [gradeId], references: [id])
+  grades               Grade[] // Changed from single grade to many-to-many
   registerCode         RegisterCode?
   courseProgress       CourseProgress[] // 👈 Progress relation
   accounts             Account[]
@@ -578,11 +583,12 @@ model User {
   liveRooms            LiveRoom[]
   liveRoomParticipants LiveRoomParticipant[]
 
-  messages          CourseChatMessage[] // existing
-  chatReads         CourseChatMessageRead[] // ✅ ADD THIS
-  chatNotifications CourseChatNotification[] // ✅ ADD THIS
-  teacherSubjects   TeacherSubject[]
-  news              News[]
+  messages           CourseChatMessage[] // existing
+  chatReads          CourseChatMessageRead[] // ✅ ADD THIS
+  chatNotifications  CourseChatNotification[] // ✅ ADD THIS
+  teacherSubjects    TeacherSubject[]
+  news               News[]
+  demandeInscription DemandeInscription[] // Registration requests
 }
 
 model TeacherSubject {
@@ -662,4 +668,61 @@ enum StatutUser {
   subscribed
   awaiting
   verified
+}
+
+enum DemandeInscriptionStatus {
+  PENDING // En attente
+  APPROVED // Approuvée
+  REJECTED // Rejetée
+  CANCELLED // Annulée
+}
+
+model DemandeInscription {
+  id String @id @default(cuid())
+
+  // User who created the inscription request
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Selected grades for inscription (many-to-many)
+  grades DemandeInscriptionGrade[]
+
+  // Price information
+  totalPrice Int @default(0)
+
+  // Status of the request
+  status DemandeInscriptionStatus @default(PENDING)
+
+  // Additional information
+  notes           String? @db.Text // Optional notes from the user
+  rejectionReason String? @db.Text // Reason for rejection if status is REJECTED
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  treatedAt DateTime? // When the request was approved/rejected
+  treatedBy String? // Admin/User ID who treated the request
+  grade     Grade?    @relation(fields: [gradeId], references: [id])
+  gradeId   String?
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Junction table for DemandeInscription-Grade many-to-many relationship
+model DemandeInscriptionGrade {
+  id                   String @id @default(cuid())
+  demandeInscriptionId String
+  gradeId              String
+  gradePrice           Int    @default(0) // Price for this specific grade
+
+  demandeInscription DemandeInscription @relation(fields: [demandeInscriptionId], references: [id], onDelete: Cascade)
+  grade              Grade              @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([demandeInscriptionId, gradeId])
+  @@index([demandeInscriptionId])
+  @@index([gradeId])
 }

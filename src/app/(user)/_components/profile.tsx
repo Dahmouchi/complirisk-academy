@@ -116,7 +116,7 @@ const Profile = ({ user }: any) => {
           <div className="flex items-center justify-between h-24">
             <img
               onClick={() => router.push("/dashboard")}
-              src="/optimized/logoH.webp"
+              src="/compli/complirisk-academy.png"
               className="h-auto w-30 lg:w-40 cursor-pointer"
               alt=""
             />
@@ -147,7 +147,7 @@ const Profile = ({ user }: any) => {
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                     className="cursor-pointer"
                   >
                     <LogOut />

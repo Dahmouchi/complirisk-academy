@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { role: true, gradeId: true },
+      select: { role: true, grades: true },
     });
 
     if (!user) {
@@ -35,9 +35,9 @@ export async function GET(request: Request) {
       // Students only see published news for their grade
       whereClause = {
         published: true,
-        grades: user.gradeId
+        grades: user.grades
           ? {
-              some: { gradeId: user.gradeId },
+              some: { gradeId: user.grades[0].id },
             }
           : undefined,
       };
@@ -169,8 +169,12 @@ export async function POST(request: Request) {
     if (published && gradeIds && gradeIds.length > 0) {
       const students = await prisma.user.findMany({
         where: {
-          gradeId: {
-            in: gradeIds,
+          grades: {
+            some: {
+              id: {
+                in: gradeIds,
+              },
+            },
           },
           role: "USER", // Only students
           NOT: { registerCode: null },

@@ -48,6 +48,7 @@ interface CourseFormData {
   description: string;
   handler: string;
   index: number;
+  isFree: boolean;
   subjectId: string;
   coverImage: File | null;
   documents: File[];
@@ -98,7 +99,7 @@ export const FileUpload = ({
         onFileSelect(files);
       }
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const handleFileSelect = useCallback(
@@ -108,7 +109,7 @@ export const FileUpload = ({
         onFileSelect(files);
       }
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const removeFile = useCallback(
@@ -116,7 +117,7 @@ export const FileUpload = ({
       const newFiles = currentFiles.filter((_, i) => i !== index);
       onFileSelect(newFiles);
     },
-    [currentFiles, onFileSelect]
+    [currentFiles, onFileSelect],
   );
 
   return (
@@ -221,7 +222,7 @@ export const QuizManager = ({
 
   const updateQuiz = (quizIndex: number, field: keyof Quiz, value: any) => {
     const updatedQuizzes = quizzes.map((quiz, index) =>
-      index === quizIndex ? { ...quiz, [field]: value } : quiz
+      index === quizIndex ? { ...quiz, [field]: value } : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -238,7 +239,7 @@ export const QuizManager = ({
     const updatedQuizzes = quizzes.map((quiz, index) =>
       index === quizIndex
         ? { ...quiz, questions: [...quiz.questions, newQuestion] }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -249,10 +250,10 @@ export const QuizManager = ({
         ? {
             ...quiz,
             questions: quiz.questions.filter(
-              (_, qIndex) => qIndex !== questionIndex
+              (_, qIndex) => qIndex !== questionIndex,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -261,7 +262,7 @@ export const QuizManager = ({
     quizIndex: number,
     questionIndex: number,
     field: keyof QuizQuestion,
-    value: string
+    value: string,
   ) => {
     const updatedQuizzes = quizzes.map((quiz, index) =>
       index === quizIndex
@@ -270,10 +271,10 @@ export const QuizManager = ({
             questions: quiz.questions.map((question, qIndex) =>
               qIndex === questionIndex
                 ? { ...question, [field]: value }
-                : question
+                : question,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -291,10 +292,10 @@ export const QuizManager = ({
             questions: quiz.questions.map((question, qIndex) =>
               qIndex === questionIndex
                 ? { ...question, options: [...question.options, newOption] }
-                : question
+                : question,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -302,7 +303,7 @@ export const QuizManager = ({
   const removeOption = (
     quizIndex: number,
     questionIndex: number,
-    optionIndex: number
+    optionIndex: number,
   ) => {
     const updatedQuizzes = quizzes.map((quiz, index) =>
       index === quizIndex
@@ -313,13 +314,13 @@ export const QuizManager = ({
                 ? {
                     ...question,
                     options: question.options.filter(
-                      (_, oIndex) => oIndex !== optionIndex
+                      (_, oIndex) => oIndex !== optionIndex,
                     ),
                   }
-                : question
+                : question,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -329,7 +330,7 @@ export const QuizManager = ({
     questionIndex: number,
     optionIndex: number,
     field: keyof Option,
-    value: any
+    value: any,
   ) => {
     const updatedQuizzes = quizzes.map((quiz, index) =>
       index === quizIndex
@@ -342,13 +343,13 @@ export const QuizManager = ({
                     options: question.options.map((option, oIndex) =>
                       oIndex === optionIndex
                         ? { ...option, [field]: value }
-                        : option
+                        : option,
                     ),
                   }
-                : question
+                : question,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -356,7 +357,7 @@ export const QuizManager = ({
   const setCorrectOption = (
     quizIndex: number,
     questionIndex: number,
-    optionId: string
+    optionId: string,
   ) => {
     const updatedQuizzes = quizzes.map((quiz, index) =>
       index === quizIndex
@@ -371,10 +372,10 @@ export const QuizManager = ({
                       isCorrect: option.id === optionId,
                     })),
                   }
-                : question
+                : question,
             ),
           }
-        : quiz
+        : quiz,
     );
     onQuizzesChange(updatedQuizzes);
   };
@@ -477,7 +478,7 @@ export const QuizManager = ({
                           quizIndex,
                           questionIndex,
                           "content",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -501,7 +502,7 @@ export const QuizManager = ({
                             setCorrectOption(
                               quizIndex,
                               questionIndex,
-                              option.id
+                              option.id,
                             )
                           }
                           className={`p-1 rounded-full ${
@@ -525,7 +526,7 @@ export const QuizManager = ({
                               questionIndex,
                               optionIndex,
                               "text",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -538,7 +539,7 @@ export const QuizManager = ({
                               removeOption(
                                 quizIndex,
                                 questionIndex,
-                                optionIndex
+                                optionIndex,
                               )
                             }
                             className="text-red-500 hover:text-red-700 p-1"
@@ -587,6 +588,7 @@ const CourseCreationForm = ({ grades }: any) => {
     handler: "",
     index: 1,
     subjectId: "",
+    isFree: false,
     coverImage: null,
     documents: [],
     quizzes: [],
@@ -674,6 +676,7 @@ const CourseCreationForm = ({ grades }: any) => {
           coverImage: null,
           documents: [],
           quizzes: [],
+          isFree: false,
         });
         setSelectedGrade("");
         setAvailableSubjects([]);
@@ -695,7 +698,7 @@ const CourseCreationForm = ({ grades }: any) => {
     <div className="min-h-screen">
       <div className="mx-auto ">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
+        <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8 mb-8">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[8px] flex items-center justify-center">
               <BookOpen className="w-7 h-7 text-white" />
@@ -714,7 +717,7 @@ const CourseCreationForm = ({ grades }: any) => {
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Informations de base */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Informations de base
             </h2>
@@ -745,14 +748,14 @@ const CourseCreationForm = ({ grades }: any) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Classe *
+                  Norme *
                 </label>
                 <select
                   value={selectedGrade}
                   onChange={(e) => handleGradeChange(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">Sélectionner une classe</option>
+                  <option value="">Sélectionner une norme</option>
                   {grades.map((grade: any) => (
                     <option key={grade.id} value={grade.id}>
                       {grade.name}
@@ -763,7 +766,7 @@ const CourseCreationForm = ({ grades }: any) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Matière *
+                  Section *
                 </label>
                 <select
                   value={formData.subjectId}
@@ -778,7 +781,7 @@ const CourseCreationForm = ({ grades }: any) => {
                   }`}
                   disabled={!selectedGrade}
                 >
-                  <option value="">Sélectionner une matière</option>
+                  <option value="">Sélectionner une section</option>
                   {availableSubjects.map((subject) => (
                     <option key={subject.id} value={subject.id}>
                       {subject.name}
@@ -828,10 +831,32 @@ const CourseCreationForm = ({ grades }: any) => {
                 placeholder="Description du cours"
               />
             </div>
+            <div className="w-full bg-green-100 rounded-[6px] p-4 mt-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isFree"
+                  checked={formData.isFree}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isFree: e.target.checked,
+                    }))
+                  }
+                  className="w-5 h-5"
+                />
+                <label
+                  htmlFor="isFree"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Ce cours est gratuit
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Upload d'image de couverture */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Image de couverture
             </h2>
@@ -850,7 +875,7 @@ const CourseCreationForm = ({ grades }: any) => {
           </div>
 
           {/* Upload de documents PDF */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Documents PDF
             </h2>
@@ -870,7 +895,7 @@ const CourseCreationForm = ({ grades }: any) => {
           </div>
 
           {/* Gestion des quiz */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <QuizManager
               quizzes={formData.quizzes}
               onQuizzesChange={(quizzes) =>
@@ -880,7 +905,7 @@ const CourseCreationForm = ({ grades }: any) => {
           </div>
 
           {/* Boutons d'action */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <button

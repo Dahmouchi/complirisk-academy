@@ -44,7 +44,6 @@ import { UpdateProfileForm } from "./UpdateProfileForm";
 import { updateStudentPicture } from "@/actions/student";
 import { BadgesDisplay } from "@/app/(user)/_components/BadgesDisplay";
 import { Certificate, CertificateCard } from "./CertificateCard";
-import { Banner1 } from "../pro-blocks/landing-page/banners/banner-1";
 
 const mockUser = {
   id: "1",
@@ -169,7 +168,7 @@ export const FileUpload = ({
         onFileSelect(files);
       }
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const handleFileSelect = useCallback(
@@ -179,7 +178,7 @@ export const FileUpload = ({
         onFileSelect(files);
       }
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const removeFile = useCallback(
@@ -187,7 +186,7 @@ export const FileUpload = ({
       const newFiles = currentFiles.filter((_, i) => i !== index);
       onFileSelect(newFiles);
     },
-    [currentFiles, onFileSelect]
+    [currentFiles, onFileSelect],
   );
 
   return (
@@ -244,7 +243,6 @@ export default function StudentProfile({ user, stats }: any) {
 
   return (
     <div className="min-h-screen">
-      {!user.image && <Banner1 text="Ajoutez une photo de profile" />}
       <main className="mx-auto lg:px-24 px-4 py-8 ">
         {/* Profile Header */}
         <motion.div
@@ -255,7 +253,7 @@ export default function StudentProfile({ user, stats }: any) {
         >
           {/* Banner */}
           <div
-            className="h-32 md:h-48 rounded-2xl bg-gradient-to-r bg-cover bg-center from-blue-600 via-blue-600/80 to-blue-600/60 overflow-hidden relative"
+            className="h-32 md:h-48 rounded-[6px] bg-gradient-to-r bg-cover bg-center from-blue-600 via-blue-600/80 to-blue-600/60 overflow-hidden relative"
             style={{
               backgroundImage: `url(https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg)`,
             }}

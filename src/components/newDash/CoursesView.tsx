@@ -43,7 +43,7 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
     <div className="flex-1 lg:p-6 p-3 overflow-auto lg:pb-0 pb-24">
       <div className="max-w-5xl">
         {!registeredUser && (
-          <div className="relative w-full mt-12 lg:mt-0 text-primary-foreground bg-blue-600 p-8 rounded-2xl space-y-6">
+          <div className="relative w-full mt-12 lg:mt-0 text-primary-foreground bg-blue-600 p-8 rounded-[6px] space-y-6">
             {/* Background image - removed z-index */}
             <div
               style={{
@@ -51,7 +51,7 @@ const CoursesView = ({ matieres, registeredUser, onTabChange }: any) => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
-              className="absolute top-0 left-0 w-full h-full rounded-2xl opacity-50 pointer-events-none"
+              className="absolute top-0 left-0 w-full h-full rounded-[6px] opacity-50 pointer-events-none"
             ></div>
 
             {/* Content with proper z-index */}

@@ -43,7 +43,9 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedNiveau, setSelectedNiveau] = useState<string>("all");
+  const [selectedNiveau, setSelectedNiveau] = useState<string>(
+    "cmk1e7ue6000h0sroci9i2ev2",
+  );
   const [selectedGrade, setSelectedGrade] = useState<string>("all");
   const router = useRouter();
 
@@ -116,7 +118,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
           subjectData.color,
           subjectData.handler,
           subjectData.gradeId,
-          subjectData.description
+          subjectData.description,
         );
         if (res.success) {
           toast.success("Matire a été modifié avec succès");
@@ -133,7 +135,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
             subjectData.color,
             subjectData.handler,
             grade.id,
-            subjectData.description
+            subjectData.description,
           );
           if (res.success) {
             toast.success("Matiere a été créée avec succès");
@@ -164,10 +166,10 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <BookOpen className="h-6 w-6" />
-            Gestion des Matières
+            Gestion des Sections
           </h1>
           <p className="text-gray-600 mt-1">
-            Gérez les matières de votre établissement par classe
+            Gérez les sections de votre établissement par Norme
           </p>
         </div>
 
@@ -176,7 +178,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-800 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
-          Nouvelle Matière
+          Nouvelle Section
         </Button>
       </div>
 
@@ -187,49 +189,10 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* Filtre par niveau */}
-            <div>
-              <h4 className="text-sm font-medium mb-2">Par niveau :</h4>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant={"outline"}
-                  size="sm"
-                  onClick={() => handleNiveauChange("all")}
-                  className={
-                    selectedNiveau === "all"
-                      ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
-                      : ""
-                  }
-                >
-                  Tous les niveaux ({subjects?.length})
-                </Button>
-                {niveaux.map((niveau) => {
-                  const count = subjects?.filter(
-                    (s) => s.grade.niveauId === niveau.id
-                  ).length;
-                  return (
-                    <Button
-                      key={niveau.id}
-                      variant={"outline"}
-                      size="sm"
-                      onClick={() => handleNiveauChange(niveau.id)}
-                      className={
-                        selectedNiveau === niveau.id
-                          ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
-                          : ""
-                      }
-                    >
-                      {niveau.name} ({count})
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Filtre par classe */}
             {selectedNiveau !== "all" && (
               <div>
-                <h4 className="text-sm font-medium mb-2">Par classe :</h4>
+                <h4 className="text-sm font-medium mb-2">Par Norme :</h4>
                 <div className="flex flex-wrap gap-2">
                   <Button
                     variant={"outline"}
@@ -237,15 +200,15 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
                     onClick={() => setSelectedGrade("all")}
                     className={
                       selectedGrade === "all"
-                        ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
+                        ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-primary text-white"
                         : ""
                     }
                   >
-                    Toutes les classes
+                    Toutes les normes
                   </Button>
                   {filteredGrades.map((grade) => {
                     const count = subjects.filter(
-                      (s) => s.gradeId === grade.id
+                      (s) => s.gradeId === grade.id,
                     ).length;
                     return (
                       <Button
@@ -255,7 +218,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
                         onClick={() => setSelectedGrade(grade.id)}
                         className={
                           selectedGrade === grade.id
-                            ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
+                            ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-primary text-white"
                             : ""
                         }
                       >
@@ -272,9 +235,9 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Liste des Matières</CardTitle>
+          <CardTitle>Liste des Sections</CardTitle>
           <CardDescription>
-            {filteredSubjects?.length} matière
+            {filteredSubjects?.length} section
             {filteredSubjects?.length > 1 ? "s" : ""}
             {selectedGrade !== "all" &&
               ` dans ${grades.find((g) => g.id === selectedGrade)?.name}`}
@@ -288,10 +251,10 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
             <div className="text-center py-8">
               <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Aucune matière configurée
+                Aucune section configurée
               </h3>
               <p className="text-gray-600 mb-4">
-                Commencez par créer votre première matière
+                Commencez par créer votre première section
               </p>
               <Button onClick={handleCreate}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -302,8 +265,8 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Matière</TableHead>
-                  <TableHead>Classe</TableHead>
+                  <TableHead>Section</TableHead>
+                  <TableHead>Norme</TableHead>
                   <TableHead>Niveau</TableHead>
                   <TableHead>Couleur</TableHead>
                   <TableHead className="text-right">Actions</TableHead>

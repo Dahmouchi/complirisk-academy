@@ -267,7 +267,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
       setQuizScores(updatedScores);
       localStorage.setItem(
         `quiz-scores-${userId}`,
-        JSON.stringify(updatedScores)
+        JSON.stringify(updatedScores),
       );
       setCurrentScore(score);
     } finally {
@@ -317,7 +317,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
       const selectedOptionId = selectedAnswers[question.id];
       if (selectedOptionId) {
         const selectedOption = question.options.find(
-          (option) => option.id === selectedOptionId
+          (option) => option.id === selectedOptionId,
         );
         if (selectedOption && selectedOption.isCorrect) {
           correctAnswers++;
@@ -326,7 +326,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
     });
 
     const percentage = Math.round(
-      (correctAnswers / selectedQuiz.questions.length) * 100
+      (correctAnswers / selectedQuiz.questions.length) * 100,
     );
     const existingScore = quizScores[selectedQuiz.id];
     const attempts = existingScore ? existingScore.attempts + 1 : 1;
@@ -391,7 +391,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
               return (
                 <div
                   key={quiz.id}
-                  className="group relative bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  className="group relative bg-white border-2 border-gray-100 rounded-[6px] p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
                   {/* Badge de statut */}
                   {hasCompleted && (
@@ -540,7 +540,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
             🎉 Quiz terminé !
           </h3>
 
-          <div className="bg-white rounded-2xl p-6 mx-auto max-w-md mb-6 shadow-lg">
+          <div className="bg-white rounded-[6px] p-6 mx-auto max-w-md mb-6 shadow-lg">
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <div className="text-2xl font-bold text-blue-600">
@@ -606,7 +606,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
   return (
     <div className="space-y-8">
       {/* En-tête du quiz amélioré */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-[6px] p-6 text-white">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-xl font-bold">{selectedQuiz.title}</h4>
           <div className="bg-white/20 px-3 py-1 rounded-lg">
@@ -632,7 +632,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
       </div>
 
       {/* Question actuelle avec design amélioré */}
-      <div className="bg-white rounded-2xl border-2 border-gray-100 p-8 shadow-lg">
+      <div className="bg-white rounded-[6px] border-2 border-gray-100 p-8 shadow-lg">
         <h5 className="text-2xl font-bold text-gray-900 mb-8 leading-relaxed">
           {currentQuestion.content}
         </h5>
@@ -681,7 +681,7 @@ const QuizDisplay: React.FC<QuizDisplayProps> = ({ quizzes, userId }) => {
       </div>
 
       {/* Navigation améliorée */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50 rounded-2xl lg:p-6 p-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50 rounded-[6px] lg:p-6 p-4">
         {/* Previous Button - Full width on mobile, auto on larger screens */}
         <button
           onClick={handlePreviousQuestion}

@@ -48,7 +48,7 @@ const ButtonSynthese = ({ course, userId }: any) => {
     }
   };
   return (
-    <div className="bg-gradient-to-br from-purple-600/5 to-blue-500/5 border border-purple-600/20 rounded-2xl p-6">
+    <div className="bg-gradient-to-br from-purple-600/5 to-blue-500/5 border border-purple-600/20 rounded-[6px] p-6">
       <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
         <FileText className="w-5 h-5 text-purple-600" />
         Déposer la Synthèse

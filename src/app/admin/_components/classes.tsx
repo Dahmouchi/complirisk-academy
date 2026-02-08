@@ -85,7 +85,11 @@ export default function ClassesPage({ niveauxx, classe }: any) {
     }
   };
 
-  const handleSave = async (gradeData: { name: string; niveauId: string }) => {
+  const handleSave = async (gradeData: {
+    name: string;
+    niveauId: string;
+    price: number;
+  }) => {
     const niveau = niveaux.find((n) => n.id === gradeData.niveauId);
 
     try {
@@ -93,6 +97,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
         // Modification
         const res = await updateClasse(
           editingGrade.id,
+          gradeData.price,
           gradeData.name,
           gradeData.niveauId,
         );
@@ -106,7 +111,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
       } else {
         // Création
 
-        const res = await createClasse(gradeData.name);
+        const res = await createClasse(gradeData.name, gradeData.price);
         if (res.success) {
           toast.success("Classe a été créée avec succès");
           setIsDialogOpen(false);
@@ -131,10 +136,10 @@ export default function ClassesPage({ niveauxx, classe }: any) {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Users className="h-6 w-6" />
-            Gestion des Classes
+            Gestion des Normes
           </h1>
           <p className="text-gray-600 mt-1">
-            Gérez les classes de votre établissement par niveau
+            Gérez les normes de votre établissement par niveau
           </p>
         </div>
         <Button
@@ -142,58 +147,15 @@ export default function ClassesPage({ niveauxx, classe }: any) {
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-800 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
-          Nouvelle Classe
+          Nouvelle Norme
         </Button>
       </div>
 
-      {/* Filtres */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Filtres</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={"outline"}
-              size="sm"
-              className={
-                selectedNiveau === "all"
-                  ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
-                  : ""
-              }
-              onClick={() => setSelectedNiveau("all")}
-            >
-              Tous les niveaux ({grades.length})
-            </Button>
-            {niveaux.map((niveau) => {
-              const count = grades.filter(
-                (g) => g.niveauId === niveau.id,
-              ).length;
-              return (
-                <Button
-                  key={niveau.id}
-                  variant={"outline"}
-                  size="sm"
-                  className={
-                    selectedNiveau === niveau.id
-                      ? "shadow-yellow-500/30 hover:shadow-yellow-500/40 bg-amber-400"
-                      : ""
-                  }
-                  onClick={() => setSelectedNiveau(niveau.id)}
-                >
-                  {niveau.name} ({count})
-                </Button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
       <Card>
         <CardHeader>
-          <CardTitle>Liste des Classes</CardTitle>
+          <CardTitle>Liste des Normes</CardTitle>
           <CardDescription>
-            {filteredGrades.length} classe{filteredGrades.length > 1 ? "s" : ""}
+            {filteredGrades.length} norme{filteredGrades.length > 1 ? "s" : ""}
             {selectedNiveau !== "all" &&
               ` dans ${niveaux.find((n) => n.id === selectedNiveau)?.name}`}
           </CardDescription>
@@ -204,26 +166,27 @@ export default function ClassesPage({ niveauxx, classe }: any) {
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {selectedNiveau === "all"
-                  ? "Aucune classe configurée"
-                  : `Aucune classe dans ${
+                  ? "Aucune norme configurée"
+                  : `Aucune norme dans ${
                       niveaux.find((n) => n.id === selectedNiveau)?.name
                     }`}
               </h3>
               <p className="text-gray-600 mb-4">
-                Commencez par créer votre première classe
+                Commencez par créer votre première norme
               </p>
               <Button onClick={handleCreate}>
                 <Plus className="h-4 w-4 mr-2" />
-                Créer une classe
+                Créer une norme
               </Button>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Niveau</TableHead>
-                  <TableHead>Nombre de Matières</TableHead>
-                  <TableHead>Matières</TableHead>
+                  <TableHead>Norme</TableHead>
+                  <TableHead>Prix</TableHead>
+                  <TableHead>Nombre de Sections</TableHead>
+                  <TableHead>Sections</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -231,10 +194,10 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                 {filteredGrades.map((grade) => (
                   <TableRow key={grade.id}>
                     <TableCell className="font-medium">{grade.name}</TableCell>
-
+                    <TableCell>{grade.price} MAD</TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {grade.subjects.length} matière
+                        {grade.subjects.length} section
                         {grade.subjects.length > 1 ? "s" : ""}
                       </Badge>
                     </TableCell>

@@ -123,7 +123,7 @@ const LivePanel = ({
                     <div
                       key={live.id}
                       onClick={() => handleLiveClick(live.id)}
-                      className="relative overflow-hidden rounded-2xl p-4 border-2 border-red-500 shadow-red-200 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
+                      className="relative overflow-hidden rounded-[6px] p-4 border-2 border-red-500 shadow-red-200 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
                       style={{
                         background: `linear-gradient(to bottom right, ${hexToRgba(subjectColor, 0.2)}, ${hexToRgba(subjectColor, 0.05)})`,
                       }}
@@ -200,7 +200,7 @@ const LivePanel = ({
                     <div
                       key={live.id}
                       onClick={() => handleLiveClick(live.id)}
-                      className="relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-300 hover:shadow-lg  cursor-pointer"
+                      className="relative overflow-hidden rounded-[6px] p-4 border-2 transition-all duration-300 hover:shadow-lg  cursor-pointer"
                       style={{
                         background: `linear-gradient(to bottom right, ${hexToRgba(subjectColor, 0.15)}, ${hexToRgba(subjectColor, 0.03)})`,
                         borderColor: hexToRgba(subjectColor, 0.3),

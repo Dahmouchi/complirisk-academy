@@ -13,7 +13,7 @@ import {
 const ModernGlassCard = ({ review }: any) => {
   return (
     <motion.div
-      className="relative w-80 h-96 rounded-2xl overflow-hidden group cursor-pointer"
+      className="relative w-80 h-96 rounded-[6px] overflow-hidden group cursor-pointer"
       whileHover={{ scale: 1.02, y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
@@ -72,7 +72,7 @@ const MinimalistCard = ({ review }: any) => {
 
   return (
     <motion.div
-      className="relative w-80 h-96 bg-white rounded-2xl shadow-xl overflow-hidden group"
+      className="relative w-80 h-96 bg-white rounded-[6px] shadow-xl overflow-hidden group"
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
     >
@@ -131,9 +131,9 @@ const Card3D = ({ review }: any) => {
       whileHover={{ rotateY: 5, rotateX: 5 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl transform-gpu preserve-3d">
+      <div className="relative w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-[6px] shadow-2xl transform-gpu preserve-3d">
         {/* Effet de lumière */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-[6px]" />
 
         {/* Contenu */}
         <div className="relative p-8 h-full flex flex-col text-white">
@@ -190,7 +190,7 @@ const Card3D = ({ review }: any) => {
 const ParticleCard = ({ review }: any) => {
   return (
     <motion.div
-      className="relative w-80 h-96 rounded-2xl overflow-hidden group"
+      className="relative w-80 h-96 rounded-[6px] overflow-hidden group"
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3 }}
     >
@@ -265,7 +265,7 @@ const ParticleCard = ({ review }: any) => {
 const NeonCard = ({ review }: any) => {
   return (
     <motion.div
-      className="relative w-80 h-96 rounded-2xl overflow-hidden group"
+      className="relative w-80 h-96 rounded-[6px] overflow-hidden group"
       whileHover={{ boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)" }}
       transition={{ duration: 0.3 }}
     >
@@ -273,7 +273,7 @@ const NeonCard = ({ review }: any) => {
       <div className="absolute inset-0 bg-gray-900" />
 
       {/* Bordure néon */}
-      <div className="absolute inset-0 rounded-2xl border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-all duration-300" />
+      <div className="absolute inset-0 rounded-[6px] border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-all duration-300" />
 
       {/* Contenu */}
       <div className="relative p-8 h-full flex flex-col text-white">

@@ -48,6 +48,7 @@ interface CourseFormData {
   title: string;
   content: string;
   videoUrl: string;
+  isFree: boolean;
   index: number;
   subjectId: string;
   coverImage: File | null;
@@ -99,7 +100,7 @@ const FileUpload = ({
         onFileSelect(merged);
       }
     },
-    [currentFiles, multiple, onFileSelect]
+    [currentFiles, multiple, onFileSelect],
   );
 
   const handleFileSelect = useCallback(
@@ -110,7 +111,7 @@ const FileUpload = ({
         onFileSelect(merged);
       }
     },
-    [currentFiles, multiple, onFileSelect]
+    [currentFiles, multiple, onFileSelect],
   );
 
   const removeFile = useCallback(
@@ -118,7 +119,7 @@ const FileUpload = ({
       const newFiles = currentFiles.filter((_, i) => i !== index);
       onFileSelect(newFiles);
     },
-    [currentFiles, onFileSelect]
+    [currentFiles, onFileSelect],
   );
 
   return (
@@ -199,6 +200,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
     content: "",
     videoUrl: "",
     index: 1,
+    isFree: false,
     subjectId: "",
     coverImage: null,
     coverImageUrl: "",
@@ -224,6 +226,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
         videoUrl: coure.videoUrl || "",
         index: coure.index || 1,
         subjectId: coure.subjectId || "",
+        isFree: coure.isFree || false,
         coverImage: coure.coverImage || null,
         coverImageUrl: coure.coverImage || null,
       });
@@ -295,7 +298,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
     <div className="min-h-screen">
       <div className="mx-auto ">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
+        <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8 mb-8">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[8px] flex items-center justify-center">
               <BookOpen className="w-7 h-7 text-white" />
@@ -314,7 +317,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Informations de base */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Informations de base
             </h2>
@@ -345,14 +348,14 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Classe *
+                  Norme *
                 </label>
                 <select
                   value={selectedGrade}
                   onChange={(e) => handleGradeChange(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">Sélectionner une classe</option>
+                  <option value="">Sélectionner une norme</option>
                   {grades.map((grade: any) => (
                     <option key={grade.id} value={grade.id}>
                       {grade.name}
@@ -363,7 +366,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Matière *
+                  Section *
                 </label>
                 <select
                   value={formData.subjectId}
@@ -378,7 +381,7 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
                   }`}
                   disabled={!selectedGrade}
                 >
-                  <option value="">Sélectionner une matière</option>
+                  <option value="">Sélectionner une section</option>
                   {availableSubjects.map((subject) => (
                     <option key={subject.id} value={subject.id}>
                       {subject.name}
@@ -427,6 +430,28 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
                 rows={4}
                 placeholder="Description du cours"
               />
+            </div>
+            <div className="w-full bg-green-100 rounded-[6px] p-4 mt-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isFree"
+                  checked={formData.isFree}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isFree: e.target.checked,
+                    }))
+                  }
+                  className="w-5 h-5"
+                />
+                <label
+                  htmlFor="isFree"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Ce cours est gratuit
+                </label>
+              </div>
             </div>
 
             <h2 className="text-xl font-semibold text-gray-900 my-6">
@@ -493,11 +518,11 @@ const CourseUpdateForm = ({ grades, coure }: any) => {
           {/* Boutons d'action */}
         </form>
         {/* Gestion des documents PDF */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mt-6">
+        <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8 mt-6">
           <DocumentManagement initialDocuments={coure.documents} />
         </div>
         {/* Gestion des quiz */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mt-6">
+        <div className="bg-white rounded-[6px] shadow-lg border border-gray-200 p-8 mt-6">
           <QuizManager
             courseId={coure.id}
             onQuizzesUpdate={() => console.log("Quizzes updated")}

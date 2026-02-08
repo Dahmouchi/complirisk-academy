@@ -12,7 +12,7 @@ export default async function NewsPage() {
 
   // Redirect to login if not authenticated
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect("/");
   }
 
   // Fetch user data with registerCode
@@ -28,7 +28,7 @@ export default async function NewsPage() {
     return (
       <div className="container mx-auto py-8 px-4 h-[calc(100vh-100px)] flex items-center justify-center">
         <div className="max-w-2xl w-full">
-          <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 rounded-2xl p-8 md:p-12 shadow-xl border border-purple-200 dark:border-purple-800">
+          <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20 rounded-[6px] p-8 md:p-12 shadow-xl border border-purple-200 dark:border-purple-800">
             <div className="flex flex-col items-center text-center space-y-6">
               {/* Lock Icon */}
               <div className="relative">
@@ -95,7 +95,6 @@ export default async function NewsPage() {
                 <span>S&apos;abonner au pack premium</span>
                 <Sparkles className="w-5 h-5 group-hover:-rotate-12 transition-transform" />
               </Link>
-
               {/* Help Text */}
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Vous avez déjà un code d&apos;inscription ?{" "}

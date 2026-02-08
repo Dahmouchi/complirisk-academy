@@ -66,7 +66,7 @@ const EventCard = ({
   return (
     <div
       className={cn(
-        "rounded-2xl p-4 card-shadow hover:card-shadow-hover transition-all duration-300 animate-slide-in relative",
+        "rounded-[6px] p-4 card-shadow hover:card-shadow-hover transition-all duration-300 animate-slide-in relative",
         variantClasses[variant],
         isLocked && "opacity-75",
         className,

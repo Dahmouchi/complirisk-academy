@@ -126,6 +126,8 @@ export async function updateClientProfile1(
       nom: string;
       prenom: string;
       phone: string;
+      fonction: string;
+      lieuEtudeTravail: string;
     };
     study: {
       niveau: string;
@@ -138,7 +140,9 @@ export async function updateClientProfile1(
       data: {
         name: formData.personal.nom,
         prenom: formData.personal.prenom,
-        phone: formData.personal.phone, // assuming phone is number in schema
+        phone: formData.personal.phone,
+        fonction: formData.personal.fonction,
+        lieuEtudeTravail: formData.personal.lieuEtudeTravail,
         StatutUser: "subscribed",
         step: 1, // Set step = 1 to mark profile as completed
       },
@@ -150,40 +154,81 @@ export async function updateClientProfile1(
     return null;
   }
 }
-export async function updateClientProfile2(
-  id: string,
+/**
+ * Create a DemandeInscription (registration request) with selected grades
+ */
+export async function createDemandeInscription(
+  userId: string,
   formData: {
-    personal: {
-      nom: string;
-      prenom: string;
-      phone: string;
-    };
     study: {
-      gradeId: string;
+      selectedGrades: string[]; // Array of grade IDs
       niveau: string;
-      universiteId: string;
-      universiteCity: string;
     };
   },
 ) {
   try {
-    // Update the user with the new info
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        gradeId: formData.study.gradeId,
-        universite: formData.study.universiteId,
-        universiteCity: formData.study.universiteCity,
-        emailVerified: new Date(),
-        StatutUser: "verified",
-        step: 2,
+    // First, fetch the grade prices to calculate total
+    const grades = await prisma.grade.findMany({
+      where: {
+        id: {
+          in: formData.study.selectedGrades,
+        },
+      },
+      select: {
+        id: true,
+        price: true,
       },
     });
 
-    return updatedUser;
+    // Calculate total price
+    const totalPrice = grades.reduce(
+      (sum, grade) => sum + (grade.price || 0),
+      0,
+    );
+
+    // Create the DemandeInscription
+    const demande = await prisma.demandeInscription.create({
+      data: {
+        userId,
+        totalPrice,
+        status: "PENDING",
+        grades: {
+          create: grades.map((grade) => ({
+            gradeId: grade.id,
+            gradePrice: grade.price || 0,
+          })),
+        },
+      },
+      include: {
+        grades: {
+          include: {
+            grade: true,
+          },
+        },
+      },
+    });
+
+    // Update user step to mark registration as completed
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        step: 2,
+        grades: {
+          connect: grades.map((grade) => ({
+            id: grade.id,
+          })),
+        },
+        StatutUser: "subscribed", // Mark as subscribed but awaiting approval
+      },
+    });
+
+    return {
+      success: true,
+      demande,
+    };
   } catch (error) {
-    console.error("Error updating client profile:", error);
-    throw error; // Optional: let the caller catch it and handle UI errors
+    console.error("Error creating demande inscription:", error);
+    throw error;
   }
 }
 
@@ -202,8 +247,8 @@ export async function getStudentById() {
             },
           },
           badges: true,
-          registerCode: true,
-          grade: {
+          demandeInscription: true,
+          grades: {
             include: {
               niveau: true,
               subjects: {
@@ -222,7 +267,12 @@ export async function getStudentById() {
           },
         },
       });
-      return client;
+      if (!client) return null;
+      // Backward compatibility: map the first grade to 'grade'
+      return {
+        ...client,
+        grade: client.grades?.[0] || null,
+      };
     }
   } catch (error) {
     console.error("Error fetching client:", error);
@@ -299,27 +349,39 @@ export async function getDashboardUsers() {
   const users = await prisma.user.findMany({
     where: { archive: false, role: "USER" },
     include: {
-      grade: {
+      grades: {
         include: {
           niveau: true,
         },
       },
     },
   });
-  return { data: users };
+  // Backward compatibility: map `grades[0]` to `grade` for each user
+  return {
+    data: users.map((u) => ({
+      ...u,
+      grade: u.grades?.[0] || null,
+    })),
+  };
 }
 export async function getDashboardUsersArchived() {
   const users = await prisma.user.findMany({
     where: { archive: true },
     include: {
-      grade: {
+      grades: {
         include: {
           niveau: true,
         },
       },
     },
   });
-  return { data: users };
+  // Backward compatibility
+  return {
+    data: users.map((u) => ({
+      ...u,
+      grade: u.grades?.[0] || null,
+    })),
+  };
 }
 
 export async function getStudentStats(userId: string) {

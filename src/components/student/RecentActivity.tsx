@@ -33,7 +33,7 @@ export const RecentActivity = ({ activities }: any) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="rounded-2xl bg-card border border-gray-300 shadow-sm p-6"
+      className="rounded-[6px] bg-card border border-gray-300 shadow-sm p-6"
     >
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground font-display">

@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import { getSession, signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -35,6 +35,7 @@ const LoginForm = () => {
   const [isView, setIsView] = useState(false);
   const [loading, setLoading] = useState(false);
   const { data: session, update } = useSession();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +58,7 @@ const LoginForm = () => {
     } else {
       await update();
       setLoading(false);
-      redirect("/teacher/dashboard");
+      router.push("/teacher/dashboard");
     }
   }
 
@@ -71,7 +72,11 @@ const LoginForm = () => {
         <div className="pb-8">
           <div className="mt-5 w-full flex items-center justify-center ">
             <Link href="/" className="lg:flex">
-              <img src="/optimized/logoH.webp" alt="" className="w-32 h-auto" />
+              <img
+                src="/compli/complirisk-academy.png"
+                alt=""
+                className="w-32 h-auto"
+              />
             </Link>
           </div>
         </div>

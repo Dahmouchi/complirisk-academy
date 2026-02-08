@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import { getSession, signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -35,6 +35,7 @@ const LoginForm = () => {
   const [isView, setIsView] = useState(false);
   const [loading, setLoading] = useState(false);
   const { data: session, update } = useSession();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +58,7 @@ const LoginForm = () => {
     } else {
       await update();
       setLoading(false);
-      redirect("/admin/dashboard");
+      router.push("/admin/dashboard");
     }
   }
 
@@ -71,7 +72,7 @@ const LoginForm = () => {
         <div className="pb-8">
           <div className="mt-5 w-full flex items-center justify-center ">
             <Link href="/" className="lg:flex">
-              <img src="/optimized/logoH.webp" alt="" className="w-32 h-auto" />
+              <img src="/compli/logo.png" alt="" className="w-40 h-auto" />
             </Link>
           </div>
         </div>
@@ -88,7 +89,7 @@ const LoginForm = () => {
                   <FormLabel>Identifiant</FormLabel>
                   <FormControl>
                     <Input
-                      className="dark:bg-slate-900 text-white placeholder-slate-300"
+                      className="dark:bg-slate-900  placeholder-slate-700"
                       placeholder="Entrez votre identifiant"
                       {...field}
                     />
@@ -106,7 +107,7 @@ const LoginForm = () => {
                   <FormControl>
                     <div className="relative">
                       <Input
-                        className="dark:bg-slate-900 text-white placeholder-slate-300"
+                        className="dark:bg-slate-900  placeholder-slate-700"
                         type={isView ? "text" : "password"}
                         id="password"
                         placeholder="Entrez votre mot de passe"
@@ -114,14 +115,14 @@ const LoginForm = () => {
                       />
                       {isView ? (
                         <Eye
-                          className="absolute right-4 top-3 w-4 h-4 z-10 cursor-pointer text-gray-100"
+                          className="absolute right-4 top-3 w-4 h-4 z-10 cursor-pointer text-gray-700"
                           onClick={() => {
                             setIsView(!isView);
                           }}
                         />
                       ) : (
                         <EyeOff
-                          className="absolute right-4 top-3 w-4 h-4 z-10 cursor-pointer text-gray-100"
+                          className="absolute right-4 top-3 w-4 h-4 z-10 cursor-pointer text-gray-700"
                           onClick={() => setIsView(!isView)}
                         />
                       )}

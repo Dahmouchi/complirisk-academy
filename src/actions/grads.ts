@@ -65,7 +65,7 @@ export async function getNiveau() {
 
 //---------------------------------------------- classes --------------------------------------------------
 
-export async function createClasse(name: string) {
+export async function createClasse(name: string, price: number) {
   if (!name || name.trim() === "") {
     throw new Error("Le nom du niveau est requis.");
   }
@@ -74,13 +74,19 @@ export async function createClasse(name: string) {
     data: {
       name: name.trim(),
       handler,
+      price,
       niveauId: "cmk1e7ue6000h0sroci9i2ev2",
     },
   });
   return { success: true, data: niveau };
   // or return a success value instead
 }
-export async function updateClasse(id: string, name: string, niveauId: string) {
+export async function updateClasse(
+  id: string,
+  price: number,
+  name: string,
+  niveauId: string,
+) {
   if (!id || !name || !niveauId || name.trim() === "") {
     throw new Error("ID, nom et niveau sont requis.");
   }
@@ -89,6 +95,7 @@ export async function updateClasse(id: string, name: string, niveauId: string) {
     where: { id },
     data: {
       name: name.trim(),
+      price,
       niveauId,
     },
   });

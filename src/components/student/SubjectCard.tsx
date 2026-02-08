@@ -27,7 +27,7 @@ export const SubjectCard = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-6 cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+      className="group relative overflow-hidden rounded-[6px] bg-card border border-border/50 p-6 cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
     >
       {/* Color accent bar */}
       <div

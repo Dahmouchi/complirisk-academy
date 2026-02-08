@@ -109,7 +109,7 @@ const CourseContent = ({ course, userId }: any) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300">
+                <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-[6px] border-2 border-dashed border-gray-300">
                   <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
                     <FileText className="w-10 h-10 text-gray-400" />
                   </div>

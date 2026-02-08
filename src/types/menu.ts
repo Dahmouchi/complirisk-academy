@@ -1,13 +1,13 @@
 export type SubmenuItem = {
-    label: string;
-    href: string;
-  };    
-  
-  export type HeaderItem = {
-    label: string;
-    href: string;
-    submenu?: SubmenuItem[];
-  };
+  label: string;
+  href: string;
+};
+
+export type HeaderItem = {
+  label: string;
+  href: string;
+  submenu?: SubmenuItem[];
+};
 
 // Types pour les modèles de base de données
 
@@ -20,6 +20,7 @@ export interface Niveau {
 export interface Grade {
   id: string;
   name: string;
+  price: number;
   niveauId: string;
   niveau: Niveau;
   subjects: Subject[];

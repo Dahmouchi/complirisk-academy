@@ -24,7 +24,7 @@ export const StatsCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ scale: 1.02, y: -4 }}
-      className="relative overflow-hidden z-0 rounded-2xl bg-card border border-gray-300 shadow-sm p-6"
+      className="relative overflow-hidden z-0 rounded-[6px] bg-card border border-gray-300 shadow-sm p-6"
     >
       {/* Gradient background accent */}
       <div

@@ -5,7 +5,7 @@ const Logo: React.FC = () => {
   return (
     <Link href="/">
       <Image
-        src="/optimized/logoH.webp"
+        src="/compli/logo.png"
         alt="logo"
         width={160}
         height={50}

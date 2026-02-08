@@ -34,7 +34,7 @@ const HeaderSubject = (user: any) => {
           <div className="flex items-center justify-between py-4 pb-8">
             <img
               onClick={() => router.push("/dashboard")}
-              src="/optimized/logoH.webp"
+              src="/compli/complirisk-academy.png"
               className="h-auto w-30 lg:w-40 cursor-pointer"
               alt=""
             />
@@ -103,7 +103,7 @@ const HeaderSubject = (user: any) => {
                       Profile
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      onClick={() => signOut({ callbackUrl: "/" })}
                       className="cursor-pointer"
                     >
                       <LogOut />

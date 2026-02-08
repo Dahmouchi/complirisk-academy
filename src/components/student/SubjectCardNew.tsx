@@ -65,7 +65,7 @@ export const SubjectCardNew = ({
   return (
     <motion.div
       onClick={() => router.push(`/dashboard/matiere/${subject.handler}`)}
-      className="bg-card h-full rounded-2xl shadow-lg border border-border overflow-hidden cursor-pointer group"
+      className="bg-card h-full rounded-[6px] shadow-lg border border-border overflow-hidden cursor-pointer group"
       whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}

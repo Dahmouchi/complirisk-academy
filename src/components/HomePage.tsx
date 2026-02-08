@@ -115,7 +115,7 @@ const ExampleSection1 = () => {
     <div className="max-h-screen  w-full">
       <div className="  lg:px-14 px-4 ">
         <div
-          className="rounded-2xl relative flex flex-col lg:flex-row lg:items-center lg:justify-center  lg:h-[90vh] h-[86.5vh] w-full" // 112px = py-14 (3.5rem) * 2
+          className="rounded-[6px] relative flex flex-col lg:flex-row lg:items-center lg:justify-center  lg:h-[90vh] h-[86.5vh] w-full" // 112px = py-14 (3.5rem) * 2
           style={{
             backgroundImage: `url("/Board.png")`,
             backgroundSize: "cover",

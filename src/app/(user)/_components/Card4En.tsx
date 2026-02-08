@@ -21,7 +21,7 @@ import { motion } from "framer-motion";
 const ReviewCard = ({ review }: any) => {
   return (
     <motion.div
-      className="relative w-80 h-96 rounded-2xl overflow-hidden group cursor-pointer"
+      className="relative w-80 h-96 rounded-[6px] overflow-hidden group cursor-pointer"
       whileHover={{ scale: 1.02, y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >

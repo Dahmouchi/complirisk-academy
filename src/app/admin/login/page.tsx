@@ -13,7 +13,7 @@ export default async function AuthButton() {
     <div
       className="flex h-screen w-full items-center relative justify-center bg-gray-900 bg-cover bg-no-repeat"
       style={{
-        backgroundImage: `url("/optimized/bgnew.webp")`,
+        backgroundImage: `url("/compli/bg-login.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -26,8 +26,8 @@ export default async function AuthButton() {
         </div>
       </div>
       <div className="w-full h-full bg-black/20 absolute top-0"></div>
-      <div className="rounded-[8px] bg-gray-100/20 border-2 bg-opacity-50 px-16 py-10 shadow-lg backdrop-blur-xs max-sm:px-8">
-        <div className="text-white">
+      <div className="rounded-[8px] bg-white/30 border-2 bg-opacity-50 px-16 py-10 shadow-lg backdrop-blur-xs max-sm:px-8">
+        <div className="">
           <LoginForm />
         </div>
       </div>

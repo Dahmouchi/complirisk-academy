@@ -116,10 +116,10 @@ const StudentLives = () => {
 
   const liveSessions = registeredLives.filter((l) => l.status === "live");
   const upcomingSessions = registeredLives.filter(
-    (l) => l.status === "upcoming"
+    (l) => l.status === "upcoming",
   );
   const completedSessions = registeredLives.filter(
-    (l) => l.status === "completed"
+    (l) => l.status === "completed",
   );
 
   return (
@@ -161,21 +161,21 @@ const StudentLives = () => {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-card rounded-2xl p-4 card-shadow text-center">
+          <div className="bg-card rounded-[6px] p-4 card-shadow text-center">
             <div className="w-10 h-10 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-2">
               <Video className="w-5 h-5 text-destructive" />
             </div>
             <p className="text-2xl font-bold">{liveSessions.length}</p>
             <p className="text-xs text-muted-foreground">Live Now</p>
           </div>
-          <div className="bg-card rounded-2xl p-4 card-shadow text-center">
+          <div className="bg-card rounded-[6px] p-4 card-shadow text-center">
             <div className="w-10 h-10 bg-mint rounded-full flex items-center justify-center mx-auto mb-2">
               <Calendar className="w-5 h-5 text-mint-foreground" />
             </div>
             <p className="text-2xl font-bold">{upcomingSessions.length}</p>
             <p className="text-xs text-muted-foreground">Upcoming</p>
           </div>
-          <div className="bg-card rounded-2xl p-4 card-shadow text-center">
+          <div className="bg-card rounded-[6px] p-4 card-shadow text-center">
             <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center mx-auto mb-2">
               <CheckCircle className="w-5 h-5 text-muted-foreground" />
             </div>
@@ -197,7 +197,7 @@ const StudentLives = () => {
                   key={live.id}
                   className={cn(
                     "rounded-3xl p-5 card-shadow hover:card-shadow-hover transition-all duration-300",
-                    variantClasses[live.variant]
+                    variantClasses[live.variant],
                   )}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -245,7 +245,7 @@ const StudentLives = () => {
                   key={live.id}
                   className={cn(
                     "rounded-3xl p-5 card-shadow hover:card-shadow-hover transition-all duration-300",
-                    variantClasses[live.variant]
+                    variantClasses[live.variant],
                   )}
                 >
                   <div className="flex items-start justify-between mb-4">

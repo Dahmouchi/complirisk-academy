@@ -310,7 +310,7 @@ const SubjectCard = ({
   return (
     <motion.div
       onClick={() => router.push(`/dashboard/matiere/${subject.handler}`)}
-      className="bg-white h-full rounded-2xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer group"
+      className="bg-white h-full rounded-[6px] shadow-lg border border-gray-100 overflow-hidden cursor-pointer group"
       whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}
@@ -566,7 +566,7 @@ const ModernStudentSpace = ({ user, quizzes }: any) => {
           <div className="flex items-center justify-between h-24">
             <img
               onClick={() => router.push("/dashboard")}
-              src="/optimized/logoH.webp"
+              src="/compli/complirisk-academy.png"
               className="h-auto w-30 lg:w-40 cursor-pointer"
               alt=""
             />
@@ -646,7 +646,7 @@ const ModernStudentSpace = ({ user, quizzes }: any) => {
                         Profile
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => signOut({ callbackUrl: "/login" })}
+                        onClick={() => signOut({ callbackUrl: "/" })}
                         className="cursor-pointer"
                       >
                         <LogOut />

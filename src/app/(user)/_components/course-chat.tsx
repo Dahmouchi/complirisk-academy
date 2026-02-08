@@ -84,7 +84,7 @@ export function CourseChat({
         if (showLoader) setRefreshing(false);
       }
     },
-    [courseId]
+    [courseId],
   );
 
   // Load unread count
@@ -159,7 +159,7 @@ export function CourseChat({
       const result = await sendCourseMessage(
         courseId,
         messageContent,
-        parentMessageId || undefined
+        parentMessageId || undefined,
       );
 
       if (result.success && result.message) {
@@ -182,8 +182,8 @@ export function CourseChat({
                       result.message as unknown as Message,
                     ],
                   }
-                : msg
-            )
+                : msg,
+            ),
           );
         }
 
@@ -232,12 +232,12 @@ export function CourseChat({
                   replies: msg.replies.map((r) =>
                     r.id === messageId
                       ? { ...r, reads: [...r.reads, { userId: currentUserId }] }
-                      : r
+                      : r,
                   ),
                 };
               }
               return msg;
-            })
+            }),
           );
           loadUnreadCount();
         }
@@ -245,7 +245,7 @@ export function CourseChat({
         console.error("Mark as read error:", error);
       }
     },
-    [currentUserId, loadUnreadCount]
+    [currentUserId, loadUnreadCount],
   );
 
   // Delete message with optimistic update
@@ -354,8 +354,8 @@ export function CourseChat({
               message.sender.role === "TEACHER"
                 ? "ring-primary"
                 : message.sender.role === "ADMIN"
-                ? "ring-destructive"
-                : "ring-muted"
+                  ? "ring-destructive"
+                  : "ring-muted"
             }`}
           >
             <AvatarImage src={message.sender.image || undefined} />
@@ -411,14 +411,14 @@ export function CourseChat({
               {/* MESSAGE BUBBLE */}
               <div className="inline-block">
                 <div
-                  className={`rounded-2xl rounded-bl-md px-4 py-3 shadow-sm ${
+                  className={`rounded-[6px] rounded-bl-md px-4 py-3 shadow-sm ${
                     isReply
                       ? message.sender.role === "TEACHER"
                         ? "bg-gradient-to-br from-primary/15 to-accent/15 border border-purple-600/20"
                         : "bg-muted/80"
                       : message.sender.role === "TEACHER"
-                      ? "bg-gradient-to-br from-primary/10 to-accent/10 border border-purple-600/20"
-                      : "bg-muted"
+                        ? "bg-gradient-to-br from-primary/10 to-accent/10 border border-purple-600/20"
+                        : "bg-muted"
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
@@ -484,7 +484,7 @@ export function CourseChat({
   }
 
   return (
-    <div className="flex flex-col h-[600px] border border-border/50 rounded-2xl overflow-hidden bg-background shadow-sm">
+    <div className="flex flex-col h-[600px] border border-border/50 rounded-[6px] overflow-hidden bg-background shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b bg-gradient-to-r from-pubg-purple-600/5 to-accent/5">
         <div className="flex items-center gap-3">
