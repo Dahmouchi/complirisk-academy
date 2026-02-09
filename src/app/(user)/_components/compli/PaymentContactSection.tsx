@@ -120,7 +120,7 @@ export function PaymentContactSection({
                   href="mailto:formation@compliance-academy.fr"
                   className="text-sm font-medium hover:text-primary transition-colors"
                 >
-                  formation@compliance-academy.fr
+                  formation@compliance-academy.ma
                 </a>
               </div>
             </div>
@@ -130,10 +130,10 @@ export function PaymentContactSection({
               <div>
                 <p className="text-xs text-muted-foreground">Téléphone</p>
                 <a
-                  href="tel:+33123456789"
+                  href="tel:+212661234567"
                   className="text-sm font-medium hover:text-primary transition-colors"
                 >
-                  +33 1 23 45 67 89
+                  +212 6 61 23 45 67
                 </a>
               </div>
             </div>

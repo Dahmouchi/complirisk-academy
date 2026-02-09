@@ -26,6 +26,8 @@ import {
 
 import { toast } from "react-toastify";
 import { archiveUser, verifyUser } from "@/actions/client";
+import { UserGradeManager } from "./_components/UserGradeManager";
+import { useState } from "react";
 
 const handleVerify = async (userId: string) => {
   try {
@@ -58,6 +60,47 @@ const handleSuspend = async (userId: string) => {
     console.error("Error updating user status:", error);
   }
 };
+
+function ActionsCell({ user }: { user: any }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => handleVerify(user.id)}
+          >
+            Valider
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => handleSuspend(user.id)}
+          >
+            Suspendre
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+            Fiche de l&lsquo;utilisateur
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <UserGradeManager
+        user={user}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+    </>
+  );
+}
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -156,18 +199,27 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "niveau",
-    header: "Niveau",
-    cell: ({ row }) => {
-      const user = row.original;
-      return <div>{user?.grade?.niveau?.name}</div>;
-    },
-  },
-  {
     accessorKey: "classes",
-    header: "Classe",
+    header: "Normes",
     cell: ({ row }) => {
       const user = row.original;
+      // Show all grades if multiple, otherwise show the first one
+      if (user.grades && user.grades.length > 1) {
+        return (
+          <div className="flex flex-wrap gap-1">
+            {user.grades.slice(0, 2).map((grade: any) => (
+              <Badge key={grade.id} variant="outline" className="text-xs">
+                {grade.name}
+              </Badge>
+            ))}
+            {user.grades.length > 2 && (
+              <Badge variant="outline" className="text-xs">
+                +{user.grades.length - 2}
+              </Badge>
+            )}
+          </div>
+        );
+      }
       return <div>{user?.grade?.name}</div>;
     },
   },
@@ -175,49 +227,7 @@ export const columns: ColumnDef<any>[] = [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original;
-
-      return (
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => handleVerify(user.id)}
-              >
-                Valider
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => handleSuspend(user.id)}
-              >
-                Suspendre
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DialogTrigger>
-                <DropdownMenuItem>
-                  Fiche de l&lsquo;utilisateur
-                </DropdownMenuItem>
-              </DialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Fiche d&lsquo;utilisateur</DialogTitle>
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button type="submit">Confirm</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      );
+      return <ActionsCell user={user} />;
     },
   },
 ];

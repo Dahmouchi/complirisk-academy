@@ -31,10 +31,21 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 
-const IndexNewDash = ({ matieres, user, stats }: any) => {
+const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Courses");
   const [courseType, setCourseType] = useState<"free" | "paid">("paid");
+
+  // Check if user is verified - needs BOTH verified status AND approved subscription
+  const hasVerifiedStatus =
+    user.StatutUser === "verified" || user.StatutUser === "subscribed";
+
+  const hasApprovedSubscription = user.demandeInscription?.some(
+    (demande: any) => demande.status === "APPROVED",
+  );
+
+  const isVerified = hasVerifiedStatus && hasApprovedSubscription;
+
   const filteredGrades = useMemo(() => {
     return matieres
       .filter((grade: any) => {
@@ -49,6 +60,13 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
               const matchesSearch = course.title
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
+
+              // If user is not verified, only show free courses
+              if (!isVerified) {
+                return matchesSearch && course.isFree;
+              }
+
+              // If user is verified, apply the normal filter
               const matchesType = courseType === "free" ? course.isFree : true;
               return matchesSearch && matchesType;
             });
@@ -61,7 +79,7 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
         return { ...grade, subjects: filteredSubjects };
       })
       .filter((grade: any) => grade.subjects && grade.subjects.length > 0);
-  }, [matieres, searchQuery, selectedCategory, courseType]);
+  }, [matieres, searchQuery, selectedCategory, courseType, isVerified]);
   const hoursLearned = formatDurationFromSeconds(stats.totalStudyTime);
 
   const gradeNames = useMemo<string[]>(() => {
@@ -127,9 +145,30 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Courses Section */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Verification Notice for Unverified Users */}
+              {!isVerified && (
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0">
+                      <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                        Accès Limité aux Cours Gratuits
+                      </h3>
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        {!hasApprovedSubscription
+                          ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
+                          : "Votre compte n'est pas encore vérifié. Vous ne pouvez accéder qu'aux cours gratuits. Contactez l'administration pour obtenir l'accès complet à tous les cours."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="font-display text-xl font-semibold text-foreground">
-                  Continue Learning
+                  Continuez à apprendre
                 </h2>
                 <ToggleGroup
                   type="single"
@@ -144,13 +183,13 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
                 >
                   <ToggleGroupItem
                     value="paid"
-                    className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground px-4 py-2 rounded-md transition-all"
+                    className="data-[state=on]:bg-primary lg:w-fit w-full data-[state=on]:text-primary-foreground px-4 py-2 rounded-md transition-all"
                   >
                     Cours Payants
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="free"
-                    className="data-[state=on]:bg-success data-[state=on]:text-success-foreground px-4 py-2 rounded-md transition-all"
+                    className="data-[state=on]:bg-success lg:w-fit w-full data-[state=on]:text-white px-4 py-2 rounded-md transition-all"
                   >
                     Cours Gratuits
                   </ToggleGroupItem>
@@ -178,7 +217,7 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
               user.demandeInscription[0]?.status === "PENDING" ? (
                 <Card className="border-warning/30  bg-warning/5">
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex lg:flex-row flex-col lg:items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
                         <Loader2 className="h-5 w-5 text-warning animate-spin" />
                       </div>
@@ -303,6 +342,7 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
                                                       : 0,
                                                   level: grade.name as any,
                                                   isFree: dbCourse.isFree,
+                                                  subjectId: subject.id,
                                                   image:
                                                     dbCourse.coverImage ||
                                                     "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=800&auto=format&fit=crop&q=60",
@@ -342,8 +382,9 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
                 />
               ) : (
                 <>
-                  <UpcomingDeadlines />
-                  <RecentActivity />
+                  <EventsPanel registeredUser={user.registerCode} />
+
+                  <RecentActivity activities={recentActivities} />
                 </>
               )}
             </div>
@@ -357,6 +398,7 @@ const IndexNewDash = ({ matieres, user, stats }: any) => {
         />*/}
         {/* Right Events Panel 
         <aside className="w-96 p-4 hidden lg:block">
+        <UpcomingDeadlines />
           <EventsPanel registeredUser={user.registerCode} />
         </aside>*/}
       </div>

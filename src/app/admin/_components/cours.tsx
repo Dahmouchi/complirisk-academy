@@ -338,9 +338,9 @@ export default function CoursesPage({ classe, subject, coures }: any) {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 max-w-xs truncate ">
                             <div
-                              className="w-3 h-3 rounded-full"
+                              className="w-3 h-3 rounded-full   "
                               style={{ backgroundColor: course.subject.color }}
                             />
                             <span>{course.subject.name}</span>

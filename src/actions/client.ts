@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { hash } from "bcrypt";
 
 import { compare } from "bcrypt";
+import sendEmail from "@/lib/sendemail";
 
 export async function changeAdminPassword(
   id: string,
@@ -221,6 +222,113 @@ export async function createDemandeInscription(
         StatutUser: "subscribed", // Mark as subscribed but awaiting approval
       },
     });
+
+    // Get user details for email notification
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        name: true,
+        prenom: true,
+        email: true,
+        phone: true,
+      },
+    });
+
+    // Send email notification to admin
+    const gradeNames = demande.grades.map((dg) => dg.grade.name).join(", ");
+
+    const emailContent = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouvelle Demande d'Inscription</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 0;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #5B23FF 0%, #5B23FF 100%); padding: 30px; text-align: center;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Nouvelle Demande d'Inscription</h1>
+    </div>
+    
+    <!-- Content -->
+    <div style="padding: 30px;">
+      <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Bonjour,</p>
+      
+      <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+        Une nouvelle demande d'inscription a été soumise et nécessite votre attention.
+      </p>
+      
+      <!-- User Information -->
+      <div style="background-color: #f8fafc; border-left: 4px solid #5B23FF; padding: 20px; margin: 20px 0; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #5B23FF; font-size: 18px;">📋 Informations de l'étudiant</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; color: #666; font-weight: bold; width: 40%;">Nom complet:</td>
+            <td style="padding: 8px 0; color: #333;">${user?.name || ""} ${user?.prenom || ""}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #666; font-weight: bold;">Email:</td>
+            <td style="padding: 8px 0; color: #333;">${user?.email || ""}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #666; font-weight: bold;">Téléphone:</td>
+            <td style="padding: 8px 0; color: #333;">${user?.phone || "N/A"}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #666; font-weight: bold;">Normes demandés:</td>
+            <td style="padding: 8px 0; color: #333;">${gradeNames}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #666; font-weight: bold;">Prix total:</td>
+            <td style="padding: 8px 0; color: #333; font-weight: bold;">${totalPrice} DH</td>
+          </tr>
+        </table>
+      </div>
+      
+      <!-- Action Button -->
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://complirisk-academy.vercel.app"}/admin/dashboard/demandes" 
+           style="display: inline-block; background: linear-gradient(135deg, #5B23FF 0%, #5B23FF 100%); color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 6px; font-weight: bold; font-size: 16px;">
+          Voir la demande
+        </a>
+      </div>
+      
+      <p style="font-size: 14px; color: #666; margin-top: 20px;">
+        Veuillez examiner cette demande et prendre les mesures appropriées.
+      </p>
+    </div>
+    
+    <!-- Footer -->
+    <div style="padding: 24px; text-align: center; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
+      <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5;">
+        Ceci est un message automatique. Veuillez ne pas répondre à cet email.
+      </p>
+      <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+        © ${new Date().getFullYear()} CompliRisk Academy. Tous droits réservés.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    try {
+      await sendEmail(
+        "hassandahmouchi0@gmail.com",
+        "Nouvelle Demande d'Inscription - CompliRisk Academy",
+        emailContent,
+      );
+      console.log("Admin notification email sent successfully");
+    } catch (emailError) {
+      console.error("Error sending admin notification email:", emailError);
+      // Don't throw error here - demande was created successfully
+    }
+
+    // Revalidate paths to update UI
+    revalidatePath("/admin/dashboard/demandes");
+    revalidatePath("/admin/dashboard");
 
     return {
       success: true,
@@ -518,6 +626,147 @@ export async function verifyUser(userId: string) {
     return {
       success: false,
       message: "Failed to archive user",
+      error,
+    };
+  }
+}
+
+/**
+ * Get all available grades with their niveau information
+ */
+export async function getAllGrades() {
+  try {
+    const grades = await prisma.grade.findMany({
+      include: {
+        niveau: true,
+      },
+      orderBy: [
+        {
+          niveau: {
+            name: "asc",
+          },
+        },
+        {
+          name: "asc",
+        },
+      ],
+    });
+    return grades;
+  } catch (error) {
+    console.error("Error fetching grades:", error);
+    throw new Error("Failed to fetch grades");
+  }
+}
+
+/**
+ * Add a grade to a user
+ */
+export async function addGradeToUser(userId: string, gradeId: string) {
+  try {
+    // Check if user already has this grade
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        grades: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Utilisateur non trouvé",
+      };
+    }
+
+    if (user.grades.some((g) => g.id === gradeId)) {
+      return {
+        success: false,
+        message: "L'utilisateur a déjà ce niveau",
+      };
+    }
+
+    // Add the grade to the user
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        grades: {
+          connect: { id: gradeId },
+        },
+      },
+    });
+
+    revalidatePath("/admin/dashboard/users");
+
+    return {
+      success: true,
+      message: "Niveau ajouté avec succès",
+    };
+  } catch (error) {
+    console.error("Error adding grade to user:", error);
+    return {
+      success: false,
+      message: "Erreur lors de l'ajout du niveau",
+      error,
+    };
+  }
+}
+
+/**
+ * Remove a grade from a user
+ */
+export async function removeGradeFromUser(userId: string, gradeId: string) {
+  try {
+    // Check if user has this grade
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        grades: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Utilisateur non trouvé",
+      };
+    }
+
+    if (!user.grades.some((g) => g.id === gradeId)) {
+      return {
+        success: false,
+        message: "L'utilisateur n'a pas ce niveau",
+      };
+    }
+
+    // Don't allow removing the last grade
+    if (user.grades.length === 1) {
+      return {
+        success: false,
+        message: "L'utilisateur doit avoir au moins un niveau",
+      };
+    }
+
+    // Remove the grade from the user
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        grades: {
+          disconnect: { id: gradeId },
+        },
+      },
+    });
+
+    revalidatePath("/admin/dashboard/users");
+
+    return {
+      success: true,
+      message: "Niveau retiré avec succès",
+    };
+  } catch (error) {
+    console.error("Error removing grade from user:", error);
+    return {
+      success: false,
+      message: "Erreur lors du retrait du niveau",
       error,
     };
   }

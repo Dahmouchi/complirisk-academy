@@ -89,6 +89,11 @@ export const SubjectCardNew = ({
             </div>
             <div>
               <h3 className="text-xl font-bold">{subject.name}</h3>
+              {(subject as any).gradeName && (
+                <p className="text-xs text-white/80 mt-1 bg-white/20 px-2 py-0.5 rounded-full inline-block">
+                  {(subject as any).gradeName}
+                </p>
+              )}
             </div>
           </div>
           <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />

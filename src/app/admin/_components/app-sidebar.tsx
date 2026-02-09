@@ -40,7 +40,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import { title } from "process";
+import { useEffect, useState } from "react";
+import { getPendingDemandesCount } from "@/actions/demande";
 
 // This is sample data.
 const datas = {
@@ -56,7 +57,29 @@ const datas = {
       plan: "Dark Mode",
     },
   ],
-  navMain: [
+};
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      const result = await getPendingDemandesCount();
+      if (result.success) {
+        setPendingCount(result.count);
+      }
+    };
+
+    fetchPendingCount();
+
+    // Refresh count every 30 seconds
+    const interval = setInterval(fetchPendingCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const navMain = [
     {
       title: "Accueil",
       url: "/admin/dashboard",
@@ -66,11 +89,7 @@ const datas = {
       title: "Demandes",
       url: "/admin/dashboard/demandes",
       icon: Ticket,
-    },
-    {
-      title: "Codes",
-      url: "/admin/dashboard/codes",
-      icon: Key,
+      badge: pendingCount > 0 ? pendingCount : undefined,
     },
 
     {
@@ -109,11 +128,7 @@ const datas = {
       url: "/admin/dashboard/settings",
       icon: Settings2,
     },
-  ],
-};
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar();
+  ];
 
   return (
     <Sidebar
@@ -130,7 +145,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
       </SidebarHeader>
       <SidebarContent className="dark:bg-slate-900 pl-0 bg-white rounded-b-xl mt-3">
-        <NavMain items={datas.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
         <div className="text-center flex items-center gap-1 text-xs text-gray-500">

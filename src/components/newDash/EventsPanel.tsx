@@ -95,7 +95,7 @@ const EventsPanel = ({ registeredUser }: any) => {
   };
 
   return (
-    <div className="bg-card rounded-3xl p-6 card-shadow h-full flex flex-col">
+    <div className="bg-card rounded-[6px] p-6 card-shadow  flex flex-col">
       <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
         Mes événements 🤓
       </h2>

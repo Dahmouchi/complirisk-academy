@@ -462,7 +462,7 @@ const PersonalInfoStep = ({
           label="Email"
           value={data.email}
           onChange={(value) => onChange({ ...data, email: value })}
-          placeholder="[EMAIL_ADDRESS]"
+          placeholder="Email"
           icon={Mail}
           error={errors.email}
           required
@@ -729,7 +729,7 @@ const MultiStepForm = () => {
       nom: "",
       prenom: "",
       phone: "",
-      email: "",
+      email: session?.user.email || "",
       fonction: "",
       lieuEtudeTravail: "",
     },
@@ -755,7 +755,7 @@ const MultiStepForm = () => {
                 nom: res.name || "",
                 prenom: res.prenom || "",
                 phone: res.phone?.toString() || "",
-                email: res.email || "",
+                email: res.email || session.user.email || "",
                 fonction: res.fonction || "",
                 lieuEtudeTravail: res.lieuEtudeTravail || "",
               },
@@ -770,8 +770,8 @@ const MultiStepForm = () => {
         console.error("Failed to load user data", error);
       }
     };
-    if (session?.user?.id) fetchUserData();
-  }, []);
+    fetchUserData();
+  }, [session]);
 
   const validatePersonalInfo = (data: PersonalInfo): Partial<PersonalInfo> => {
     const errors: Partial<PersonalInfo> = {};
@@ -850,7 +850,7 @@ const MultiStepForm = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden h-screen"
+      className="min-h-screen relative h-screen"
       style={{
         backgroundImage: `url("/compli/bg-login.jpg")`,
         backgroundSize: "cover",
@@ -859,7 +859,7 @@ const MultiStepForm = () => {
     >
       <Header visible={false} />
 
-      <div className="flex items-center justify-center h-full lg:p-0 p-3">
+      <div className="flex items-center justify-center h-full mt-20 lg:mt-0 lg:p-0 p-3">
         <div className="relative max-w-7xl grid grid-cols-1 lg:grid-cols-3  bg-white/95 backdrop-blur-xl rounded-[6px] shadow-lg ">
           <div className="lg:col-span-2 w-full">
             <motion.div

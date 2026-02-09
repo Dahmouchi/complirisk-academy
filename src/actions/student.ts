@@ -606,55 +606,76 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextAuth";
 import z from "zod";
 
+export async function getRecentActivities(userId: string) {
+  try {
+    const activities = await prisma.userActivity.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    });
+
+    console.log("Raw activities from DB:", activities);
+    const mapped = await Promise.all(activities.map(mapUserActivityToUI));
+    console.log("Mapped activities:", mapped);
+
+    return mapped;
+  } catch (error) {
+    console.error("Error fetching recent activities:", error);
+    return [];
+  }
+}
+
 export async function mapUserActivityToUI(activity: any) {
-  let type: string = "other";
+  let type: "completed" | "started" | "earned" | "downloaded" = "started";
   let title = activity.description || "Activité";
-  let subtitle = "";
 
   // Convert createdAt to "5 min ago"
-  const time = formatDistanceToNow(new Date(activity.createdAt), {
+  const timestamp = formatDistanceToNow(new Date(activity.createdAt), {
     addSuffix: true,
     locale: fr,
   });
 
   switch (activity.type) {
     case "COMPLETE_COURSE":
-      type = "course_completed";
-      subtitle = `Cours terminé`;
+      type = "completed";
+      title = activity.description || "Cours terminé";
       break;
 
     case "START_COURSE":
-      type = "course_started";
-      subtitle = `Cours commencé`;
+      type = "started";
+      title = activity.description || "Cours commencé";
       break;
 
     case "PASS_QUIZ":
-      type = "quiz_passed";
-      subtitle = `Quiz réussi`;
+      type = "completed";
+      title = activity.description || "Quiz réussi";
       break;
 
     case "FAIL_QUIZ":
     case "COMPLETE_QUIZ":
-      type = "quiz_passed";
-      subtitle = `Quiz terminé`;
+      type = "completed";
+      title = activity.description || "Quiz terminé";
       break;
 
     case "LOGIN":
-      type = "badge_earned";
+      type = "earned";
       title = "Connexion réussie";
-      subtitle = "L’utilisateur a ouvert une session";
+      break;
+
+    case "UPDATE_PROFILE":
+      type = "earned";
+      title = activity.description || "Profil mis à jour";
       break;
 
     default:
-      type = "other";
-      subtitle = activity.description || "Activité";
+      type = "started";
+      title = activity.description || "Activité";
   }
 
   return {
     id: activity.id,
     type,
     title,
-    subtitle,
-    time,
+    timestamp,
   };
 }

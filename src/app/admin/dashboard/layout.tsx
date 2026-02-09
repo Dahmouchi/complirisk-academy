@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import AccessDenied from "@/components/access";
 import { AppSidebar } from "../_components/app-sidebar";
 import Header from "../_components/Header2";
+import prisma from "@/lib/prisma";
 
 export default async function RootLayout({
   children,
@@ -12,6 +13,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
+
   console.log(session);
   if (!session?.user) {
     redirect("/admin/login");

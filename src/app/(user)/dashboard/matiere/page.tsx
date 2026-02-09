@@ -7,9 +7,19 @@ const MatierePage = async () => {
     return <div className="text-center">User not found</div>;
   }
 
+  // Aggregate all subjects from all grades the user has access to
+  const allSubjects =
+    user.grades?.flatMap(
+      (grade: any) =>
+        grade.subjects?.map((subject: any) => ({
+          ...subject,
+          gradeName: grade.name, // Add grade name for context
+        })) || [],
+    ) || [];
+
   return (
     <div className="overflow-y-scroll h-[calc(100vh-80px)]">
-      <StudentSubjects subjects={user.grade?.subjects} userName={user.name} />
+      <StudentSubjects subjects={allSubjects} userName={user.name} />
     </div>
   );
 };

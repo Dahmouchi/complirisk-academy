@@ -33,7 +33,13 @@ import QuizDisplay from "./quizSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CourseChat } from "./course-chat";
 
-const CoursDetails = ({ subject, user, progressCount }: any) => {
+const CoursDetails = ({
+  subject,
+  user,
+  progressCount,
+  isVerified = true,
+  hasApprovedSubscription = true,
+}: any) => {
   const { id } = useParams();
   const navigate = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -123,6 +129,27 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
             Back to courses
           </Button>
 
+          {/* Verification Notice for Unverified Users */}
+          {!isVerified && (
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0">
+                  <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                    Accès Limité aux Cours Gratuits
+                  </h3>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    {!hasApprovedSubscription
+                      ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
+                      : "Vous visualisez uniquement les cours gratuits. Pour accéder à tous les cours, veuillez contacter l'administration pour vérifier votre compte."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Title Section */}
 
           <div className="bg-card rounded-[8px] p-4 border border-border">
@@ -173,6 +200,7 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
+                className="bg-white lg:p-4 rounded-[6px] p-2"
               >
                 <Tabs defaultValue="overview" className="w-full">
                   <TabsList className="w-full justify-start bg-muted/50 p-1 rounded-[8px] h-auto flex-wrap">
@@ -197,30 +225,42 @@ const CoursDetails = ({ subject, user, progressCount }: any) => {
                   </TabsList>
                   <TabsContent value="overview" className="mt-6">
                     <div className="space-y-6">
-                      <Badge
-                        variant="secondary"
-                        className="bg-blue-600/10 text-blue-600 hover:bg-blue-600/20"
-                      >
-                        {subject?.name}
-                      </Badge>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-600/10 text-blue-600 hover:bg-blue-600/20"
+                        >
+                          {subject?.name}
+                        </Badge>
+                        {subject?.grade && (
+                          <Badge
+                            variant="outline"
+                            className="bg-muted/30 text-muted-foreground"
+                          >
+                            {subject.grade.name}
+                          </Badge>
+                        )}
+                      </div>
                       <div className="flex space-y-2 flex-col lg:flex-row lg:items-center lg:justify-between">
                         <h1 className="text-xl md:text-3xl text-left font-bold text-foreground leading-tight max-w-3xl">
                           {selectedCourse?.title}
                         </h1>
-                        <ButtonComplete
-                          userId={user?.id}
-                          course={selectedCourse}
-                        />
                       </div>
-                      <ButtonSynthese
+                      {/*<ButtonSynthese
                         course={selectedCourse}
                         userId={user?.id}
-                      />
+                      />*/}
                       <div>
-                        <h3 className="text-xl font-semibold text-foreground mb-3">
-                          Description
-                        </h3>
-                        <div className="prose prose-sm text-muted-foreground max-w-none">
+                        <div className="flex space-y-2 flex-col lg:flex-row lg:items-end lg:justify-between">
+                          <h3 className="text-xl font-semibold text-foreground ">
+                            Description
+                          </h3>
+                          <ButtonComplete
+                            userId={user?.id}
+                            course={selectedCourse}
+                          />
+                        </div>
+                        <div className="prose prose-sm mt-3 text-muted-foreground max-w-none">
                           <p>{selectedCourse?.content}</p>
                         </div>
                       </div>

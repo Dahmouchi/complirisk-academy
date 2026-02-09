@@ -73,6 +73,7 @@ export async function approveDemande(demandeId: string) {
 
     revalidatePath("/admin/dashboard/demandes");
     revalidatePath("/admin/dashboard/users");
+    revalidatePath("/admin/dashboard");
 
     return { success: true, message: "Demande approuvée avec succès" };
   } catch (error) {
@@ -99,6 +100,7 @@ export async function rejectDemande(demandeId: string, reason?: string) {
     });
 
     revalidatePath("/admin/dashboard/demandes");
+    revalidatePath("/admin/dashboard");
 
     return { success: true, message: "Demande rejetée" };
   } catch (error) {
@@ -119,10 +121,30 @@ export async function deleteDemande(demandeId: string) {
     });
 
     revalidatePath("/admin/dashboard/demandes");
+    revalidatePath("/admin/dashboard");
 
     return { success: true, message: "Demande supprimée" };
   } catch (error) {
     console.error("Error deleting demande:", error);
     return { success: false, error: "Failed to delete demande" };
+  }
+}
+
+export async function getPendingDemandesCount() {
+  try {
+    const count = await prisma.demandeInscription.count({
+      where: {
+        status: "PENDING",
+      },
+    });
+
+    return { success: true, count };
+  } catch (error) {
+    console.error("Error counting pending demandes:", error);
+    return {
+      success: false,
+      count: 0,
+      error: "Failed to count pending demandes",
+    };
   }
 }

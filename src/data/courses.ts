@@ -12,6 +12,7 @@ export const courses: Course[] = [
     enrolled: 1247,
     progress: 65,
     price: 1500,
+    subjectId: "1",
     level: "Foundation",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=60",
@@ -27,6 +28,7 @@ export const courses: Course[] = [
     lessons: 24,
     enrolled: 892,
     price: 1500,
+    subjectId: "1",
     progress: 0,
     level: "Lead Auditor",
     image:
@@ -42,6 +44,7 @@ export const courses: Course[] = [
     duration: "12 hours",
     lessons: 16,
     enrolled: 756,
+    subjectId: "1",
     progress: 30,
     price: 1500,
     level: "Practitioner",
@@ -51,6 +54,7 @@ export const courses: Course[] = [
   },
   {
     id: "4",
+    subjectId: "1",
     title: "Anti-Corruption Risk Assessment",
     description:
       "Identify, assess, and mitigate corruption risks within your organization using proven methodologies.",
@@ -75,6 +79,7 @@ export const courses: Course[] = [
     lessons: 6,
     price: 1500,
     enrolled: 1456,
+    subjectId: "1",
     progress: 100,
     level: "Foundation",
     image:
@@ -89,6 +94,7 @@ export const courses: Course[] = [
     category: "ISO 37002",
     duration: "10 hours",
     lessons: 14,
+    subjectId: "1",
     price: 1500,
     enrolled: 634,
     progress: 45,
@@ -104,6 +110,7 @@ export const courses: Course[] = [
       "Conduct comprehensive due diligence on third parties to prevent corruption and compliance risks.",
     category: "Due Diligence",
     duration: "8 hours",
+    subjectId: "1",
     lessons: 10,
     enrolled: 978,
     progress: 0,
@@ -115,6 +122,7 @@ export const courses: Course[] = [
   },
   {
     id: "8",
+    subjectId: "1",
     title: "GDPR and Data Compliance",
     description:
       "Understand GDPR requirements and implement compliant data protection practices in your organization.",
@@ -134,6 +142,7 @@ export const courses: Course[] = [
 export const freeCourses: Course[] = [
   {
     id: "free-1",
+    subjectId: "1",
     title: "Introduction à la Conformité - Les Fondamentaux",
     description:
       "Découvrez les bases de la conformité et pourquoi elle est essentielle dans le monde des affaires moderne.",
@@ -157,6 +166,7 @@ export const freeCourses: Course[] = [
     duration: "1.5 hours",
     lessons: 3,
     enrolled: 2189,
+    subjectId: "1",
     progress: 0,
     level: "Foundation",
     price: 0,
@@ -172,6 +182,7 @@ export const freeCourses: Course[] = [
     category: "Ethics",
     duration: "1 hour",
     price: 0,
+    subjectId: "1",
     lessons: 2,
     enrolled: 4521,
     progress: 0,
