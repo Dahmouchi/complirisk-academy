@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "set NODE_ENV=production && prisma generate && next build",
+    "build": "prisma generate && rm -rf .next && next build",
+    "build:win": "set NODE_ENV=production && prisma generate && (if exist .next rmdir /s /q .next) && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.856.0",
