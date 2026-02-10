@@ -16,6 +16,7 @@ import {
   Loader2,
   TrendingUp,
   Search,
+  X,
 } from "lucide-react";
 import { UpcomingDeadlines } from "@/app/(user)/_components/compli/UpcomingDeadlines";
 import { RecentActivity } from "@/app/(user)/_components/compli/RecentActivity";
@@ -23,19 +24,27 @@ import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { formatDurationFromSeconds } from "@/app/(user)/_components/DashboardStudent";
-import { PaymentContactSection } from "@/app/(user)/_components/compli/PaymentContactSection";
 import { Input } from "../ui/input";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import NewFormationPanel from "./NewFormationPanel";
+import Progress from "../ui/progress";
 
-const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
+const IndexNewDash = ({
+  matieres,
+  user,
+  stats,
+  recentActivities,
+  allGrades,
+  subjectProgress = {},
+}: any) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Courses");
   const [courseType, setCourseType] = useState<"free" | "paid">("paid");
-
+  const [bannerVisible, setBannerVisible] = useState(true);
   // Check if user is verified - needs BOTH verified status AND approved subscription
   const hasVerifiedStatus =
     user.StatutUser === "verified" || user.StatutUser === "subscribed";
@@ -45,6 +54,10 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
   );
 
   const isVerified = hasVerifiedStatus && hasApprovedSubscription;
+
+  const pendingDemande = useMemo(() => {
+    return user.demandeInscription?.find((d: any) => d.status === "PENDING");
+  }, [user.demandeInscription]);
 
   const filteredGrades = useMemo(() => {
     return matieres
@@ -89,7 +102,7 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
     );
   }, [matieres]);
 
-  const [activeTab, setActiveTab] = useState<"courses" | "lives">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "explore">("courses");
   return (
     <div className="min-h-screen overflow-hidden pb-[50px]">
       {/* Left Sidebar */}
@@ -102,42 +115,61 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
         </aside>
         <div className="space-y-8 p-4 overflow-y-scroll w-full">
           {/* Welcome Section */}
+          {!isVerified && bannerVisible && (
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-2">
+              <div className="flex items-start gap-3">
+                <div className="flex-1">
+                  <p className="text-sm text-blue-700 text-center dark:text-blue-300">
+                    {!hasApprovedSubscription
+                      ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
+                      : "Votre compte n'est pas encore vérifié. Vous ne pouvez accéder qu'aux cours gratuits. Contactez l'administration pour obtenir l'accès complet à tous les cours."}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setBannerVisible(false)}
+                  className="text-blue-700 dark:text-blue-300"
+                >
+                  <X />
+                </button>
+              </div>
+            </div>
+          )}
           <div className="animate-slide-up">
             <h1 className="font-display text-3xl font-bold text-foreground">
-              Welcome {user.name}! 👋
+              Bonjour {user.name}! 👋
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Continue your compliance learning journey. You&apos;re making
-              great progress!
+              Continuez votre parcours d&apos;apprentissage en conformité. Vous
+              faites de grands progrès!
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <StatCard
-              title="all courses"
+              title="tous les cours"
               value={stats.totalCourses}
-              subtitle="Keep going!"
+              subtitle="Continuez!"
               icon={BookOpen}
               variant="primary"
             />
             <StatCard
-              title="Completed Courses"
+              title="cours terminés"
               value={stats.completedCourses}
-              subtitle="Well done!"
+              subtitle="Bravo!"
               icon={Award}
               variant="success"
             />
             <StatCard
-              title="Learning Hours"
+              title="heures d'apprentissage"
               value={hoursLearned}
-              subtitle="Hours invested"
+              subtitle="heures investies"
               icon={Clock}
             />
             <StatCard
               title="Certifications"
               value={2}
-              subtitle="Active certificates"
+              subtitle="Certificats actifs"
               icon={TrendingUp}
             />
           </div>
@@ -146,25 +178,6 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
             {/* Courses Section */}
             <div className="lg:col-span-2 space-y-6">
               {/* Verification Notice for Unverified Users */}
-              {!isVerified && (
-                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0">
-                      <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
-                        Accès Limité aux Cours Gratuits
-                      </h3>
-                      <p className="text-sm text-blue-700 dark:text-blue-300">
-                        {!hasApprovedSubscription
-                          ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
-                          : "Votre compte n'est pas encore vérifié. Vous ne pouvez accéder qu'aux cours gratuits. Contactez l'administration pour obtenir l'accès complet à tous les cours."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="font-display text-xl font-semibold text-foreground">
@@ -213,9 +226,8 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
                 />
               </div>
 
-              {courseType === "paid" &&
-              user.demandeInscription[0]?.status === "PENDING" ? (
-                <Card className="border-warning/30  bg-warning/5">
+              {courseType === "paid" && pendingDemande && (
+                <Card className="border-warning/30 bg-white mb-6">
                   <CardHeader className="pb-3">
                     <div className="flex lg:flex-row flex-col lg:items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
@@ -255,138 +267,151 @@ const IndexNewDash = ({ matieres, user, stats, recentActivities }: any) => {
                     </div>
                   </CardContent>
                 </Card>
-              ) : (
-                <div className="space-y-6">
-                  {filteredGrades.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>
-                        No {courseType} courses found matching your criteria.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {filteredGrades.map((grade: any, gradeIndex: any) => (
-                        <div key={grade.id} className="space-y-4">
-                          {grade.subjects?.map(
-                            (subject: any, subjectIndex: any) => (
-                              <Collapsible
-                                key={subject.id}
-                                className="group w-full rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-md"
-                                defaultOpen={
-                                  gradeIndex === 0 && subjectIndex === 0
-                                }
-                              >
-                                <CollapsibleTrigger className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors">
-                                  <div className="flex items-center gap-4">
-                                    <div
-                                      className="w-1.5 h-8 rounded-full shadow-sm"
-                                      style={{
-                                        backgroundColor:
-                                          subject.color || "#3b82f6",
-                                      }}
-                                    />
-                                    <div>
-                                      <h3 className="font-display text-lg font-bold text-foreground">
-                                        {subject.name}
-                                      </h3>
-                                      <p className="text-xs text-muted-foreground mt-0.5">
-                                        {subject.courses?.length || 0} Modules
-                                        available
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-3">
-                                    <Badge
-                                      variant="outline"
-                                      className="hidden sm:inline-flex bg-muted/30 text-[10px] font-medium uppercase tracking-wider"
-                                    >
-                                      {grade.name}
-                                    </Badge>
-                                    <div className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center transition-transform duration-300 group-data-[state=open]:rotate-180">
-                                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                                    </div>
-                                  </div>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="animate-slide-down">
-                                  <div className="p-5 pt-0">
-                                    <div className="grid gap-6 md:grid-cols-2 mt-4">
-                                      {subject.courses?.map(
-                                        (dbCourse: any, courseIndex: any) => (
-                                          <div
-                                            key={dbCourse.id}
-                                            style={{
-                                              animationDelay: `${courseIndex * 50}ms`,
-                                            }}
-                                            className="animate-fade-in"
-                                          >
-                                            <CourseCard
-                                              course={
-                                                {
-                                                  id: dbCourse.id,
-                                                  title: dbCourse.title,
-                                                  description:
-                                                    dbCourse.content || "",
-                                                  category: subject.name,
-                                                  duration: "8 hours",
-                                                  lessons:
-                                                    dbCourse.quizzes?.length ||
-                                                    0,
-                                                  enrolled: 0,
-                                                  progress:
-                                                    dbCourse.progress?.find(
-                                                      (p: any) =>
-                                                        p.userId === user.id,
-                                                    )?.completed
-                                                      ? 100
-                                                      : 0,
-                                                  level: grade.name as any,
-                                                  isFree: dbCourse.isFree,
-                                                  subjectId: subject.id,
-                                                  image:
-                                                    dbCourse.coverImage ||
-                                                    "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=800&auto=format&fit=crop&q=60",
-                                                  instructor: "Expert",
-                                                  price: dbCourse.isFree
-                                                    ? 0
-                                                    : 1500,
-                                                } as any
-                                              }
-                                            />
-                                          </div>
-                                        ),
-                                      )}
-                                    </div>
-                                  </div>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            ),
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
               )}
+
+              <div className="space-y-6">
+                {filteredGrades.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No {courseType} courses found matching your criteria.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {filteredGrades.map((grade: any, gradeIndex: any) => (
+                      <div key={grade.id} className="space-y-4">
+                        {grade.subjects?.map(
+                          (subject: any, subjectIndex: any) => {
+                            const progressCount = subjectProgress[
+                              subject.id
+                            ] || { completed: 0, total: 0, percentage: 0 };
+                            return (
+                              <div key={subject.id}>
+                                <Collapsible
+                                  className="group w-full rounded-xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-md"
+                                  defaultOpen={
+                                    gradeIndex === 0 && subjectIndex === 0
+                                  }
+                                >
+                                  <CollapsibleTrigger className="w-full relative flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors">
+                                    <div className="flex items-center gap-4 w-full">
+                                      <div
+                                        className="w-1.5 h-12 rounded-full shadow-sm"
+                                        style={{
+                                          backgroundColor:
+                                            subject.color || "#3b82f6",
+                                        }}
+                                      />
+                                      <div className="lg:w-1/2 w-full">
+                                        <h3 className="font-display text-lg font-bold text-foreground">
+                                          {subject.name}
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground mt-0.5">
+                                          {subject.courses?.length || 0} Modules
+                                          available
+                                        </p>
+
+                                        {progressCount !== undefined &&
+                                          progressCount.total > 0 && (
+                                            <div className="flex items-center gap-2 w-full">
+                                              <Progress
+                                                value={progressCount.percentage}
+                                                className="h-1.5 bg-primary-foreground/30 w-full"
+                                              />
+                                              <div className="flex items-center justify-between text-xs mb-1">
+                                                <span></span>
+                                                <span>
+                                                  {progressCount.percentage}%
+                                                </span>
+                                              </div>
+                                            </div>
+                                          )}
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                      <Badge
+                                        variant="outline"
+                                        className="hidden sm:inline-flex bg-muted/30 text-[10px] font-medium uppercase tracking-wider"
+                                      >
+                                        {grade.name}
+                                      </Badge>
+                                      <div className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center transition-transform duration-300 group-data-[state=open]:rotate-180">
+                                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                      </div>
+                                    </div>
+                                  </CollapsibleTrigger>
+                                  <CollapsibleContent className="animate-slide-down">
+                                    <div className="p-5 pt-0">
+                                      <div className="grid gap-6 md:grid-cols-2 mt-4">
+                                        {subject.courses?.map(
+                                          (dbCourse: any, courseIndex: any) => (
+                                            <div
+                                              key={dbCourse.id}
+                                              style={{
+                                                animationDelay: `${courseIndex * 50}ms`,
+                                              }}
+                                              className="animate-fade-in"
+                                            >
+                                              <CourseCard
+                                                course={
+                                                  {
+                                                    id: dbCourse.id,
+                                                    title: dbCourse.title,
+                                                    description:
+                                                      dbCourse.content || "",
+                                                    category: subject.name,
+                                                    duration: "8 hours",
+                                                    lessons:
+                                                      dbCourse.quizzes
+                                                        ?.length || 0,
+                                                    enrolled: 0,
+                                                    progress:
+                                                      dbCourse.progress?.find(
+                                                        (p: any) =>
+                                                          p.userId === user.id,
+                                                      )?.completed
+                                                        ? 100
+                                                        : 0,
+                                                    level: grade.name as any,
+                                                    isFree: dbCourse.isFree,
+                                                    subjectId: subject.id,
+                                                    image:
+                                                      dbCourse.coverImage ||
+                                                      "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=800&auto=format&fit=crop&q=60",
+                                                    instructor: "Expert",
+                                                    price: dbCourse.isFree
+                                                      ? 0
+                                                      : 1500,
+                                                  } as any
+                                                }
+                                              />
+                                            </div>
+                                          ),
+                                        )}
+                                      </div>
+                                    </div>
+                                  </CollapsibleContent>
+                                </Collapsible>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {user.demandeInscription[0].status === "PENDING" ? (
-                <PaymentContactSection
-                  selectedCourses={user.grades}
-                  totalPrice={user.grades.reduce(
-                    (acc: any, course: any) => acc + course.price,
-                    0,
-                  )}
-                />
-              ) : (
-                <>
-                  <EventsPanel registeredUser={user.registerCode} />
-
-                  <RecentActivity activities={recentActivities} />
-                </>
-              )}
+              <NewFormationPanel
+                availableGrades={allGrades || []}
+                userId={user.id}
+                userGrades={user.grades || []}
+                pendingDemande={pendingDemande}
+              />
+              {/*<EventsPanel registeredUser={user.registerCode} />
+              <RecentActivity activities={recentActivities} />*/}
             </div>
           </div>
         </div>

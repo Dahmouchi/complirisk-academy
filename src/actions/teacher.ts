@@ -139,6 +139,7 @@ export async function getGrades() {
   try {
     const grades = await prisma.grade.findMany({
       include: {
+        niveau: true,
         subjects: {
           orderBy: {
             name: "asc",

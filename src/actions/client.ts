@@ -214,11 +214,6 @@ export async function createDemandeInscription(
       where: { id: userId },
       data: {
         step: 2,
-        grades: {
-          connect: grades.map((grade) => ({
-            id: grade.id,
-          })),
-        },
         StatutUser: "subscribed", // Mark as subscribed but awaiting approval
       },
     });
@@ -355,7 +350,15 @@ export async function getStudentById() {
             },
           },
           badges: true,
-          demandeInscription: true,
+          demandeInscription: {
+            include: {
+              grades: {
+                include: {
+                  grade: true,
+                },
+              },
+            },
+          },
           grades: {
             include: {
               niveau: true,

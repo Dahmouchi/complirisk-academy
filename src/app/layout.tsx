@@ -5,7 +5,7 @@ import "@livekit/components-styles";
 import "react-toastify/dist/ReactToastify.css";
 import NextAuthProvider from "../../providers/NextAuthProvider";
 import { AOSInit } from "@/components/aos";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/sonner";
 import AnimationProvider from "../../providers/AnimationProvider";
 
 import { Poppins, Unbounded } from "next/font/google";
@@ -49,7 +49,7 @@ export default function RootLayout({
         </NextAuthProvider>
 
         <AOSInit />
-        {/* <ScrollToTop /> <ToastContainer
+        {/* <ScrollToTop /> <Toaster /><ToastContainer
           className="absolute top-0 right-0"
           position="top-right"
           autoClose={5000}

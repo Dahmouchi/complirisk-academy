@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Lock,
   Mail,
@@ -5,24 +8,43 @@ import {
   CreditCard,
   Package,
   ShoppingCart,
+  Edit,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ModifyDemandeDialog } from "./ModifyDemandeDialog";
+import { useRouter } from "next/navigation";
 
 interface PaymentContactSectionProps {
   selectedCourses: any[];
   totalPrice: number;
+  demandeId?: string;
+  availableGrades?: any[];
 }
 
 export function PaymentContactSection({
   selectedCourses,
   totalPrice,
+  demandeId,
+  availableGrades = [],
 }: PaymentContactSectionProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
   const finalPrice = totalPrice;
 
+  const handleOpenDialog = () => {
+    if (demandeId) {
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleSuccess = () => {
+    router.refresh();
+  };
+
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 sticky top-6">
+    <Card className="border-primary/20 bg-white sticky top-6">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -88,18 +110,6 @@ export function PaymentContactSection({
               <span className="text-primary">{finalPrice.toFixed(2)}MAD</span>
             </div>
           </div>
-
-          {selectedCourses.length >= 2 && selectedCourses.length < 3 && (
-            <p className="text-xs text-muted-foreground bg-warning/10 p-2 rounded-md">
-              💡 Ajoutez 1 cours de plus pour bénéficier de 15% de réduction!
-            </p>
-          )}
-
-          {selectedCourses.length === 1 && (
-            <p className="text-xs text-muted-foreground bg-info/10 p-2 rounded-md">
-              💡 Sélectionnez 2+ cours pour 10% de réduction!
-            </p>
-          )}
         </div>
 
         <Separator />
@@ -144,16 +154,29 @@ export function PaymentContactSection({
           className="w-full gap-2"
           size="lg"
           disabled={selectedCourses.length === 0}
+          onClick={handleOpenDialog}
         >
-          <Mail className="h-4 w-4" />
-          Demander un Devis
+          <Edit className="h-4 w-4" />
+          Modifier ma Demande
         </Button>
 
         <p className="text-xs text-center text-muted-foreground">
-          Notre équipe vous contactera sous 24h pour finaliser votre inscription
-          et le paiement.
+          Vous pouvez ajouter ou retirer des grades de votre demande avant
+          l&apos;approbation.
         </p>
       </CardContent>
+
+      {/* Modify Demande Dialog */}
+      {demandeId && (
+        <ModifyDemandeDialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          demandeId={demandeId}
+          currentGrades={selectedCourses}
+          availableGrades={availableGrades}
+          onSuccess={handleSuccess}
+        />
+      )}
     </Card>
   );
 }

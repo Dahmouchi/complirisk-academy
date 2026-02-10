@@ -58,18 +58,6 @@ export function CourseCard({ course }: CourseCardProps) {
                 Gratuit
               </Badge>
             )}
-            {course.progress !== undefined && course.progress > 0 && (
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <div className="flex items-center justify-between text-xs text-primary-foreground mb-1">
-                  <span>Progress</span>
-                  <span>{course.progress}%</span>
-                </div>
-                <Progress
-                  value={course.progress}
-                  className="h-1.5 bg-primary-foreground/30"
-                />
-              </div>
-            )}
           </div>
           <div className="p-4 flex flex-col justify-between">
             <div>

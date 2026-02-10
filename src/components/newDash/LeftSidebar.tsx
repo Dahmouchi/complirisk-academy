@@ -6,14 +6,15 @@ import {
   Bell,
   Plus,
   Minus,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 interface LeftSidebarProps {
-  activeTab: "courses" | "lives";
-  onTabChange: (tab: "courses" | "lives") => void;
+  activeTab: "courses" | "explore";
+  onTabChange: (tab: "courses" | "explore") => void;
 }
 
 const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
@@ -31,10 +32,23 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
             "w-12 h-12 rounded-[6px] transition-all duration-200",
             activeTab === "courses"
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-card hover:bg-secondary",
+              : "bg-blue-50 hover:bg-secondary",
           )}
         >
           <BookOpen className="w-5 h-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.push("/dashboard/courses")}
+          className={cn(
+            "w-12 h-12 rounded-[6px] transition-all duration-200",
+            activeTab === "explore"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "bg-blue-50 hover:bg-secondary",
+          )}
+        >
+          <Compass className="w-5 h-5" />
         </Button>
 
         {/* Lives & Classrooms Button 

@@ -138,7 +138,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-start rounded-t-xl ">
         <Image
-          src={`${state === "expanded" ? "/compli/complirisk-academy.png" : "/compli/complirisk-academy.png"}`}
+          src={`${state === "expanded" ? "/compli/logo.png" : "/compli/logo.png"}`}
           alt="logo"
           width={state === "expanded" ? 200 : 200}
           height={state === "expanded" ? 200 : 200}

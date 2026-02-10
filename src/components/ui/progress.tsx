@@ -29,10 +29,10 @@ const Progress: React.FC<ProgressProps> = ({
         </div>
       )}
 
-      <div className="w-full bg-[#f8f8d5] rounded-full h-2 overflow-hidden">
+      <div className="w-full bg-[#e7e7e7] rounded-full h-2 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ease-out ${
-            colorClasses[color] || colorClasses.blue
+            colorClasses["blue"] || colorClasses.blue
           }`}
           style={{ width: `${percentage}%` }}
         />

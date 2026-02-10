@@ -9,6 +9,7 @@ import {
   Eye,
   CheckCircle2,
   MessageSquare,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +51,7 @@ const CoursDetails = ({
     [key: string]: boolean;
   }>({});
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [bannerVisible, setBannerVisible] = useState(true);
   // Initialize with the first course or find by id
   useEffect(() => {
     const fetchNotes = async () => {
@@ -119,6 +121,25 @@ const CoursDetails = ({
     <div className="min-h-screen">
       <main className="pb-24 md:pb-8">
         <div className="space-y-6 mx-auto px-4 sm:px-6 lg:px-8 my-4">
+          {!isVerified && bannerVisible && (
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-2">
+              <div className="flex items-start gap-3">
+                <div className="flex-1">
+                  <p className="text-sm text-blue-700 text-center dark:text-blue-300">
+                    {!hasApprovedSubscription
+                      ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
+                      : "Votre compte n'est pas encore vérifié. Vous ne pouvez accéder qu'aux cours gratuits. Contactez l'administration pour obtenir l'accès complet à tous les cours."}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setBannerVisible(false)}
+                  className="text-blue-700 dark:text-blue-300"
+                >
+                  <X />
+                </button>
+              </div>
+            </div>
+          )}
           {/* Back Button */}
           <Button
             variant="ghost"
@@ -130,25 +151,6 @@ const CoursDetails = ({
           </Button>
 
           {/* Verification Notice for Unverified Users */}
-          {!isVerified && (
-            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-[8px] p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0">
-                  <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
-                    Accès Limité aux Cours Gratuits
-                  </h3>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
-                    {!hasApprovedSubscription
-                      ? "Votre demande d'inscription est en cours de traitement. Vous ne pouvez accéder qu'aux cours gratuits en attendant l'approbation de votre demande."
-                      : "Vous visualisez uniquement les cours gratuits. Pour accéder à tous les cours, veuillez contacter l'administration pour vérifier votre compte."}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Title Section */}
 
