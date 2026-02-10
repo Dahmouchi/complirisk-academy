@@ -30,8 +30,15 @@ const page = async () => {
     },
   });
 
-  // Use the user's approved grades for display
-  const displayGrades = user.grades || [];
+  // Use the user's approved grades PLUS grades from pending demands for display
+  const userGradesIds = new Set(user.grades?.map((g: any) => g.id) || []);
+  const pendingGrades =
+    user.demandeInscription
+      ?.filter((d: any) => d.status === "PENDING")
+      .flatMap((d: any) => d.grades.map((dg: any) => dg.grade))
+      .filter((g: any) => !userGradesIds.has(g.id)) || [];
+
+  const displayGrades = [...(user.grades || []), ...pendingGrades];
 
   // Pre-fetch subject progress for all subjects
   const subjectProgressMap: Record<

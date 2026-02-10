@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Users,
   Megaphone,
+  Globe,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -37,8 +38,8 @@ interface StudentHeaderProps {
 
 const mobileNavItems = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
-  { icon: BookOpen, label: "Cours", href: "/dashboard/matiere" },
-  { icon: GraduationCap, label: "Quiz", href: "/dashboard/quizzes" },
+  { icon: BookOpen, label: "Formations", href: "/dashboard/courses" },
+  { icon: Globe, label: "Website", href: "/" },
   { icon: User, label: "Profil", href: "/dashboard/profile" },
 ];
 
@@ -220,13 +221,13 @@ export const StudentHeader = ({
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            {/*<DropdownMenuItem
               className="cursor-pointer relative"
               onClick={() => navigate.push("/dashboard/actualites")}
             >
               <Megaphone className="mr-2 h-4 w-4" />
               <span>Mes annonces</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem>*/}
             <DropdownMenuItem
               className="cursor-pointer relative"
               onClick={() => navigate.push("/dashboard/profile")}
@@ -256,12 +257,12 @@ export const StudentHeader = ({
         </DropdownMenu>
       </div>
 
-      {/* Mobile Bottom Navigation 
+      {/* Mobile Bottom Navigation */}
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-t border-border/40 pb-safe"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white backdrop-blur border-t border-border/40 pb-safe"
       >
         <div className="flex items-center justify-around h-16">
           {mobileNavItems.map((item) => {
@@ -274,7 +275,7 @@ export const StudentHeader = ({
                   "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors",
                   isActive
                     ? "text-blue-600"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <item.icon className={cn("h-5 w-5", isActive && "scale-110")} />
@@ -289,7 +290,7 @@ export const StudentHeader = ({
             );
           })}
         </div>
-      </motion.nav>*/}
+      </motion.nav>
     </>
   );
 };

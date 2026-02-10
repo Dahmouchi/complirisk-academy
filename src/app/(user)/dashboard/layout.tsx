@@ -36,7 +36,7 @@ export default async function AdminLayout({
         userAvatar={user?.image || ""}
         userEmail={user?.email || ""}
       />
-      <div className="bg-[#efefef] flex-1 overflow-hidden">{children}</div>
+      <div className="bg-[#efefef] flex-1 overflow-hidden ">{children}</div>
       <FloatingNotesButton userId={session.user.id} />
       <BadgeNotification />
     </div>

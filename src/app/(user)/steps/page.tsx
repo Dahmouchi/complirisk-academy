@@ -63,6 +63,7 @@ const InputField = ({
   error,
   readOnly = false,
   required = false,
+  maxLength,
 }: {
   label: string;
   type?: string;
@@ -73,6 +74,7 @@ const InputField = ({
   error?: string;
   readOnly?: boolean;
   required?: boolean;
+  maxLength?: number;
 }) => {
   return (
     <motion.div
@@ -97,6 +99,7 @@ const InputField = ({
               ? "border-red-400 bg-red-50"
               : "border-gray-200 hover:border-blue-300"
           }`}
+          maxLength={maxLength}
         />
         <div className="absolute inset-0 rounded-[6px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
@@ -780,10 +783,12 @@ const MultiStepForm = () => {
     if (!data.phone.trim()) errors.phone = "Le téléphone est requis";
     if (!data.fonction.trim()) errors.fonction = "La fonction est requise";
     if (!data.email.trim()) errors.email = "L'email est requis";
+    const phoneDigits = data.phone.replace(/\D/g, "");
+
     if (!data.lieuEtudeTravail.trim())
       errors.lieuEtudeTravail = "Le lieu est requis";
-    else if (!/^[\+]?[0-9\s\-\(\)]{8,}$/.test(data.phone))
-      errors.phone = "Format de téléphone invalide";
+    else if (phoneDigits.length !== 10)
+      errors.phone = "Le numéro doit contenir exactement 10 chiffres";
     return errors;
   };
 

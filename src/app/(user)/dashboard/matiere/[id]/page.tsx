@@ -41,41 +41,48 @@ const SubjectPage = async ({ params }: any) => {
     return redirect("/dashboard");
   }
 
-  // Verify that the user has access to this subject's grade
-  const hasAccess = user.grades?.some(
+  // Check if user has access to this subject's grade (approved)
+  const isGradeApproved = user.grades?.some(
     (grade: any) => grade.id === subject.gradeId,
   );
 
-  if (!hasAccess) {
-    return redirect("/dashboard");
-  }
-
-  // Filter courses based on user verification status AND subscription approval
-  // User needs BOTH verified/subscribed status AND approved subscription request
-  const hasVerifiedStatus =
-    user.StatutUser === "verified" || user.StatutUser === "subscribed";
-
-  // Check if user has an approved subscription request
-  const hasApprovedSubscription = user.demandeInscription?.some(
-    (demande: any) => demande.status === "APPROVED",
+  // Check for pending demande for this grade
+  const hasPendingDemande = user.demandeInscription?.some(
+    (demande: any) =>
+      demande.status === "PENDING" &&
+      demande.grades.some((dg: any) => dg.gradeId === subject.gradeId),
   );
 
-  // User is fully verified if they have verified status AND approved subscription
-  const isVerified = hasVerifiedStatus && hasApprovedSubscription;
+  // If the user doesn't have the grade approved AND doesn't have a pending demande for it,
+  // we could redirect to dashboard, but let's allow viewing with locks as requested.
+  // The user explicitly asked to see courses even if not approved but keep them locked.
 
-  const filteredSubject = {
+  const coursesWithLockStatus = subject.courses.map((course: any) => ({
+    ...course,
+    isLocked: !isGradeApproved && !course.isFree,
+  }));
+
+  const processedSubject = {
     ...subject,
-    courses: isVerified
-      ? subject.courses
-      : subject.courses.filter((course: any) => course.isFree),
+    courses: coursesWithLockStatus,
   };
 
   const progressCount = await getSubjectProgress(user.id, subject.id);
 
+  // Verification banners logic
+  const hasVerifiedStatus =
+    user.StatutUser === "verified" || user.StatutUser === "subscribed";
+
+  const hasApprovedSubscription = user.demandeInscription?.some(
+    (demande: any) => demande.status === "APPROVED",
+  );
+
+  const isVerified = hasVerifiedStatus && hasApprovedSubscription;
+
   return (
-    <div className="overflow-y-scroll h-[calc(100vh-80px)]">
+    <div className="overflow-y-scroll h-[calc(100vh-80px)] ">
       <CoursDetails
-        subject={filteredSubject}
+        subject={processedSubject}
         user={user}
         progressCount={progressCount}
         isVerified={isVerified}

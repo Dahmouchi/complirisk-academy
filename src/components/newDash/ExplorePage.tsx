@@ -123,7 +123,7 @@ export default function ExplorePage({ matieres, user, pendingDemande }: any) {
   return (
     <div className="min-h-screen overflow-hidden pb-[50px]">
       {/* Left Sidebar */}
-      <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 ">
+      <div className="flex h-[calc(100vh-80px)] lg:pb-0 pb-16 pt-[14px] md:pt-0 ">
         {/* Left Sidebar - Desktop only */}
         <aside className="w-20 border-r border-border hidden md:block">
           <div className="h-full">

@@ -69,20 +69,27 @@ const IndexNewDash = ({
       .map((grade: any) => {
         const filteredSubjects = grade.subjects
           ?.map((subject: any) => {
-            const dynamicCourses = subject.courses?.filter((course: any) => {
-              const matchesSearch = course.title
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase());
+            const dynamicCourses = subject.courses
+              ?.filter((course: any) => {
+                const matchesSearch = course.title
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase());
 
-              // If user is not verified, only show free courses
-              if (!isVerified) {
-                return matchesSearch && course.isFree;
-              }
-
-              // If user is verified, apply the normal filter
-              const matchesType = courseType === "free" ? course.isFree : true;
-              return matchesSearch && matchesType;
-            });
+                // If courseType is free, only show free courses
+                // If courseType is paid, show ALL courses (but they will be locked if not verified)
+                const matchesType =
+                  courseType === "free" ? course.isFree : true;
+                return matchesSearch && matchesType;
+              })
+              .map((course: any) => {
+                const isGradeApproved = user.grades?.some(
+                  (g: any) => g.id === grade.id,
+                );
+                return {
+                  ...course,
+                  isLocked: !isGradeApproved && !course.isFree,
+                };
+              });
             return { ...subject, courses: dynamicCourses };
           })
           .filter(
@@ -104,9 +111,9 @@ const IndexNewDash = ({
 
   const [activeTab, setActiveTab] = useState<"courses" | "explore">("courses");
   return (
-    <div className="min-h-screen overflow-hidden pb-[50px]">
+    <div className="min-h-screen overflow-hidden ">
       {/* Left Sidebar */}
-      <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 ">
+      <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 lg:pb-0 pb-16">
         {/* Left Sidebar - Desktop only */}
         <aside className="w-20 border-r border-border hidden md:block">
           <div className="h-full">
@@ -373,6 +380,7 @@ const IndexNewDash = ({
                                                         : 0,
                                                     level: grade.name as any,
                                                     isFree: dbCourse.isFree,
+                                                    isLocked: dbCourse.isLocked,
                                                     subjectId: subject.id,
                                                     image:
                                                       dbCourse.coverImage ||

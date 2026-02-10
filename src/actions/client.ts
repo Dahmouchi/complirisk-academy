@@ -354,7 +354,19 @@ export async function getStudentById() {
             include: {
               grades: {
                 include: {
-                  grade: true,
+                  grade: {
+                    include: {
+                      subjects: {
+                        include: {
+                          courses: {
+                            include: {
+                              progress: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },

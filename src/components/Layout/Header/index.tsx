@@ -239,16 +239,18 @@ const Header = ({ visible }: { visible: boolean }) => {
                 </div>
 
                 <div className="items-center gap-4 lg:flex hidden">
-                  <Button
-                    variant="default"
-                    className="w-fit justify-center"
-                    onClick={() => {
-                      router.push("/dashboard");
-                    }}
-                  >
-                    <LayoutDashboard className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </Button>
+                  {visible && (
+                    <Button
+                      variant="default"
+                      className="w-fit justify-center"
+                      onClick={() => {
+                        router.push("/dashboard");
+                      }}
+                    >
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Dashboard
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     className="w-fit justify-center bg-white"

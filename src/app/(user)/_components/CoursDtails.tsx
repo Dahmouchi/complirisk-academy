@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   MessageSquare,
   X,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -179,8 +180,23 @@ const CoursDetails = ({
                 key={selectedCourse.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative group rounded-[6px] overflow-hidden bg-foreground/95 shadow-xl"
+                className="relative group rounded-[6px] overflow-hidden bg-foreground/95 shadow-xl min-h-[300px]"
               >
+                {selectedCourse.isLocked && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/80 backdrop-blur-md text-center p-6">
+                    <div className="bg-primary/10 p-6 rounded-full mb-6">
+                      <Lock className="w-12 h-12 text-primary" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-2 text-foreground">
+                      Contenu Verrouillé
+                    </h2>
+                    <p className="text-muted-foreground max-w-md">
+                      Ce module fait partie d&apos;une formation payante. Votre
+                      demande d&apos;inscription est en cours de traitement ou
+                      n&apos;est pas encore approuvée.
+                    </p>
+                  </div>
+                )}
                 {selectedCourse?.videoUrl && selectedCourse?.coverImage ? (
                   <div>
                     <VimeoTest
@@ -189,7 +205,7 @@ const CoursDetails = ({
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                  <div className="w-full h-[400px] flex items-center justify-center bg-gray-800">
                     <div className="text-center text-white">
                       <Play className="w-16 h-16 mx-auto mb-4 opacity-50" />
                       <p className="text-lg">Vidéo non disponible</p>
@@ -331,11 +347,14 @@ const CoursDetails = ({
                       return (
                         <button
                           key={course.id}
+                          disabled={course.isLocked}
                           onClick={() => handleCourseSelect(course)}
                           className={`w-full flex items-start gap-3 p-3 rounded-[8px] transition-all duration-200 text-left group ${
                             isActive
                               ? "bg-blue-600/10 border border-blue-600/20"
-                              : "hover:bg-muted/50"
+                              : course.isLocked
+                                ? "opacity-60 grayscale cursor-not-allowed bg-muted/20"
+                                : "hover:bg-muted/50"
                           }`}
                         >
                           {/* Thumbnail */}
@@ -349,13 +368,19 @@ const CoursDetails = ({
                               className={`absolute inset-0 flex items-center justify-center ${
                                 isActive
                                   ? "bg-blue-600/60"
-                                  : "bg-foreground/40 opacity-0 group-hover:opacity-100"
+                                  : course.isLocked
+                                    ? "bg-background/40"
+                                    : "bg-foreground/40 opacity-0 group-hover:opacity-100"
                               } transition-opacity`}
                             >
-                              <Play
-                                className="w-4 h-4 text-white"
-                                fill="currentColor"
-                              />
+                              {course.isLocked ? (
+                                <Lock className="w-4 h-4 text-white" />
+                              ) : (
+                                <Play
+                                  className="w-4 h-4 text-white"
+                                  fill="currentColor"
+                                />
+                              )}
                             </div>
                             {course.isCompleted && (
                               <div className="absolute top-1 right-1">
@@ -384,7 +409,12 @@ const CoursDetails = ({
                               {course.title}
                             </h4>
                             <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
-                              {isCompleted ? (
+                              {course.isLocked ? (
+                                <div className="flex items-center gap-1 text-warning">
+                                  <Lock className="w-3 h-3" />
+                                  <span>Verrouillé</span>
+                                </div>
+                              ) : isCompleted ? (
                                 <div className="flex items-center gap-1">
                                   <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                                   <span>Terminé</span>
@@ -408,9 +438,7 @@ const CoursDetails = ({
               </div>
               <div className="bg-card rounded-[6px] border border-border overflow-hidden">
                 <div className="p-4 border-b border-border bg-muted/30">
-                  <h3 className="font-semibold text-foreground">
-                    Matériel du cours
-                  </h3>
+                  <h3 className="font-semibold text-foreground">Support PDF</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     {selectedCourse?.documents?.length} ressources
                     téléchargeables

@@ -94,3 +94,33 @@ export async function createNewDemande(userId: string, gradeIds: string[]) {
     };
   }
 }
+
+
+export async function cancelDemande(demandeId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return { success: false, error: "Non authentifié" };
+    }
+
+   await prisma.demandeInscription.update({
+    where: {
+      id: demandeId,
+    },
+    data: {
+      status: "CANCELLED",
+    },
+   });
+
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating new demande:", error);
+    return {
+      success: false,
+      error: "Une erreur s'est produite lors de la création de la demande",
+    };
+  }
+}

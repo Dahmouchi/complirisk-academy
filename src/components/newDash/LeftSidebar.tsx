@@ -7,6 +7,8 @@ import {
   Plus,
   Minus,
   Compass,
+  Globe2,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -50,6 +52,16 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
         >
           <Compass className="w-5 h-5" />
         </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.push("/")}
+          className={cn(
+            "w-12 h-12 rounded-[6px] transition-all duration-200 bg-blue-50 hover:bg-secondary",
+          )}
+        >
+          <Globe className="w-5 h-5" />
+        </Button>
 
         {/* Lives & Classrooms Button 
         <Button
@@ -67,27 +79,6 @@ const LeftSidebar = ({ activeTab, onTabChange }: LeftSidebarProps) => {
         </Button>*/}
 
         <div className="flex-1" />
-
-        {/* Bottom controls */}
-        <div className="flex items-center gap-1 bg-cream text-cream-foreground rounded-full px-2 py-1 text-sm font-medium">
-          <Bell className="w-4 h-4" />
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-10 h-10 rounded-full bg-card hover:bg-secondary"
-        >
-          <Plus className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-10 h-10 rounded-full bg-card hover:bg-secondary"
-        >
-          <Minus className="w-4 h-4" />
-        </Button>
       </div>
     </>
   );

@@ -16,11 +16,26 @@ import {
   Phone,
   Edit,
   CheckCircle,
+  X,
 } from "lucide-react";
 import { toast } from "react-toastify";
-import { createNewDemande } from "@/app/(user)/_actions/createNewDemande";
+import {
+  cancelDemande,
+  createNewDemande,
+} from "@/app/(user)/_actions/createNewDemande";
 import { useRouter } from "next/navigation";
 import { ModifyDemandeDialog } from "@/app/(user)/_components/compli/ModifyDemandeDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Grade {
   id: string;
@@ -63,6 +78,22 @@ export default function NewFormationPanel({
     }
   };
 
+  const handleCancelDemande = async (demandeId: string) => {
+    try {
+      const res = await cancelDemande(demandeId);
+      if (res.success) {
+        toast.success("Demande annulée avec succès");
+        router.refresh();
+      } else {
+        toast.error(res.error);
+      }
+    } catch (error) {
+      toast.error(
+        "Une erreur s'est produite lors de l'annulation de la demande",
+      );
+    }
+  };
+
   const handleSuccess = () => {
     router.refresh();
   };
@@ -76,7 +107,7 @@ export default function NewFormationPanel({
     }));
 
     return (
-      <Card className="border-warning/30 bg-white sticky top-6">
+      <Card className="border-warning/30 bg-white top-6">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-warning/20 flex items-center justify-center">
@@ -187,6 +218,31 @@ export default function NewFormationPanel({
             <Edit className="h-4 w-4" />
             Modifier ma Demande
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="w-full gap-2" size="lg" variant="destructive">
+                <X className="h-4 w-4" />
+                Annuler ma Demande
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Annuler ma Demande</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Êtes-vous sûr de vouloir annuler votre demande ?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleCancelDemande(pendingDemande.id)}
+                  className="bg-red-500 text-white hover:bg-red-700"
+                >
+                  Confirmer
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           <p className="text-xs text-center text-muted-foreground">
             Vous pouvez ajouter ou retirer des grades de votre demande avant
