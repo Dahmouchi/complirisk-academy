@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { redirect, useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 const GoogleLoginButton = () => {
   return (
     <motion.button
@@ -58,6 +58,15 @@ const Auth = () => {
           backgroundPosition: "center",
         }}
       ></div>
+      <div className="absolute top-3 left-3">
+        <button
+          onClick={() => router.back()}
+          className="bg-primary text-white hover:bg-white border-2 border-gray-200 px-4 shadow p-2 rounded-full flex items-center gap-2"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span>Retour</span>
+        </button>
+      </div>
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}

@@ -107,7 +107,10 @@ export default function NewFormationPanel({
     }));
 
     return (
-      <Card className="border-warning/30 bg-white top-6">
+      <Card
+        id="new-formation-panel"
+        className="border-warning/30 bg-white top-6"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-warning/20 flex items-center justify-center">
@@ -344,7 +347,10 @@ function CreateNewDemandeForm({
   };
 
   return (
-    <Card className="border-primary/20 bg-white sticky top-6">
+    <Card
+      id="new-formation-panel"
+      className="border-primary/20 bg-white sticky top-6"
+    >
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">

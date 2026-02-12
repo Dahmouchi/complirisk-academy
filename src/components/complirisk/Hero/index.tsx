@@ -1,11 +1,14 @@
+"use client";
 import Link from "next/link";
 import Dropdownone from "./Dropdownone";
 import Dropdowntwo from "./Dropdowntwo";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Companies from "../Companies";
+import { useRouter } from "next/navigation";
 
 const Banner = () => {
+  const router = useRouter();
   return (
     <>
       {" "}
@@ -23,12 +26,21 @@ const Banner = () => {
               conçue pour les professionnels.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="shadow-primary px-8">
-                Voir nos formations
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+              <Button
+                onClick={() => router.push("/login")}
+                size="lg"
+                className="shadow-primary px-8 w-full lg:w-fit rounded-full"
+              >
+                Connectez-vous
               </Button>
-              <Button variant="outline" size="lg" className="px-8">
-                Demander une démo
+              <Button
+                onClick={() => router.push("/login")}
+                variant="outline"
+                size="lg"
+                className="px-8 w-full lg:w-fit rounded-full"
+              >
+                S&apos;inscrire
               </Button>
             </div>
           </div>

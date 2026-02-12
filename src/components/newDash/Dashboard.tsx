@@ -110,6 +110,17 @@ const IndexNewDash = ({
   }, [matieres]);
 
   const [activeTab, setActiveTab] = useState<"courses" | "explore">("courses");
+
+  useEffect(() => {
+    if (window.location.hash === "#new-formation-panel") {
+      const element = document.getElementById("new-formation-panel");
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 500); // Small delay to ensure everything is rendered
+      }
+    }
+  }, []);
   return (
     <div className="min-h-screen overflow-hidden ">
       {/* Left Sidebar */}
@@ -152,7 +163,7 @@ const IndexNewDash = ({
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 grid-cols-2 lg:grid-cols-4">
             <StatCard
               title="tous les cours"
               value={stats.totalCourses}

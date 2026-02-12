@@ -13,6 +13,11 @@ import { Icon } from "@iconify/react";
 const Testimonial = () => {
   const [testimonial, setTestimonial] = useState<TestimonialType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,20 +38,34 @@ const Testimonial = () => {
   const settings = {
     dots: true,
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: 1, // Start with 1 for mobile-first
     slidesToScroll: 1,
     arrows: false,
-    autoplay: false,
+    autoplay: true,
+    speed: 1000,
+    autoplaySpeed: 3000,
     cssEase: "linear",
     responsive: [
       {
+        breakpoint: 2000, // For very large screens
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
         breakpoint: 1200,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
         },
       },
       {
-        breakpoint: 800,
+        breakpoint: 640,
         settings: {
           slidesToShow: 1,
         },
@@ -75,98 +94,81 @@ const Testimonial = () => {
           expertise grâce à nos formations certifiantes ISO et conformité.
         </p>
 
-        <Slider {...settings}>
-          {loading
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <TestimonialSkeleton key={i} />
-              ))
-            : testimonial.map((items, i) => (
-                <div key={i}>
-                  <div className="bg-white m-4 pt-10 px-8 pb-10 h-full rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                    {/* Photo et informations 
-                    <div className="flex flex-col items-center mb-6">
-                      <div className="relative mb-4">
-                        <div className="absolute -top-2 -right-2 bg-primary/20 w-8 h-8 rounded-full flex items-center justify-center">
+        <div className="testimonial-slider-wrapper">
+          {hasMounted ? (
+            <Slider {...settings}>
+              {loading
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <TestimonialSkeleton key={i} />
+                  ))
+                : testimonial.map((items, i) => (
+                    <div key={i}>
+                      <div className="bg-white m-4 pt-10 px-8 pb-10 h-full rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                        {/* Étoiles */}
+                        <div className="flex justify-center mb-6">
+                          <div className="flex space-x-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Icon
+                                key={star}
+                                icon="mdi:star"
+                                className={`text-xl ${
+                                  star <= (items.rating || 5)
+                                    ? "text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Témoignage */}
+                        <div className="relative">
                           <Icon
-                            icon="mdi:check-decagram"
-                            className="text-primary text-sm"
+                            icon="mdi:format-quote-open"
+                            className="text-primary/20 text-4xl absolute -top-4 -left-2"
+                          />
+                          <p className="text-gray-700 leading-relaxed text-center italic">
+                            {items.detail}
+                          </p>
+                          <Icon
+                            icon="mdi:format-quote-close"
+                            className="text-primary/20 text-4xl absolute -bottom-4 -right-2"
                           />
                         </div>
-                        <Image
-                          src={items.imgSrc}
-                          alt={items.name}
-                          width={80}
-                          height={80}
-                          className="rounded-full border-4 border-white shadow-md"
-                        />
-                      </div>
 
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-primary mb-1">
-                          {items.profession}
-                        </p>
-                        <h3 className="text-xl font-bold mb-1">{items.name}</h3>
-                        {items.company && (
-                          <p className="text-sm text-gray-500">
-                            {items.company}
-                          </p>
+                        {/* Certification obtenue */}
+                        {items.certification && (
+                          <div className="mt-6 pt-6 border-t border-gray-100">
+                            <div className="flex items-center justify-center space-x-2">
+                              <Icon
+                                icon="mdi:certificate-outline"
+                                className="text-primary"
+                              />
+                              <span className="text-sm font-medium">
+                                Certification obtenue :{" "}
+                                <span className="text-primary font-semibold">
+                                  {items.certification}
+                                </span>
+                              </span>
+                            </div>
+                          </div>
                         )}
                       </div>
-                    </div>*/}
-
-                    {/* Étoiles */}
-                    <div className="flex justify-center mb-6">
-                      <div className="flex space-x-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Icon
-                            key={star}
-                            icon="mdi:star"
-                            className={`text-xl ${
-                              star <= (items.rating || 5)
-                                ? "text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
                     </div>
-
-                    {/* Témoignage */}
-                    <div className="relative">
-                      <Icon
-                        icon="mdi:format-quote-open"
-                        className="text-primary/20 text-4xl absolute -top-4 -left-2"
-                      />
-                      <p className="text-gray-700 leading-relaxed text-center italic">
-                        {items.detail}
-                      </p>
-                      <Icon
-                        icon="mdi:format-quote-close"
-                        className="text-primary/20 text-4xl absolute -bottom-4 -right-2"
-                      />
-                    </div>
-
-                    {/* Certification obtenue */}
-                    {items.certification && (
-                      <div className="mt-6 pt-6 border-t border-gray-100">
-                        <div className="flex items-center justify-center space-x-2">
-                          <Icon
-                            icon="mdi:certificate-outline"
-                            className="text-primary"
-                          />
-                          <span className="text-sm font-medium">
-                            Certification obtenue :{" "}
-                            <span className="text-primary font-semibold">
-                              {items.certification}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-        </Slider>
+                  ))}
+            </Slider>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <TestimonialSkeleton />
+              <div className="hidden md:block">
+                <TestimonialSkeleton />
+              </div>
+              <div className="hidden md:block">
+                <TestimonialSkeleton />
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Statistiques de confiance */}
         <div className="mt-16 pt-12 border-t border-gray-300">

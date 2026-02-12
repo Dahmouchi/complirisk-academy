@@ -14,6 +14,7 @@ import {
   Users,
   Megaphone,
   Globe,
+  Plus,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -63,6 +64,16 @@ export const StudentHeader = ({
     navigate.push("/");
   };
   const [activeIndex, setActiveIndex] = useState(0);
+  const handlePlusClick = () => {
+    if (location === "/dashboard") {
+      const element = document.getElementById("new-formation-panel");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      navigate.push("/dashboard#new-formation-panel");
+    }
+  };
 
   const navItems = [
     {
@@ -264,7 +275,13 @@ export const StudentHeader = ({
         transition={{ duration: 0.5, delay: 0.2 }}
         className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white backdrop-blur border-t border-border/40 pb-safe"
       >
-        <div className="flex items-center justify-around h-16">
+        <div className="flex relative items-center justify-around h-16">
+          <button
+            onClick={handlePlusClick}
+            className="w-14 h-14 absolute -top-8 shadow-lg left-1/2 -translate-x-1/2 rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition-transform"
+          >
+            <Plus className="h-6 w-6" />
+          </button>
           {mobileNavItems.map((item) => {
             const isActive = location === item.href;
             return (

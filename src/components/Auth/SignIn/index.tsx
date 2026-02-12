@@ -21,32 +21,33 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   return (
     <>
-      <div className="">
-        {/* Header mobile */}
-        <div className=" text-center mb-4 flex items-center justify-center ">
-          <div className=" bg-gradient-to-r rounded-[8px] flex items-center justify-center mx-auto mb-4">
-            <img
-              onClick={() => router.push("/")}
-              src="/compli/logo.png"
-              alt=""
-              className="w-52 h-auto cursor-pointer"
-            />{" "}
-          </div>
+      <div className="flex flex-col items-center">
+        {/* Logo */}
+        <div className="mb-6">
+          <img
+            onClick={() => router.push("/")}
+            src="/compli/logo.png"
+            alt="Logo"
+            className="w-48 h-auto cursor-pointer"
+          />
         </div>
 
-        {/* Titre */}
-        <div className="text-center mb-8">
-          <p className="text-gray-600">
+        {/* Title */}
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Bon retour !
+          </h2>
+          <p className="text-gray-600 max-w-[280px] mx-auto">
             Connectez-vous pour continuer votre apprentissage
           </p>
         </div>
 
-        {/* Bouton Google */}
-        <div className="mb-6">
+        {/* Google Button */}
+        <div className="w-full mb-8">
           {loading ? (
-            <div className="w-full bg-gray-100 rounded-[8px] px-6 py-4 flex items-center justify-center gap-3 text-gray-500">
-              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <span>Connexion en cours...</span>
+            <div className="w-full bg-gray-50 rounded-xl px-6 py-4 flex items-center justify-center gap-3 text-gray-500 border border-gray-100">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <span className="font-medium">Connexion...</span>
             </div>
           ) : (
             <GoogleLoginButton />
@@ -54,24 +55,25 @@ const Signin = () => {
         </div>
 
         {/* Divider */}
-        <div className="relative mb-6">
+        <div className="relative w-full mb-8">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200"></div>
+            <div className="w-full border-t border-gray-100"></div>
           </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-500">
+          <div className="relative flex justify-center text-xs uppercase tracking-wider">
+            <span className="px-4 bg-white text-gray-400 font-medium">
               Connexion sécurisée
             </span>
           </div>
         </div>
+
         {/* Footer */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-xs text-gray-400 leading-relaxed px-4">
           En vous connectant, vous acceptez nos{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <a href="#" className="text-primary hover:underline font-medium">
             Conditions d&apos;utilisation
           </a>{" "}
           et notre{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <a href="#" className="text-primary hover:underline font-medium">
             Politique de confidentialité
           </a>
         </div>

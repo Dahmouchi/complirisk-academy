@@ -44,7 +44,7 @@ export function StatCard({
       )}
     >
       <CardContent className="px-6">
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between lg:flex-row flex-col-reverse">
           <div className="space-y-2">
             <p
               className={cn(
@@ -54,7 +54,9 @@ export function StatCard({
             >
               {title}
             </p>
-            <p className="font-display text-3xl font-bold">{value}</p>
+            <p className="font-display text-xl lg:text-3xl font-bold">
+              {value}
+            </p>
             {subtitle && (
               <p
                 className={cn(

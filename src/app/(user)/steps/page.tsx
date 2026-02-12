@@ -855,17 +855,17 @@ const MultiStepForm = () => {
 
   return (
     <div
-      className="min-h-screen relative h-screen"
+      className="min-h-screen relative  py-32"
       style={{
         backgroundImage: `url("/compli/bg-login.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <Header visible={false} />
+      <Header visible={false} isbotton={false} />
 
-      <div className="flex items-center justify-center h-full mt-20 lg:mt-0 lg:p-0 p-3">
-        <div className="relative max-w-7xl grid grid-cols-1 lg:grid-cols-3  bg-white/95 backdrop-blur-xl rounded-[6px] shadow-lg ">
+      <div className="flex items-center justify-center h-full  lg:mt-0 lg:p-0 p-3">
+        <div className="relative max-w-7xl grid grid-cols-1  lg:grid-cols-3  bg-white/95 backdrop-blur-xl rounded-[6px] shadow-lg ">
           <div className="lg:col-span-2 w-full">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
