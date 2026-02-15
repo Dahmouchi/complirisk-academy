@@ -267,7 +267,6 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
                 <TableRow>
                   <TableHead>Section</TableHead>
                   <TableHead>Norme</TableHead>
-                  <TableHead>Niveau</TableHead>
                   <TableHead>Couleur</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -287,11 +286,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
                     <TableCell>
                       <Badge variant="secondary">{subject.grade.name}</Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {subject.grade.niveau.name}
-                      </Badge>
-                    </TableCell>
+
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div

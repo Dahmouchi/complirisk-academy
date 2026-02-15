@@ -116,7 +116,7 @@ export default function SubjectDialog({
   // Grouper les classes par niveau
   const gradesByNiveau = grades.reduce(
     (acc, grade) => {
-      const niveauName = grade.niveau.name;
+      const niveauName = grade?.niveau?.name || "Sans niveau";
       if (!acc[niveauName]) {
         acc[niveauName] = [];
       }

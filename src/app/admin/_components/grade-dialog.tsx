@@ -19,14 +19,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Grade, Niveau } from "@/types/menu";
+import { Grade, Niveau, Formateur } from "@/types/menu";
 
 interface GradeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   grade: Grade | null;
   niveaux: Niveau[];
-  onSave: (data: { name: string; niveauId: string; price: number }) => void;
+  formateurs: Formateur[];
+  onSave: (data: {
+    name: string;
+    niveauId: string;
+    price: number;
+    formateurId?: string;
+    documents?: File;
+  }) => void;
 }
 
 export default function GradeDialog({
@@ -34,20 +41,28 @@ export default function GradeDialog({
   onOpenChange,
   grade,
   niveaux,
+  formateurs,
   onSave,
 }: GradeDialogProps) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [niveauId, setNiveauId] = useState("");
+  const [formateurId, setFormateurId] = useState<string>("");
+  const [documents, setDocuments] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (grade) {
       setName(grade.name);
       setNiveauId(grade.niveauId);
+      setFormateurId(grade.formateurId || "");
+      setPrice(grade.price);
+      setDocuments(null); // Reset file input when editing
     } else {
       setName("");
       setNiveauId("");
+      setFormateurId("");
+      setDocuments(null);
     }
   }, [grade]);
 
@@ -63,17 +78,27 @@ export default function GradeDialog({
     // Simulation d'une requête API
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    onSave({ name: name.trim(), niveauId, price });
+    onSave({
+      name: name.trim(),
+      niveauId,
+      price,
+      formateurId: formateurId || undefined,
+      documents: documents || undefined,
+    });
     setLoading(false);
     setName("");
     setPrice(0);
     setNiveauId("");
+    setFormateurId("");
+    setDocuments(null);
   };
 
   const handleCancel = () => {
     setName("");
     setPrice(0);
     setNiveauId("");
+    setFormateurId("");
+    setDocuments(null);
     onOpenChange(false);
   };
 
@@ -83,12 +108,12 @@ export default function GradeDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {grade ? "Modifier la classe" : "Créer une nouvelle classe"}
+              {grade ? "Modifier la norme" : "Créer une nouvelle norme"}
             </DialogTitle>
             <DialogDescription>
               {grade
-                ? "Modifiez les informations de la classe."
-                : "Créez une nouvelle classe pour un niveau d'éducation."}
+                ? "Modifiez les informations de la norme."
+                : "Créez une nouvelle norme pour un niveau d'éducation."}
             </DialogDescription>
           </DialogHeader>
 
@@ -101,7 +126,7 @@ export default function GradeDialog({
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ex: CP, 6ème, 2nde..."
+                placeholder="Ex: ISO 37001, ISO 27001..."
                 className="col-span-3"
                 required
               />
@@ -112,11 +137,42 @@ export default function GradeDialog({
               </Label>
               <Input
                 id="price"
+                type="number"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
                 placeholder="Ex: 10000"
                 className="col-span-3"
                 required
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="formateur" className="text-right">
+                Formateur
+              </Label>
+              <Select value={formateurId} onValueChange={setFormateurId}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Sélectionner un formateur (optionnel)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Aucun formateur</SelectItem>
+                  {formateurs.map((formateur) => (
+                    <SelectItem key={formateur.id} value={formateur.id}>
+                      {formateur.fullName} - {formateur.specialite}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="documents" className="text-right">
+                Documents
+              </Label>
+              <Input
+                id="documents"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setDocuments(e.target.files?.[0] || null)}
+                className="col-span-3"
               />
             </div>
           </div>

@@ -14,7 +14,17 @@ export type HeaderItem = {
 export interface Niveau {
   id: string;
   name: string;
-  grades: Grade[];
+  grades?: Grade[];
+}
+
+export interface Formateur {
+  id: string;
+  fullName: string;
+  specialite: string;
+  bio?: string | null;
+  image?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Grade {
@@ -22,8 +32,11 @@ export interface Grade {
   name: string;
   price: number;
   niveauId: string;
-  niveau: Niveau;
-  subjects: Subject[];
+  niveau?: Niveau;
+  subjects?: Subject[];
+  documents?: string | null;
+  formateurId?: string | null;
+  formateur?: Formateur | null;
 }
 
 export interface Subject {

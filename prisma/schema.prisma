@@ -374,7 +374,10 @@ model Grade {
   name                     String // "CE1", "2AC", "1Bac"...
   niveauId                 String
   price                    Int                       @default(0)
+  documents                String?
+  formateurId              String? // Optional relation to Formateur
   niveau                   Niveau                    @relation(fields: [niveauId], references: [id], onDelete: Cascade)
+  formateur                Formateur?                @relation(fields: [formateurId], references: [id], onDelete: SetNull)
   users                    User[]
   subjects                 Subject[]
   liveRooms                LiveRoom[]
@@ -382,6 +385,22 @@ model Grade {
   newsGrades               NewsGrade[]
   demandeInscriptionGrades DemandeInscriptionGrade[]
   demandeInscriptions      DemandeInscription[]
+  cartItems                CartItem[]
+
+  @@index([formateurId])
+}
+
+model Formateur {
+  id         String   @id @default(cuid())
+  fullName   String // Full name of the teacher
+  bio        String?  @db.Text // Biography of the teacher
+  specialite String // Specialization/expertise
+  image      String? // Profile image URL
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  grades Grade[] // Grades taught by this formateur
 }
 
 model Subject {
@@ -471,6 +490,7 @@ model Course {
   progress   CourseProgress[]
   notes      Note[]
   chat       CourseChatMessage[]
+  teachers   CourseTeacher[] // Teachers assigned to this course
 
   createdAt DateTime @default(now())
 
@@ -589,6 +609,8 @@ model User {
   teacherSubjects    TeacherSubject[]
   news               News[]
   demandeInscription DemandeInscription[] // Registration requests
+  cart               Cart?
+  courseTeachers     CourseTeacher[]
 }
 
 model TeacherSubject {
@@ -606,6 +628,21 @@ model TeacherSubject {
   @@index([teacherId])
   @@index([subjectId])
   @@index([gradeId])
+}
+
+// Junction table for Course-Teacher many-to-many relationship
+model CourseTeacher {
+  id        String   @id @default(cuid())
+  teacherId String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  teacher User   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, courseId]) // A teacher can only be assigned to a course once
+  @@index([teacherId])
+  @@index([courseId])
 }
 
 model Account {
@@ -724,5 +761,40 @@ model DemandeInscriptionGrade {
 
   @@unique([demandeInscriptionId, gradeId])
   @@index([demandeInscriptionId])
+  @@index([gradeId])
+}
+
+// Shopping Cart Model
+// Represents a user's shopping cart for grades
+model Cart {
+  id     String @id @default(cuid())
+  userId String @unique // One cart per user
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[] // Cart items (grades in the cart)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// Cart Item Model
+// Junction table for Cart-Grade many-to-many relationship
+model CartItem {
+  id      String @id @default(cuid())
+  cartId  String
+  gradeId String
+
+  cart  Cart  @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  grade Grade @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+
+  // Store the price at the time of adding to cart (in case price changes later)
+  priceAtAdd Int
+
+  addedAt DateTime @default(now())
+
+  @@unique([cartId, gradeId]) // A grade can only be in a cart once
+  @@index([cartId])
   @@index([gradeId])
 }

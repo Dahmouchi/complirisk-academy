@@ -134,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       collapsible="icon"
       {...props}
-      className="bg-white dark:bg-slate-800 p-2 flex flex-col items-center justify-center bg "
+      className="bg-white dark:bg-slate-800  flex flex-col items-center justify-center bg "
     >
       <SidebarHeader className="dark:bg-slate-900 flex items-center bg-white justify-start rounded-t-xl ">
         <Image
@@ -147,11 +147,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="dark:bg-slate-900 pl-0 bg-white rounded-b-xl mt-3">
         <NavMain items={navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        <div className="text-center flex items-center gap-1 text-xs text-gray-500">
-          Powered by <span className="font-bold">Cinq-Cinq</span>
-        </div>
-      </SidebarFooter>
+      {state === "expanded" && (
+        <SidebarFooter>
+          <div className="text-center flex items-center gap-1 text-xs text-gray-500">
+            Powered by <span className="font-bold">Cinq-Cinq</span>
+          </div>
+        </SidebarFooter>
+      )}
       <SidebarRail />
     </Sidebar>
   );

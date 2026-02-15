@@ -20,7 +20,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, Users } from "lucide-react";
 import GradeDialog from "../_components/grade-dialog";
-import { Grade, Niveau } from "@/types/menu";
+import Loading from "@/components/Loading";
+import { Formateur, Grade, Niveau } from "@/types/menu";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { createClasse, deleteClasse, updateClasse } from "@/actions/grads";
@@ -35,9 +36,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import Loading from "@/components/Loading";
 
-export default function ClassesPage({ niveauxx, classe }: any) {
+export interface ClassesPageProps {
+  niveauxx: Niveau[];
+  classe: Grade[];
+  formateurs: Formateur[];
+}
+
+export default function ClassesPage({
+  niveauxx,
+  classe,
+  formateurs,
+}: ClassesPageProps) {
   const [grades, setGrades] = useState<Grade[]>([]);
   const [niveaux, setNiveaux] = useState<Niveau[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -73,11 +83,11 @@ export default function ClassesPage({ niveauxx, classe }: any) {
     try {
       const res = await deleteClasse(id);
       if (res.success) {
-        toast.success("Le niveau a été supprimé avec succès");
+        toast.success("La norme a été supprimée avec succès");
         setIsDialogOpen(false);
         router.refresh();
       } else {
-        toast.error("Erreur lors de la suppression du niveau");
+        toast.error("Erreur lors de la suppression de la norme");
       }
     } catch (error) {
       console.log(error);
@@ -89,9 +99,9 @@ export default function ClassesPage({ niveauxx, classe }: any) {
     name: string;
     niveauId: string;
     price: number;
+    formateurId?: string;
+    documents?: File;
   }) => {
-    const niveau = niveaux.find((n) => n.id === gradeData.niveauId);
-
     try {
       if (editingGrade) {
         // Modification
@@ -100,24 +110,30 @@ export default function ClassesPage({ niveauxx, classe }: any) {
           gradeData.price,
           gradeData.name,
           gradeData.niveauId,
+          gradeData.formateurId,
+          gradeData.documents,
         );
         if (res.success) {
-          toast.success("Le niveau a été modifié avec succès");
+          toast.success("La norme a été modifiée avec succès");
           setIsDialogOpen(false);
           router.refresh();
         } else {
-          toast.error("Erreur lors de la modification du niveau");
+          toast.error("Erreur lors de la modification de la norme");
         }
       } else {
         // Création
-
-        const res = await createClasse(gradeData.name, gradeData.price);
+        const res = await createClasse(
+          gradeData.name,
+          gradeData.price,
+          gradeData.formateurId,
+          gradeData.documents,
+        );
         if (res.success) {
-          toast.success("Classe a été créée avec succès");
+          toast.success("La norme a été créée avec succès");
           setIsDialogOpen(false);
           router.refresh();
         } else {
-          toast.error("Erreur lors de la création du niveau");
+          toast.error("Erreur lors de la création de la norme");
         }
       }
     } catch (error) {
@@ -185,6 +201,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                 <TableRow>
                   <TableHead>Norme</TableHead>
                   <TableHead>Prix</TableHead>
+                  <TableHead>Formateur</TableHead>
                   <TableHead>Nombre de Sections</TableHead>
                   <TableHead>Sections</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -196,14 +213,27 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                     <TableCell className="font-medium">{grade.name}</TableCell>
                     <TableCell>{grade.price} MAD</TableCell>
                     <TableCell>
+                      {grade.formateur ? (
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">
+                            {grade.formateur.fullName}
+                          </Badge>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 text-sm italic">
+                          Non assigné
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
                       <Badge variant="outline">
-                        {grade.subjects.length} section
-                        {grade.subjects.length > 1 ? "s" : ""}
+                        {grade.subjects?.length || 0} section
+                        {grade.subjects?.length !== 1 ? "s" : ""}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {grade.subjects.slice(0, 3).map((subject: any) => (
+                        {grade.subjects?.slice(0, 3).map((subject: any) => (
                           <Badge
                             key={subject.id}
                             variant="outline"
@@ -216,9 +246,9 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                             {subject.name}
                           </Badge>
                         ))}
-                        {grade.subjects.length > 3 && (
+                        {(grade.subjects?.length || 0) > 3 && (
                           <Badge variant="outline" className="text-xs">
-                            +{grade.subjects.length - 3}
+                            +{(grade.subjects?.length || 0) - 3}
                           </Badge>
                         )}
                       </div>
@@ -239,21 +269,21 @@ export default function ClassesPage({ niveauxx, classe }: any) {
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Are you absolutely sure?
+                                Êtes-vous absolument sûr ?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
+                                Cette action ne peut pas être annulée. Cela
+                                supprimera définitivement cette norme et toutes
+                                ses données associées.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogCancel>Annuler</AlertDialogCancel>
                               <AlertDialogAction
                                 className="bg-red-500 text-white hover:bg-red-700"
                                 onClick={() => handleDelete(grade.id)}
                               >
-                                Continue
+                                Continuer
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -273,6 +303,7 @@ export default function ClassesPage({ niveauxx, classe }: any) {
         onOpenChange={setIsDialogOpen}
         grade={editingGrade}
         niveaux={niveaux}
+        formateurs={formateurs}
         onSave={handleSave}
       />
     </div>

@@ -43,7 +43,7 @@ export function StatCard({
         variantStyles[variant],
       )}
     >
-      <CardContent className="px-6">
+      <CardContent className="lg:px-6 px-3 py-0">
         <div className="flex items-start justify-between lg:flex-row flex-col-reverse">
           <div className="space-y-2">
             <p

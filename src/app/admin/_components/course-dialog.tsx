@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -23,19 +23,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Course, Subject, CreateCourseData, UpdateCourseData } from "@/types/menu";
+import {
+  Course,
+  Subject,
+  CreateCourseData,
+  UpdateCourseData,
+} from "@/types/menu";
 
 const courseSchema = z.object({
-  title: z.string().min(1, 'Le titre est requis').max(200, 'Le titre est trop long'),
+  title: z
+    .string()
+    .min(1, "Le titre est requis")
+    .max(200, "Le titre est trop long"),
   content: z.string().optional(),
-  videoUrl: z.string().url('URL invalide').optional().or(z.literal('')),
-  coverImage: z.string().url('URL invalide').optional().or(z.literal('')),
-  handler: z.string()
-    .min(1, 'Le handler est requis')
-    .max(100, 'Le handler est trop long')
-    .regex(/^[a-z0-9-]+$/, 'Le handler ne peut contenir que des lettres minuscules, chiffres et tirets'),
-  index: z.number().min(1, 'L\'ordre doit être supérieur à 0'),
-  subjectId: z.string().min(1, 'La matière est requise'),
+  videoUrl: z.string().url("URL invalide").optional().or(z.literal("")),
+  coverImage: z.string().url("URL invalide").optional().or(z.literal("")),
+  handler: z
+    .string()
+    .min(1, "Le handler est requis")
+    .max(100, "Le handler est trop long")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Le handler ne peut contenir que des lettres minuscules, chiffres et tirets",
+    ),
+  index: z.number().min(1, "L'ordre doit être supérieur à 0"),
+  subjectId: z.string().min(1, "La matière est requise"),
 });
 
 type CourseFormData = z.infer<typeof courseSchema>;
@@ -48,12 +60,12 @@ interface CourseDialogProps {
   subjects: Subject[];
 }
 
-export function CourseDialog({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
+export function CourseDialog({
+  isOpen,
+  onClose,
+  onSubmit,
   course,
-  subjects 
+  subjects,
 }: CourseDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditing = course !== null;
@@ -68,30 +80,30 @@ export function CourseDialog({
   } = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      title: '',
-      content: '',
-      videoUrl: '',
-      coverImage: '',
-      handler: '',
+      title: "",
+      content: "",
+      videoUrl: "",
+      coverImage: "",
+      handler: "",
       index: 1,
-      subjectId: '',
+      subjectId: "",
     },
   });
 
-  const watchedTitle = watch('title');
-  const watchedHandler = watch('handler');
+  const watchedTitle = watch("title");
+  const watchedHandler = watch("handler");
 
   // Générer automatiquement le handler basé sur le titre
   useEffect(() => {
     if (watchedTitle && !isEditing && !watchedHandler) {
       const generatedHandler = watchedTitle
         .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
-      
-      setValue('handler', generatedHandler);
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      setValue("handler", generatedHandler);
     }
   }, [watchedTitle, isEditing, watchedHandler, setValue]);
 
@@ -101,22 +113,22 @@ export function CourseDialog({
       if (isEditing && course) {
         reset({
           title: course.title,
-          content: course.content || '',
-          videoUrl: course.videoUrl || '',
-          coverImage: course.coverImage || '',
+          content: course.content || "",
+          videoUrl: course.videoUrl || "",
+          coverImage: course.coverImage || "",
           handler: course.handler,
           index: course.index,
           subjectId: course.subjectId,
         });
       } else {
         reset({
-          title: '',
-          content: '',
-          videoUrl: '',
-          coverImage: '',
-          handler: '',
+          title: "",
+          content: "",
+          videoUrl: "",
+          coverImage: "",
+          handler: "",
           index: 1,
-          subjectId: '',
+          subjectId: "",
         });
       }
     }
@@ -135,7 +147,7 @@ export function CourseDialog({
 
       await onSubmit(cleanData);
     } catch (error) {
-      console.error('Erreur lors de la soumission:', error);
+      console.error("Erreur lors de la soumission:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -152,13 +164,12 @@ export function CourseDialog({
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? 'Modifier le cours' : 'Créer un nouveau cours'}
+            {isEditing ? "Modifier le cours" : "Créer un nouveau cours"}
           </DialogTitle>
           <DialogDescription>
-            {isEditing 
-              ? 'Modifiez les informations du cours ci-dessous.'
-              : 'Créez un nouveau cours pour votre matière.'
-            }
+            {isEditing
+              ? "Modifiez les informations du cours ci-dessous."
+              : "Créez un nouveau cours pour votre matière."}
           </DialogDescription>
         </DialogHeader>
 
@@ -169,12 +180,14 @@ export function CourseDialog({
               <Label htmlFor="title">Titre *</Label>
               <Input
                 id="title"
-                {...register('title')}
+                {...register("title")}
                 placeholder="Ex: Introduction aux fractions"
-                className={errors.title ? 'border-red-500' : ''}
+                className={errors.title ? "border-red-500" : ""}
               />
               {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
@@ -182,23 +195,26 @@ export function CourseDialog({
             <div>
               <Label htmlFor="subjectId">Matière *</Label>
               <Select
-                value={watch('subjectId')}
-                onValueChange={(value) => setValue('subjectId', value)}
+                value={watch("subjectId")}
+                onValueChange={(value) => setValue("subjectId", value)}
               >
-                <SelectTrigger className={errors.subjectId ? 'border-red-500' : ''}>
+                <SelectTrigger
+                  className={errors.subjectId ? "border-red-500" : ""}
+                >
                   <SelectValue placeholder="Sélectionner une matière" />
                 </SelectTrigger>
                 <SelectContent>
                   {subjects.map((subject) => (
                     <SelectItem key={subject.id} value={subject.id}>
                       <div className="flex items-center space-x-2">
-                        <div 
+                        <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: subject.color }}
                         />
                         <span>{subject.name}</span>
                         <span className="text-gray-500 text-sm">
-                          ({subject.grade.name} - {subject.grade.niveau.name})
+                          ({subject?.grade?.name} -{" "}
+                          {subject?.grade?.niveau?.name})
                         </span>
                       </div>
                     </SelectItem>
@@ -206,7 +222,9 @@ export function CourseDialog({
                 </SelectContent>
               </Select>
               {errors.subjectId && (
-                <p className="text-red-500 text-sm mt-1">{errors.subjectId.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.subjectId.message}
+                </p>
               )}
             </div>
 
@@ -217,34 +235,39 @@ export function CourseDialog({
                 id="index"
                 type="number"
                 min="1"
-                {...register('index', { valueAsNumber: true })}
+                {...register("index", { valueAsNumber: true })}
                 placeholder="1"
-                className={errors.index ? 'border-red-500' : ''}
+                className={errors.index ? "border-red-500" : ""}
               />
               {errors.index && (
-                <p className="text-red-500 text-sm mt-1">{errors.index.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.index.message}
+                </p>
               )}
             </div>
 
             {/* Handler */}
             <div className="md:col-span-2">
               <Label htmlFor="handler">
-                Handler * 
+                Handler *
                 <span className="text-gray-500 text-sm ml-2">
                   (identifiant court pour l&apos;URL)
                 </span>
               </Label>
               <Input
                 id="handler"
-                {...register('handler')}
+                {...register("handler")}
                 placeholder="introduction-fractions"
-                className={errors.handler ? 'border-red-500' : ''}
+                className={errors.handler ? "border-red-500" : ""}
               />
               {errors.handler && (
-                <p className="text-red-500 text-sm mt-1">{errors.handler.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.handler.message}
+                </p>
               )}
               <p className="text-gray-500 text-xs mt-1">
-                Utilisé pour créer l&apos;URL du cours. Seuls les lettres minuscules, chiffres et tirets sont autorisés.
+                Utilisé pour créer l&apos;URL du cours. Seuls les lettres
+                minuscules, chiffres et tirets sont autorisés.
               </p>
             </div>
           </div>
@@ -254,13 +277,15 @@ export function CourseDialog({
             <Label htmlFor="content">Description</Label>
             <Textarea
               id="content"
-              {...register('content')}
+              {...register("content")}
               placeholder="Description ou résumé du cours..."
               rows={3}
-              className={errors.content ? 'border-red-500' : ''}
+              className={errors.content ? "border-red-500" : ""}
             />
             {errors.content && (
-              <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.content.message}
+              </p>
             )}
           </div>
 
@@ -270,12 +295,14 @@ export function CourseDialog({
               <Label htmlFor="videoUrl">URL Vidéo</Label>
               <Input
                 id="videoUrl"
-                {...register('videoUrl')}
+                {...register("videoUrl")}
                 placeholder="https://youtube.com/watch?v=..."
-                className={errors.videoUrl ? 'border-red-500' : ''}
+                className={errors.videoUrl ? "border-red-500" : ""}
               />
               {errors.videoUrl && (
-                <p className="text-red-500 text-sm mt-1">{errors.videoUrl.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.videoUrl.message}
+                </p>
               )}
             </div>
 
@@ -284,12 +311,14 @@ export function CourseDialog({
               <Label htmlFor="coverImage">Image de couverture</Label>
               <Input
                 id="coverImage"
-                {...register('coverImage')}
+                {...register("coverImage")}
                 placeholder="https://example.com/image.jpg"
-                className={errors.coverImage ? 'border-red-500' : ''}
+                className={errors.coverImage ? "border-red-500" : ""}
               />
               {errors.coverImage && (
-                <p className="text-red-500 text-sm mt-1">{errors.coverImage.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.coverImage.message}
+                </p>
               )}
             </div>
           </div>
@@ -308,7 +337,11 @@ export function CourseDialog({
               disabled={isSubmitting}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              {isSubmitting ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer')}
+              {isSubmitting
+                ? "Enregistrement..."
+                : isEditing
+                  ? "Modifier"
+                  : "Créer"}
             </Button>
           </DialogFooter>
         </form>

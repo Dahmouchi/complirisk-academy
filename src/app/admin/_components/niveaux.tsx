@@ -167,30 +167,26 @@ const NiveauxPage = ({ niveauxx }: { niveauxx: any }) => {
               </TableHeader>
               <TableBody>
                 {niveaux.map((niveau) => (
-                  <TableRow key={niveau.id}>
-                    <TableCell className="font-medium">{niveau.name}</TableCell>
+                  <TableRow key={niveau?.id}>
+                    <TableCell className="font-medium">
+                      {niveau?.name}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {niveau.grades.length} classe
-                        {niveau.grades.length > 1 ? "s" : ""}
+                        {niveau?.grades?.length} classe
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {niveau.grades.slice(0, 3).map((grade: any) => (
+                        {niveau?.grades?.slice(0, 3).map((grade: any) => (
                           <Badge
-                            key={grade.id}
+                            key={grade?.id}
                             variant="outline"
                             className="text-xs"
                           >
-                            {grade.name}
+                            {grade?.name}
                           </Badge>
                         ))}
-                        {niveau.grades.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{niveau.grades.length - 3}
-                          </Badge>
-                        )}
                       </div>
                     </TableCell>
                     <TableCell className="text-right">

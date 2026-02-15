@@ -32,6 +32,7 @@ import {
 } from "../ui/collapsible";
 import NewFormationPanel from "./NewFormationPanel";
 import Progress from "../ui/progress";
+import Link from "next/link";
 
 const IndexNewDash = ({
   matieres,
@@ -111,6 +112,9 @@ const IndexNewDash = ({
 
   const [activeTab, setActiveTab] = useState<"courses" | "explore">("courses");
 
+  // Check if user has any approved grades
+  const hasApprovedGrades = user.grades && user.grades.length > 0;
+
   useEffect(() => {
     if (window.location.hash === "#new-formation-panel") {
       const element = document.getElementById("new-formation-panel");
@@ -122,9 +126,37 @@ const IndexNewDash = ({
     }
   }, []);
   return (
-    <div className="min-h-screen overflow-hidden ">
+    <div className="min-h-screen overflow-hidden relative">
+      {/* Locked Overlay for users with no courses */}
+      {!hasApprovedGrades && (
+        <div className="absolute inset-0 z-50 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <BookOpen className="w-10 h-10 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Aucun cours disponible
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Vous n&apos;avez pas encore de cours. Explorez notre catalogue et
+              sélectionnez les formations qui vous intéressent pour commencer
+              votre parcours d&apos;apprentissage.
+            </p>
+            <Link
+              href="/dashboard/courses"
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 hover:shadow-lg"
+            >
+              <BookOpen className="w-5 h-5" />
+              Explorer les cours
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Left Sidebar */}
-      <div className="flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 lg:pb-0 pb-16">
+      <div
+        className={`flex h-[calc(100vh-80px)] pt-[14px] md:pt-0 lg:pb-0 pb-16 ${!hasApprovedGrades ? "filter grayscale opacity-50 pointer-events-none" : ""}`}
+      >
         {/* Left Sidebar - Desktop only */}
         <aside className="w-20 border-r border-border hidden md:block">
           <div className="h-full">
@@ -163,7 +195,7 @@ const IndexNewDash = ({
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-6 md:grid-cols-2 grid-cols-2 lg:grid-cols-4">
+          <div className="grid lg:gap-6 gap-2 md:grid-cols-2 grid-cols-2 lg:grid-cols-4">
             <StatCard
               title="tous les cours"
               value={stats.totalCourses}
@@ -201,7 +233,7 @@ const IndexNewDash = ({
                 <h2 className="font-display text-xl font-semibold text-foreground">
                   Continuez à apprendre
                 </h2>
-                <ToggleGroup
+                {/*<ToggleGroup
                   type="single"
                   value={courseType}
                   onValueChange={(value) => {
@@ -224,7 +256,7 @@ const IndexNewDash = ({
                   >
                     Cours Gratuits
                   </ToggleGroupItem>
-                </ToggleGroup>
+                </ToggleGroup>*/}
               </div>
 
               <div className="flex flex-col gap-4">
@@ -234,7 +266,7 @@ const IndexNewDash = ({
                     placeholder="Search courses..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-background"
+                    className="pl-10 bg-white rounded-full"
                   />
                 </div>
                 <CategoryFilter

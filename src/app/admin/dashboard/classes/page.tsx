@@ -17,12 +17,17 @@ const Niveaux = async () => {
     include: {
       niveau: true,
       subjects: true,
+      formateur: true,
     },
   });
 
+  let formateurs: Awaited<ReturnType<typeof prisma.formateur.findMany>> = []; // Infer type from Prisma
+
+  formateurs = await prisma.formateur.findMany();
+
   return (
     <div className="">
-      <ClassesPage niveauxx={niveaux} classe={grades} />
+      <ClassesPage niveauxx={niveaux} classe={grades} formateurs={formateurs} />
     </div>
   );
 };

@@ -65,17 +65,32 @@ export async function getNiveau() {
 
 //---------------------------------------------- classes --------------------------------------------------
 
-export async function createClasse(name: string, price: number) {
+export async function createClasse(
+  name: string,
+  price: number,
+  formateurId?: string,
+  documents?: File,
+) {
   if (!name || name.trim() === "") {
     throw new Error("Le nom du niveau est requis.");
   }
   const handler = getCorrectId(name);
+
+  // Upload document if provided
+  let documentUrl: string | null = null;
+  if (documents) {
+    const { uploadDocument } = await import("@/actions/cours");
+    documentUrl = await uploadDocument(documents);
+  }
+
   const niveau = await prisma.grade.create({
     data: {
       name: name.trim(),
       handler,
       price,
+      documents: documentUrl,
       niveauId: "cmk1e7ue6000h0sroci9i2ev2",
+      formateurId: formateurId === "none" ? null : formateurId,
     },
   });
   return { success: true, data: niveau };
@@ -86,9 +101,18 @@ export async function updateClasse(
   price: number,
   name: string,
   niveauId: string,
+  formateurId?: string,
+  documents?: File,
 ) {
   if (!id || !name || !niveauId || name.trim() === "") {
     throw new Error("ID, nom et niveau sont requis.");
+  }
+
+  // Upload document if provided
+  let documentUrl: string | null | undefined = undefined;
+  if (documents) {
+    const { uploadDocument } = await import("@/actions/cours");
+    documentUrl = await uploadDocument(documents);
   }
 
   const updatedGrade = await prisma.grade.update({
@@ -97,6 +121,8 @@ export async function updateClasse(
       name: name.trim(),
       price,
       niveauId,
+      formateurId: formateurId === "none" ? null : formateurId,
+      ...(documentUrl !== undefined && { documents: documentUrl }),
     },
   });
 

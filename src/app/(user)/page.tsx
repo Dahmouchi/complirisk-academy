@@ -7,6 +7,9 @@ import Testimonial from "@/components/complirisk/Testimonial";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import WhyChoose from "@/components/complirisk/WhyChoose/Index";
+import Certifications from "@/components/complirisk/Certifications";
+import CoursesAccess from "@/components/complirisk/CoursesAccess";
+import CertificationTestimonials from "@/components/complirisk/CertificationTestimonials";
 
 export default function Home() {
   return (
@@ -23,10 +26,13 @@ export default function Home() {
         <Header visible={true} />
         <Hero />
       </div>
-      <NamesList />
+      <CoursesAccess />
+      {/*<NamesList /><Testimonial />*/}
       <WhyChoose />
+      <Certifications />
       <Mentor />
-      <Testimonial />
+      <CertificationTestimonials />
+
       <Newsletter />
       {/*<HeroSection />
       <SpecialisationsSection />

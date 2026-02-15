@@ -493,8 +493,9 @@ const PersonalInfoStep = ({
     </motion.div>
   );
 };
-
 // Étape 2: Informations d'étude - Grade Selection
+// COMMENTED OUT - This step is removed from the inscription flow
+/*
 const StudyInfoStep = ({
   data,
   onChange,
@@ -606,6 +607,7 @@ const StudyInfoStep = ({
     </motion.div>
   );
 };
+*/
 
 // Étape de confirmation
 const ConfirmationStep = ({ data }: { data: FormData }) => {
@@ -811,14 +813,23 @@ const MultiStepForm = () => {
       try {
         if (session) {
           const res = await updateClientProfile1(session?.user.id, formData);
-          if (res) setCurrentStep(1);
-          else toast.error("Échec de la mise à jour du profil");
+          if (res) {
+            // Update user step to 2 and redirect to dashboard
+            await update({ step: 2 });
+            toast.success("Votre profil a été créé avec succès!");
+            router.push("/dashboard/courses");
+          } else {
+            toast.error("Échec de la mise à jour du profil");
+          }
         }
       } catch (error) {
         console.error("Update failed", error);
         toast.error("Une erreur s'est produite");
       }
-    } else if (currentStep === 1) {
+    }
+    // COMMENTED OUT - Study step removed from flow
+    /*
+    else if (currentStep === 1) {
       const studyErrors = validateStudyInfo(formData.study);
       if (Object.keys(studyErrors).length > 0) {
         setErrors((prev) => ({ ...prev, study: studyErrors }));
@@ -846,6 +857,7 @@ const MultiStepForm = () => {
       }
       setErrors((prev) => ({ ...prev, study: {} }));
     }
+    */
   };
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
@@ -873,9 +885,7 @@ const MultiStepForm = () => {
               transition={{ duration: 0.6 }}
               className="p-8 md:p-12"
             >
-              {currentStep < 2 && (
-                <ProgressIndicator currentStep={currentStep} totalSteps={2} />
-              )}
+              {/* Progress indicator removed - only one step now */}
 
               <AnimatePresence mode="wait">
                 {currentStep === 0 && (
@@ -889,6 +899,7 @@ const MultiStepForm = () => {
                     errors={errors.personal}
                   />
                 )}
+                {/* COMMENTED OUT - Study step removed from flow
                 {currentStep === 1 && (
                   <StudyInfoStep
                     key="study"
@@ -900,9 +911,12 @@ const MultiStepForm = () => {
                     errors={errors.study}
                   />
                 )}
+                */}
+                {/* Confirmation step removed - direct redirect to dashboard
                 {currentStep === 2 && (
                   <ConfirmationStep key="confirmation" data={formData} />
                 )}
+                */}
               </AnimatePresence>
 
               {currentStep < 2 && (
@@ -910,32 +924,19 @@ const MultiStepForm = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="flex justify-between mt-10 gap-4"
+                  className="flex justify-end mt-10 gap-4"
                 >
-                  <motion.button
-                    onClick={prevStep}
-                    disabled={currentStep === 0}
-                    className={`flex items-center gap-2 px-6 py-2 rounded-[6px] font-semibold transition-all duration-300 ${
-                      currentStep === 0
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:shadow-lg hover:scale-105 active:scale-95"
-                    }`}
-                    whileHover={currentStep > 0 ? { x: -5 } : {}}
-                    whileTap={currentStep > 0 ? { scale: 0.95 } : {}}
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                    <span className="hidden sm:inline">Précédent</span>
-                  </motion.button>
+                  {/* Previous button removed - only one step */}
 
                   <motion.button
                     onClick={nextStep}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-8 py-2 rounded-[6px] font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
+                    className="flex items-center gap-2 bg-primary text-white px-8 py-2 rounded-[6px] font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 relative overflow-hidden group"
                     whileHover={{ scale: 1.05, x: 5 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="relative flex items-center gap-2">
-                      {currentStep === 1 ? "Terminer" : "Suivant"}
+                      Confirmer et Accéder au Dashboard
                       <ChevronRight className="w-5 h-5" />
                     </span>
                   </motion.button>

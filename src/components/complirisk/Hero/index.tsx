@@ -14,16 +14,16 @@ const Banner = () => {
       {" "}
       <section className="pt-32  pb-16 md:pt-40 md:pb-24" id="Home">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Maîtrisez les Normes ISO et la Conformité avec des Formations
-              Expertes
+          <div className="text-center max-w-4xl mx-auto mb-12">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+              Développez les compétences qui structurent les carrières et les
+              organisations performantes
             </h1>
-
             <p className="text-muted-foreground text-lg mb-8">
-              Obtenez des certifications ISO, en conformité réglementaire et
-              gestion des risques grâce à notre plateforme e-learning accréditée
-              conçue pour les professionnels.
+              CompliRisk Academy est une plateforme de formation professionnelle
+              conçue pour accompagner les talents, les cadres et les
+              organisations dans le développement de compétences stratégiques,
+              certifiantes et immédiatement opérationnelles{" "}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
@@ -45,9 +45,8 @@ const Banner = () => {
             </div>
           </div>
         </div>
-        <Companies />
       </section>
-      {/*
+      {/*<Companies />
       <section className="bg-banner-image pt-28 pb-20">
         <div className="relative px-6 lg:px-8">
           <div className="container">
