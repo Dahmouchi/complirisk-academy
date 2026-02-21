@@ -26,7 +26,12 @@ export default async function AdminLayout({
   if (session.user.role !== "USER") {
     return <AccessDenied role={session.user.role} />;
   }
+
   const user = await getStudentById();
+  if (!user) {
+    return <div className="text-center">User not found</div>;
+  }
+  const hasApprovedGrades = user.grades && user.grades.length > 0;
 
   return (
     <div className="h-screen overflow-hidden flex flex-col">
@@ -35,6 +40,7 @@ export default async function AdminLayout({
         userName={`${user?.name} ${user?.prenom}` || ""}
         userAvatar={user?.image || ""}
         userEmail={user?.email || ""}
+        hasApprovedGrades={hasApprovedGrades}
       />
       <div className="bg-[#efefef] flex-1 overflow-hidden ">{children}</div>
       <FloatingNotesButton userId={session.user.id} />

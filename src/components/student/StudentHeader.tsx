@@ -35,6 +35,7 @@ interface StudentHeaderProps {
   userName?: string;
   userAvatar?: string;
   userEmail?: string;
+  hasApprovedGrades?: boolean;
 }
 
 const mobileNavItems = [
@@ -48,6 +49,7 @@ export const StudentHeader = ({
   userName = "Étudiant",
   userAvatar,
   userEmail,
+  hasApprovedGrades,
 }: StudentHeaderProps) => {
   const navigate = useRouter();
   const location = usePathname();
@@ -276,12 +278,14 @@ export const StudentHeader = ({
         className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white backdrop-blur border-t border-border/40 pb-safe"
       >
         <div className="flex relative items-center justify-around h-16">
-          <button
-            onClick={handlePlusClick}
-            className="w-14 h-14 absolute -top-8 shadow-lg left-1/2 -translate-x-1/2 rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition-transform"
-          >
-            <Plus className="h-6 w-6" />
-          </button>
+          {hasApprovedGrades && (
+            <button
+              onClick={handlePlusClick}
+              className="w-14 h-14 absolute -top-8 shadow-lg left-1/2 -translate-x-1/2 rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition-transform"
+            >
+              <Plus className="h-6 w-6" />
+            </button>
+          )}
           {mobileNavItems.map((item) => {
             const isActive = location === item.href;
             return (

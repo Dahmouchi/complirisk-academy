@@ -17,6 +17,9 @@ import {
   Edit,
   CheckCircle,
   X,
+  Check,
+  ChevronsUpDown,
+  Search,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import {
@@ -36,6 +39,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface Grade {
   id: string;
@@ -131,7 +149,7 @@ export default function NewFormationPanel({
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <ShoppingCart className="h-4 w-4" />
-              <span>Grades demandés ({selectedCourses.length})</span>
+              <span>Formations demandées ({selectedCourses.length})</span>
             </div>
 
             <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -369,10 +387,10 @@ function CreateNewDemandeForm({
       <CardContent className="space-y-6">
         {/* Available Grades Selection */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <Plus className="h-4 w-4" />
-            <span>Grades Disponibles</span>
-          </div>
+          <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            Sélectionner les Formations
+          </Label>
 
           {filteredAvailableGrades.length === 0 ? (
             <p className="text-sm text-muted-foreground italic py-2">
@@ -381,42 +399,76 @@ function CreateNewDemandeForm({
                 : "Aucun grade disponible pour le moment"}
             </p>
           ) : (
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {filteredAvailableGrades.map((grade) => {
-                const isSelected = selectedGradeIds.has(grade.id);
-
-                return (
-                  <div
-                    key={grade.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
-                      isSelected
-                        ? "border-primary bg-primary/5"
-                        : "border-border bg-background hover:bg-muted/50"
-                    }`}
-                    onClick={() => handleToggleGrade(grade.id)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        id={`grade-${grade.id}`}
-                        checked={isSelected}
-                        onChange={() => handleToggleGrade(grade.id)}
-                        className="h-4 w-4 rounded border-gray-300"
-                      />
-                      <label
-                        htmlFor={`grade-${grade.id}`}
-                        className="cursor-pointer"
-                      >
-                        <span className="font-medium">{grade.name}</span>
-                      </label>
-                    </div>
-                    <span className="font-semibold text-primary text-sm">
-                      {grade.price} MAD
-                    </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className="w-full justify-between h-auto min-h-[44px] px-3 py-2"
+                >
+                  <div className="flex flex-wrap gap-1 items-center">
+                    {selectedGradeIds.size > 0 ? (
+                      selectedGrades.map((grade) => (
+                        <Badge
+                          key={grade.id}
+                          variant="secondary"
+                          className="mr-1 mb-1"
+                        >
+                          {grade.name}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-muted-foreground">
+                        Rechercher des formations...
+                      </span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-[var(--radix-popover-trigger-width)] p-0"
+                align="start"
+              >
+                <Command className="w-full">
+                  <CommandInput placeholder="Rechercher une formation..." />
+                  <CommandList>
+                    <CommandEmpty>Aucune formation trouvée.</CommandEmpty>
+                    <CommandGroup>
+                      {filteredAvailableGrades.map((grade) => {
+                        const isSelected = selectedGradeIds.has(grade.id);
+
+                        return (
+                          <CommandItem
+                            key={grade.id}
+                            value={grade.name}
+                            onSelect={() => handleToggleGrade(grade.id)}
+                            className="flex items-center justify-between py-3 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={cn(
+                                  "flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                  isSelected
+                                    ? "bg-primary text-primary-foreground"
+                                    : "opacity-50 [&_svg]:invisible",
+                                )}
+                              >
+                                <Check className="h-4 w-4" />
+                              </div>
+                              <span className="font-medium">{grade.name}</span>
+                            </div>
+                            <span className="text-xs font-semibold text-primary">
+                              {grade.price} MAD
+                            </span>
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           )}
         </div>
 

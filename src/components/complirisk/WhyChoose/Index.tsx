@@ -8,14 +8,14 @@ export default function WhyChoose() {
       <div className="container mx-auto px-4 max-w-7xl">
         {/* En-tête */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-center">
             À propos de <span className="text-primary">CompliRisk</span>
           </h2>
         </div>
 
         <div className="space-y-12">
           {/* Excellence en Formation Professionnelle */}
-          <div className="space-y-6">
+          <div className="space-y-6 text-center">
             <h3 className="text-2xl md:text-3xl font-bold">
               Excellence en Formation Professionnelle
             </h3>

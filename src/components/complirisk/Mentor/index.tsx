@@ -7,10 +7,10 @@ const Mentor = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="mb-12">
           <div className="space-y-4">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-center">
               Notre collège d&apos;experts
             </h2>
-            <p className="text-lg text-gray-600 max-w-4xl">
+            <p className="text-lg text-gray-600 text-center">
               CompliRisk Academy fédère un réseau d&apos;experts certifiés
               intervenant selon les thématiques et les programmes. Les profils
               présentés ci-dessous représentent une partie des expertises

@@ -61,7 +61,7 @@ const Auth = () => {
       <div className="absolute top-3 left-3">
         <button
           onClick={() => router.back()}
-          className="bg-primary text-white hover:bg-white border-2 border-gray-200 px-4 shadow p-2 rounded-full flex items-center gap-2"
+          className="bg-primary text-white hover:bg-primary/80 border-2 border-gray-200 px-4 shadow p-2 rounded-full flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5" />
           <span>Retour</span>

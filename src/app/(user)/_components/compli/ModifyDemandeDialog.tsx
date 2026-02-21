@@ -127,7 +127,7 @@ export function ModifyDemandeDialog({
           <div className="space-y-3">
             <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Search className="h-4 w-4" />
-              Sélectionner les Grades
+              Sélectionner les Formations
             </Label>
 
             <Popover>
@@ -150,7 +150,7 @@ export function ModifyDemandeDialog({
                       ))
                     ) : (
                       <span className="text-muted-foreground">
-                        Rechercher des grades...
+                        Rechercher des formations...
                       </span>
                     )}
                   </div>
@@ -162,9 +162,9 @@ export function ModifyDemandeDialog({
                 align="start"
               >
                 <Command className="w-full">
-                  <CommandInput placeholder="Rechercher un grade..." />
+                  <CommandInput placeholder="Rechercher une formation..." />
                   <CommandList>
-                    <CommandEmpty>Aucun grade trouvé.</CommandEmpty>
+                    <CommandEmpty>Aucune formation trouvée.</CommandEmpty>
                     <CommandGroup>
                       {availableGrades.map((grade) => {
                         const isSelected = selectedGradeIds.has(grade.id);

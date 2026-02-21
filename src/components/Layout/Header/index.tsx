@@ -117,34 +117,19 @@ const Header = ({
 
   return (
     <>
-      <div className="relative">
-        {!navbarOpen && (
-          <div
-            className={`${sticky ? "lg:hidden" : "lg:block"} m-2 hidden lg:block rounded-[8px] z-40 relative bg-primary hover:text-blue-400 cursor-pointer  text-primary-foreground py-2 text-center text-sm`}
-            onClick={() => {
-              router.push("/courses");
-            }}
-          >
-            Cours gratuits 🎉 Offre limitée, inscrivez-vous vite !
-            <span className="ml-2 cursor-pointer hover:underline">→</span>
-          </div>
-        )}
-        <header
-          className={`fixed top-0 z-30 w-full transition-all duration-300 ${
-            sticky
-              ? " shadow-lg bg-white py-4"
-              : "shadow-none py-4 lg:mt-8 bg-white"
-          }`}
+      <div className="relative bg-white">
+        <div
+          className={`fixed top-0 z-[99] w-full bg-white transition-all duration-300 py-4`}
         >
           <div>
             <div className="mx-auto max-w-7xl px-4 flex items-center justify-between">
               <Logo />
               {visible && (
-                <nav className="hidden lg:flex grow items-center gap-8 justify-start ml-14">
+                <div className="hidden lg:flex grow items-center gap-8 justify-start ml-14">
                   {headerData.map((item, index) => (
                     <HeaderLink key={index} item={item} />
                   ))}
-                </nav>
+                </div>
               )}
               {user ? (
                 <>
@@ -384,9 +369,9 @@ const Header = ({
             )}
             <div
               ref={mobileMenuRef}
-              className={`lg:hidden fixed relat z-50 top-0 right-0 h-full w-full bg-white shadow-lg transform transition-transform duration-300 max-w-xs ${
+              className={`lg:hidden fixed relat z-[999] top-0 right-0 h-full w-full bg-white shadow-lg transform transition-transform duration-300 max-w-xs ${
                 navbarOpen ? "translate-x-0" : "translate-x-full"
-              } z-50`}
+              } z-[999]`}
             >
               <div className="flex items-center justify-between p-4">
                 <h2 className="text-lg font-bold text-midnight_text">
@@ -458,7 +443,7 @@ const Header = ({
               </nav>
             </div>
           </div>
-        </header>
+        </div>
       </div>
     </>
   );

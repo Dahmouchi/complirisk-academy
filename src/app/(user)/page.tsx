@@ -17,7 +17,7 @@ export default function Home() {
       <div
         className=""
         style={{
-          backgroundImage: "url('/compli/bg-login2.jpg')",
+          backgroundImage: "url('/compli/hero.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

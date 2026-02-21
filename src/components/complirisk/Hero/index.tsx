@@ -12,14 +12,14 @@ const Banner = () => {
   return (
     <>
       {" "}
-      <section className="pt-32  pb-16 md:pt-40 md:pb-24" id="Home">
-        <div className="container">
+      <section className="pt-32 relative  pb-16 md:pt-40 md:pb-24" id="Home">
+        <div className="container relative z-40">
           <div className="text-center max-w-4xl mx-auto mb-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               Développez les compétences qui structurent les carrières et les
               organisations performantes
             </h1>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-lg mb-8">
               CompliRisk Academy est une plateforme de formation professionnelle
               conçue pour accompagner les talents, les cadres et les
               organisations dans le développement de compétences stratégiques,
@@ -30,7 +30,7 @@ const Banner = () => {
               <Button
                 onClick={() => router.push("/login")}
                 size="lg"
-                className="shadow-primary px-8 w-full lg:w-fit rounded-full"
+                className="shadow-primary px-8 w-full lg:w-fit rounded-[8px]"
               >
                 Connectez-vous
               </Button>
@@ -38,7 +38,7 @@ const Banner = () => {
                 onClick={() => router.push("/login")}
                 variant="outline"
                 size="lg"
-                className="px-8 w-full lg:w-fit rounded-full"
+                className="px-8 w-full lg:w-fit border-primary border rounded-[8px]"
               >
                 S&apos;inscrire
               </Button>
@@ -47,6 +47,11 @@ const Banner = () => {
         </div>
       </section>
       {/*<Companies />
+      <img
+          src="/bg-shape3.png"
+          alt=""
+          className="w-full h-auto absolute -bottom-[10%] right-0 left-0 z-10"
+        />
       <section className="bg-banner-image pt-28 pb-20">
         <div className="relative px-6 lg:px-8">
           <div className="container">

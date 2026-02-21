@@ -2,14 +2,14 @@ import { Icon } from "@iconify/react";
 
 export default function Certifications() {
   return (
-    <section id="certifications" className="py-20 bg-white">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section id="certifications" className="py-20 bg-primary text-white">
+      <div className="container mx-auto px-4">
         {/* En-tête */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Parcours & <span className="text-primary">Certifications</span>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white text-center">
+            Parcours & <span className="text-blue-300">Certifications</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-4xl leading-relaxed">
+          <p className="text-lg text-gray-100 leading-relaxed text-center">
             CompliRisk Academy propose deux catégories de formations, adaptées
             aux objectifs des professionnels et des organisations : des parcours
             professionnalisants avec attestation Academy et des formations
@@ -18,15 +18,15 @@ export default function Certifications() {
         </div>
 
         {/* Deux colonnes de formations */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
           {/* Formations avec attestation CompliRisk Academy */}
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-white rounded-2xl p-8 border border-primary/20 hover:shadow-xl transition-shadow duration-300">
             <div className="flex flex-col lg:flex-row items-start space-x-4 mb-6">
               <div className="flex-shrink-0  bg-primary/20 rounded-xl flex items-center justify-center">
                 <img src="/complirisk.png" className="w-auto h-16" alt="" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-2">
+                <h3 className="text-2xl font-bold mb-2 text-primary">
                   Formations avec attestation CompliRisk Academy
                 </h3>
               </div>
@@ -69,13 +69,13 @@ export default function Certifications() {
           </div>
 
           {/* Formations certifiantes internationales */}
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-white rounded-2xl p-8 border border-primary/20 hover:shadow-xl transition-shadow duration-300">
             <div className="flex flex-col lg:flex-row items-start space-x-4 mb-6">
               <div className="flex-shrink-0   rounded-xl flex items-center justify-center">
                 <img src="/pecb.png" className="w-auto h-16" alt="" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-2">
+                <h3 className="text-2xl text-primary font-bold mb-2">
                   Formations certifiantes internationales
                 </h3>
               </div>

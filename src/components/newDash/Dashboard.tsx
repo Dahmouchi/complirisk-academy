@@ -135,7 +135,7 @@ const IndexNewDash = ({
               <BookOpen className="w-10 h-10 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Aucun cours disponible
+              Aucun cours possedé
             </h2>
             <p className="text-gray-600 mb-6">
               Vous n&apos;avez pas encore de cours. Explorez notre catalogue et
@@ -197,21 +197,21 @@ const IndexNewDash = ({
           {/* Stats Grid */}
           <div className="grid lg:gap-6 gap-2 md:grid-cols-2 grid-cols-2 lg:grid-cols-4">
             <StatCard
-              title="tous les cours"
+              title="Tous les cours"
               value={stats.totalCourses}
               subtitle="Continuez!"
               icon={BookOpen}
               variant="primary"
             />
             <StatCard
-              title="cours terminés"
+              title="Cours terminés"
               value={stats.completedCourses}
               subtitle="Bravo!"
               icon={Award}
               variant="success"
             />
             <StatCard
-              title="heures d'apprentissage"
+              title="Heures d'apprentissage"
               value={hoursLearned}
               subtitle="heures investies"
               icon={Clock}
@@ -357,7 +357,7 @@ const IndexNewDash = ({
                                         </h3>
                                         <p className="text-xs text-muted-foreground mt-0.5">
                                           {subject.courses?.length || 0} Modules
-                                          available
+                                          disponibles
                                         </p>
 
                                         {progressCount !== undefined &&
