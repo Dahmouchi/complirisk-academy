@@ -17,26 +17,28 @@ const Newsletter = () => {
             <div className="w-full flex flex-col lg:flex-row items-center gap-4 justify-between">
               <div>
                 <h3 className="text-3xl md:text-5xl font-bold mb-4 text-white leading-tight">
-                  Restez à la pointe de l&apos;expertise
+                  Restez à la pointe des normes et de la conformité
                 </h3>
-                <p className="text-white/80 text-lg mb-8 max-w-md">
-                  Actualités ISO, conseils en conformité et offres exclusives :
-                  recevez l&apos;essentiel de CompliRisk Academy directement
-                  dans votre boîte mail.
-                </p>
-              </div>
-
-              <div className="flex gap-2">
-                <input
-                  type="Email address"
-                  name="q"
-                  className="py-4 w-full text-base px-4 bg-white transition-all duration-500 focus:border-primary focus:outline-1 rounded-lg pl-4"
-                  placeholder="Enter your email"
-                  autoComplete="off"
-                />
-                <button className="bg-primary cursor-pointer hover:bg-transparent border border-primary hover:text-white text-white font-medium py-2 px-4 rounded-sm">
-                  Subscribe
-                </button>
+                <div className="flex justify-between items-end flex-col lg:flex-row gap-4">
+                  <p className="text-white/80 text-lg mb-8 max-w-xl">
+                    Normes ISO, retours d&apos;expérience terrain, invitations à
+                    nos séminaires live et offres exclusives. Recevez
+                    l&apos;essentiel de l&apos;expertise CompliRisk Consulting
+                    directement dans votre boîte mail.
+                  </p>
+                  <div className="flex gap-2 h-fit lg:w-fit w-full">
+                    <input
+                      type="Email address"
+                      name="q"
+                      className="py-4 w-full h-fit text-base px-4 bg-white transition-all duration-500 focus:border-primary focus:outline-1 rounded-lg pl-4"
+                      placeholder="Enter your email"
+                      autoComplete="off"
+                    />
+                    <button className="bg-primary cursor-pointer hover:bg-transparent border border-primary hover:text-white text-white font-medium py-2 px-4 rounded-sm">
+                      Subscribe
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

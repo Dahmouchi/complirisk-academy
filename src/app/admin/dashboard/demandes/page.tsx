@@ -52,15 +52,12 @@ export default async function DemandesPage() {
     <div className="flex flex-col gap-8 p-6 bg-[#f8fafc] min-h-screen">
       <header className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <TrendingUp className="w-6 h-6 text-primary" />
-          </div>
           <h1 className="text-3xl font-display font-bold tracking-tight text-gray-900">
             Gestion des Demandes d&apos;Inscription
           </h1>
         </div>
         <p className="text-muted-foreground ml-11">
-          Consultez et gérez les demandes d&apos;inscription des étudiants.
+          Consultez et gérez les demandes d&apos;inscription des professionnels.
         </p>
       </header>
 

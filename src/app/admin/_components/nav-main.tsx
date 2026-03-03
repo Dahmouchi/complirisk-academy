@@ -62,7 +62,7 @@ export function NavMain({
                       <div
                         className={`rounded-[6px] ${
                           isActive && state === "expanded"
-                            ? "bg-white rounded-md p-1.5 text-blue-500"
+                            ? "bg-white rounded-[6px] p-1.5 text-blue-500"
                             : ""
                         }`}
                       >

@@ -1,14 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { StatsCard } from './stats-card';
-import { 
-  BookOpen, 
-  GraduationCap,
-  PlayCircle,
-  TrendingUp
-} from 'lucide-react';
-import { getStats } from '@/actions/dashboard';
+import { useState, useEffect } from "react";
+import { StatsCard } from "./stats-card";
+import { BookOpen, GraduationCap, PlayCircle, TrendingUp } from "lucide-react";
+import { getStats } from "@/actions/dashboard";
 
 interface DashboardStats {
   totalCourses: number;
@@ -23,49 +18,50 @@ export function DashboardStats() {
     totalSubjects: 0,
     totalGrades: 0,
     totalNiveaux: 0,
-
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const fetchStats = async () => {
-    try {
-      setLoading(true);
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
 
-      const data = await getStats();
+        const data = await getStats();
 
-      if (data.success) {
-        setStats(data);
-      } else {
+        if (data.success) {
+          setStats(data);
+        } else {
+          setStats({
+            totalCourses: 0,
+            totalSubjects: 0,
+            totalGrades: 0,
+            totalNiveaux: 0,
+          });
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des statistiques:", error);
         setStats({
-          totalCourses: 0,
-          totalSubjects: 0,
-          totalGrades: 0,
-          totalNiveaux: 0,
+          totalCourses: 12,
+          totalSubjects: 8,
+          totalGrades: 15,
+          totalNiveaux: 4,
         });
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Erreur lors du chargement des statistiques:", error);
-      setStats({
-        totalCourses: 12,
-        totalSubjects: 8,
-        totalGrades: 15,
-        totalNiveaux: 4,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchStats();
-}, []);
-
+    fetchStats();
+  }, []);
 
   if (loading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-32 bg-gray-100 animate-pulse rounded-lg"></div>
+          <div
+            key={i}
+            className="h-32 bg-gray-100 animate-pulse rounded-lg"
+          ></div>
         ))}
       </div>
     );
@@ -73,45 +69,37 @@ export function DashboardStats() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-         title="Total Etudiants"
+      <StatsCard
+        title="Professionnels inscrits"
         value={stats.totalNiveaux}
-        description="Etudiants inscrit sur la plateforme"
+        description="Professionnels inscrits sur la plateforme"
         icon={TrendingUp}
         color="orange"
       />
-        <StatsCard
-        title="Classes"
+      <StatsCard
+        title="Formations actives"
         value={stats.totalGrades}
-        description="Classes disponibles"
+        description="Formations actives sur la plateforme"
         icon={GraduationCap}
         color="purple"
         trend={{ value: 5, isPositive: true }}
       />
-          <StatsCard
-        title="Matières"
+      <StatsCard
+        title="Programmes disponibles"
         value={stats.totalSubjects}
-        description="Matières enseignées"
+        description="Programmes disponibles sur la plateforme"
         icon={BookOpen}
         color="green"
         trend={{ value: 8, isPositive: true }}
       />
       <StatsCard
-        title="Total Cours"
+        title="Certifications délivrées"
         value={stats.totalCourses}
-        description="Cours disponibles sur la plateforme"
+        description="Certifications délivrées sur la plateforme"
         icon={PlayCircle}
         color="blue"
         trend={{ value: 12, isPositive: true }}
       />
-      
-  
-      
-    
-      
-      
-      
-     
     </div>
   );
 }

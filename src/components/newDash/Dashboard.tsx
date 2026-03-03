@@ -189,35 +189,35 @@ const IndexNewDash = ({
               Bonjour {user.name}! 👋
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Continuez votre parcours d&apos;apprentissage en conformité. Vous
-              faites de grands progrès!
+              Poursuivez le développement de votre expertise en conformité et
+              normes ISO
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid lg:gap-6 gap-2 md:grid-cols-2 grid-cols-2 lg:grid-cols-4">
             <StatCard
-              title="Tous les cours"
+              title="Formations actives"
               value={stats.totalCourses}
               subtitle="Continuez!"
               icon={BookOpen}
               variant="primary"
             />
             <StatCard
-              title="Cours terminés"
+              title="Formations complétées"
               value={stats.completedCourses}
               subtitle="Bravo!"
               icon={Award}
               variant="success"
             />
             <StatCard
-              title="Heures d'apprentissage"
+              title="Temps d’apprentissage cumulé"
               value={hoursLearned}
               subtitle="heures investies"
               icon={Clock}
             />
             <StatCard
-              title="Certifications"
+              title="Certifications obtenues"
               value={2}
               subtitle="Certificats actifs"
               icon={TrendingUp}

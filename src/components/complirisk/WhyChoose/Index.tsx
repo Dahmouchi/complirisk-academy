@@ -9,7 +9,7 @@ export default function WhyChoose() {
         {/* En-tête */}
         <div className="mb-12">
           <h2 className="text-3xl md:text-5xl font-bold mb-6 text-center">
-            À propos de <span className="text-primary">CompliRisk</span>
+            À propos de <span className="text-primary">CompliRisk Academy</span>
           </h2>
         </div>
 

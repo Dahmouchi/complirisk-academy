@@ -798,3 +798,62 @@ model CartItem {
   @@index([cartId])
   @@index([gradeId])
 }
+
+// ─── Pack Entreprise ────────────────────────────────────────────────────────
+
+enum DemandePackEntrepriseStatus {
+  PENDING // En attente
+  CONTACTED // Contacté
+  APPROVED // Approuvée / Devis envoyé
+  REJECTED // Rejetée
+  CANCELLED // Annulée
+}
+
+enum ModeFormation {
+  PRESENTIEL // Présentiel (intra)
+  CLASSE_VIRTUELLE // Classe virtuelle (à distance)
+  HYBRIDE // Hybride (mixte)
+}
+
+/// Demande Pack Entreprise — submitted anonymously from the public landing page.
+/// Not linked to a User account on purpose.
+model DemandePackEntreprise {
+  id String @id @default(cuid())
+
+  // ── Informations entreprise ──────────────────────────────────────────
+  raisonSociale   String
+  secteurActivite String
+  villePayse      String
+
+  // ── Contact principal ────────────────────────────────────────────────
+  nomPrenom          String
+  fonction           String
+  emailProfessionnel String
+  telephone          String
+
+  // ── Besoins formation ──────────────────────────────────────────────
+  /// Champ libre ou valeur sélectionnée dans la liste déroulante
+  thematiques        String        @db.Text
+  populationCiblee   String?
+  nombreParticipants Int?
+  modeFormation      ModeFormation @default(PRESENTIEL)
+
+  // ── Consentement ──────────────────────────────────────────────────
+  consentementContact    Boolean @default(false)
+  consentementNewsletter Boolean @default(false)
+
+  // ── Traitement admin ────────────────────────────────────────────────
+  status          DemandePackEntrepriseStatus @default(PENDING)
+  notes           String?                     @db.Text // Notes internes
+  rejectionReason String?                     @db.Text
+  treatedAt       DateTime?
+  treatedBy       String? // Admin user ID
+
+  // ── Timestamps ──────────────────────────────────────────────────────
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([emailProfessionnel])
+}

@@ -43,6 +43,10 @@ export default function CoursesAccess() {
               <Icon icon="mdi:check-circle" className="text-blue-300 text-xl" />
               <span>Experts certifiés</span>
             </div>
+            <div className="flex items-center space-x-2">
+              <Icon icon="mdi:check-circle" className="text-blue-300 text-xl" />
+              <span>Séminaires experts en direct</span>
+            </div>
           </div>
         </div>
       </div>

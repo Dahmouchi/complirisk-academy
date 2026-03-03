@@ -38,7 +38,8 @@ const Footer = () => {
             </div>
             <p className="text-white text-lg font-medium leading-7">
               {" "}
-              Level up your skills, and get dream <br /> job with passion.{" "}
+              Formez-vous aux standards internationaux et pilotez la conformité
+              et les risques avec impact.
             </p>
             <div className="flex gap-4">
               <Link
@@ -106,31 +107,7 @@ const Footer = () => {
           </div>
           {/* CLOUMN-4 */}
 
-          <div className="col-span-4">
-            <h3 className="text-white text-xl font-semibold mb-6">
-              Stay up to date
-            </h3>
-            <div className="relative text-white focus-within:text-white flex flex-row-reverse w-[50%] lg:w-full">
-              <input
-                type="Email address"
-                name="q"
-                className="py-4 text-sm w-full text-white bg-white/15 rounded-md pl-4 focus:outline-hidden bg-emailbg focus:text-white"
-                placeholder="Your email address"
-                autoComplete="off"
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-                <button
-                  type="submit"
-                  className="p-1 focus:outline-hidden focus:shadow-outline"
-                >
-                  <Icon
-                    icon="tabler:send"
-                    className="text-white text-2xl inline-block me-2"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="col-span-4"></div>
         </div>
       </div>
       <div className="py-3">

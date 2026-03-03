@@ -92,9 +92,9 @@ const Auth = () => {
               transition={{ delay: 0.2 }}
               className="relative rounded-[8px] overflow-hidden bg-[#00b8ff] flex flex-col items-start justify-center p-4 text-white row-span-2"
             >
-              <span className="text-4xl font-bold">95%</span>
+              <span className="text-4xl font-bold">100%</span>
               <p className="text-xs mt-2 leading-tight">
-                de nos diplômés trouvent un emploi dans les 6 mois
+                formateurs praticiens certifiés
               </p>
             </motion.div>
             <div className="relative rounded-[8px] overflow-hidden">
@@ -117,7 +117,7 @@ const Auth = () => {
             </div>
             <div className="relative rounded-[8px] overflow-hidden">
               <img
-                src={"/compli/login6.jpg"}
+                src={"/compli/compliance.jpeg"}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -139,7 +139,7 @@ const Auth = () => {
             >
               <span className="text-4xl font-bold">+500</span>
               <p className="text-xs mt-2 leading-tight">
-                personnes formées aux métiers depuis 2010
+                Formations alignées ISO & référentiels internationaux
               </p>
             </motion.div>
 
@@ -213,9 +213,9 @@ const Auth = () => {
             </div>
             {/* Footer */}
             <div className="text-center text-sm text-gray-500">
-              En vous connectant, vous acceptez nos{" "}
+              En poursuivant, vous acceptez nos{" "}
               <a href="#" className="text-blue-600 hover:underline">
-                Conditions d&apos;utilisation
+                Conditions d’utilisation
               </a>{" "}
               et notre{" "}
               <a href="#" className="text-blue-600 hover:underline">

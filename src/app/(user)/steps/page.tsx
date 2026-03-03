@@ -426,7 +426,7 @@ const PersonalInfoStep = ({
         <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent mb-2">
           Bienvenue !
         </h2>
-        <p className="text-gray-600">Commençons par vos informations de base</p>
+        <p className="text-gray-600">Création de votre espace professionnel</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -481,7 +481,7 @@ const PersonalInfoStep = ({
           required
         />
         <InputField
-          label="Lieu d'études / Travail"
+          label="Organisme"
           value={data.lieuEtudeTravail}
           onChange={(value) => onChange({ ...data, lieuEtudeTravail: value })}
           placeholder="Ex: Université de Casablanca"
@@ -936,7 +936,7 @@ const MultiStepForm = () => {
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="relative flex items-center gap-2">
-                      Confirmer et Accéder au Dashboard
+                      Finaliser mon inscription
                       <ChevronRight className="w-5 h-5" />
                     </span>
                   </motion.button>
@@ -967,11 +967,10 @@ const MultiStepForm = () => {
             <div className="bg-white p-3 rounded-full px-8 w-1/2 flex items-center justify-center">
               <img src="/compli/logo.png" className="w-full h-auto" alt="" />
             </div>
-            <p className="p-4 text-white text-sm">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio quidem rerum beatae debitis nisi dicta. Obcaecati
-              assumenda expedita numquam doloribus, at laudantium ducimus
-              consectetur animi, fugit quia adipisci accusamus deserunt.
+            <p className="p-4 text-white text-sm text-center">
+              CompliRisk Academy est dédiée aux professionnels souhaitant
+              structurer, piloter et auditer des dispositifs de conformité et de
+              management selon les normes ISO et référentiels internationaux
             </p>
           </div>
         </div>

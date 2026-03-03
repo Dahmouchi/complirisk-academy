@@ -376,10 +376,11 @@ function CreateNewDemandeForm({
           </div>
           <div>
             <CardTitle className="text-xl text-foreground">
-              Nouvelle Formation
+              Inscription à une nouvelle formation
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Sélectionnez vos grades et créez une demande
+              Sélectionnez votre parcours et soumettez votre demande
+              d&apos;inscription.
             </p>
           </div>
         </div>
@@ -570,12 +571,12 @@ function CreateNewDemandeForm({
           {isPending ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Création en cours...
+              En cours...
             </>
           ) : (
             <>
               <Plus className="h-4 w-4" />
-              Créer ma Demande
+              Soumettre ma demande d&apos;inscription
             </>
           )}
         </Button>

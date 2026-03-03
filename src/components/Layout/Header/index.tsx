@@ -131,6 +131,7 @@ const Header = ({
                   ))}
                 </div>
               )}
+              <img src="/logo.png" alt="" className="h-16" />
               {user ? (
                 <>
                   <div className="flex items-center gap-4 lg:hidden">

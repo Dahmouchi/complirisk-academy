@@ -10,6 +10,7 @@ import WhyChoose from "@/components/complirisk/WhyChoose/Index";
 import Certifications from "@/components/complirisk/Certifications";
 import CoursesAccess from "@/components/complirisk/CoursesAccess";
 import CertificationTestimonials from "@/components/complirisk/CertificationTestimonials";
+import PackEntrepriseForm from "@/components/complirisk/PackEntrepriseForm";
 
 export default function Home() {
   return (
@@ -32,7 +33,7 @@ export default function Home() {
       <Certifications />
       <Mentor />
       <CertificationTestimonials />
-
+      <PackEntrepriseForm />
       <Newsletter />
       {/*<HeroSection />
       <SpecialisationsSection />

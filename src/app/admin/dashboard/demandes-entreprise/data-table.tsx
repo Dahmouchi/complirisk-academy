@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,7 +49,9 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
@@ -73,81 +76,84 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4 gap-2">
+    <div className="w-full space-y-4">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-3 py-2">
         <Input
-          placeholder="Filtrer par utilisateur..."
-          value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("user")?.setFilterValue(event.target.value)
+          placeholder="Filtrer par entreprise ou contact…"
+          value={
+            (table.getColumn("raisonSociale")?.getFilterValue() as string) ?? ""
           }
-          className="max-w-sm"
+          onChange={(e) =>
+            table.getColumn("raisonSociale")?.setFilterValue(e.target.value)
+          }
+          className="max-w-xs h-9 text-sm"
         />
         <Select
           defaultValue="all"
           onValueChange={(value) => {
-            if (value === "all") {
-              table.getColumn("status")?.setFilterValue(undefined);
-            } else {
-              table.getColumn("status")?.setFilterValue(value);
-            }
+            table
+              .getColumn("status")
+              ?.setFilterValue(value === "all" ? undefined : value);
           }}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] h-9 text-sm">
             <SelectValue placeholder="Filtrer par statut" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tous les statuts</SelectItem>
             <SelectItem value="PENDING">En attente</SelectItem>
-            <SelectItem value="APPROVED">Approuvée</SelectItem>
+            <SelectItem value="CONTACTED">Contacté</SelectItem>
+            <SelectItem value="APPROVED">Devis envoyé</SelectItem>
             <SelectItem value="REJECTED">Rejetée</SelectItem>
+            <SelectItem value="CANCELLED">Annulée</SelectItem>
           </SelectContent>
         </Select>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" size="sm" className="ml-auto h-9 gap-2">
+              <SlidersHorizontal className="h-4 w-4" />
               Colonnes
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              .filter((col) => col.getCanHide())
+              .map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col.id}
+                  className="capitalize"
+                  checked={col.getIsVisible()}
+                  onCheckedChange={(v) => col.toggleVisibility(!!v)}
+                >
+                  {col.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+
+      {/* Table */}
+      <div className="rounded-xl border border-gray-100 overflow-hidden">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+          <TableHeader className="bg-gray-50">
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id} className="border-gray-100">
+                {hg.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -156,10 +162,10 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  className="border-gray-100 hover:bg-blue-50/40 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -172,7 +178,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-32 text-center text-sm text-muted-foreground"
                 >
                   Aucune demande trouvée.
                 </TableCell>
@@ -181,26 +187,36 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} demande(s) au total.
-        </div>
-        <div className="space-x-2">
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {table.getFilteredRowModel().rows.length} demande(s) au total
+        </span>
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="h-8 gap-1"
           >
+            <ChevronLeft className="h-4 w-4" />
             Précédent
           </Button>
+          <span className="text-xs">
+            Page {table.getState().pagination.pageIndex + 1} /{" "}
+            {table.getPageCount()}
+          </span>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="h-8 gap-1"
           >
             Suivant
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>

@@ -28,6 +28,7 @@ import {
   Heart,
   GraduationCap,
   Ticket,
+  Building,
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -42,6 +43,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getPendingDemandesCount } from "@/actions/demande";
+import { getPendingDemandesPackEntrepriseCount } from "@/actions/demande-pack-entreprise";
 
 // This is sample data.
 const datas = {
@@ -62,20 +64,20 @@ const datas = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const [pendingCount, setPendingCount] = useState(0);
+  const [pendingEntrepriseCount, setPendingEntrepriseCount] = useState(0);
 
   useEffect(() => {
-    const fetchPendingCount = async () => {
-      const result = await getPendingDemandesCount();
-      if (result.success) {
-        setPendingCount(result.count);
-      }
+    const fetchCounts = async () => {
+      const [r1, r2] = await Promise.all([
+        getPendingDemandesCount(),
+        getPendingDemandesPackEntrepriseCount(),
+      ]);
+      if (r1.success) setPendingCount(r1.count);
+      if (r2.success) setPendingEntrepriseCount(r2.count);
     };
 
-    fetchPendingCount();
-
-    // Refresh count every 30 seconds
-    const interval = setInterval(fetchPendingCount, 30000);
-
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -86,24 +88,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: House,
     },
     {
-      title: "Demandes",
+      title: "Inscriptions",
       url: "/admin/dashboard/demandes",
       icon: Ticket,
       badge: pendingCount > 0 ? pendingCount : undefined,
     },
-
     {
-      title: "Les Normes",
+      title: "Packs Entreprise",
+      url: "/admin/dashboard/demandes-entreprise",
+      icon: Building,
+      badge: pendingEntrepriseCount > 0 ? pendingEntrepriseCount : undefined,
+    },
+    {
+      title: "Programmes & Normes",
       url: "/admin/dashboard/classes",
       icon: Shapes,
     },
     {
-      title: "Les Chapitres",
+      title: "Modules & Contenus",
       url: "/admin/dashboard/matieres",
       icon: LibraryBig,
     },
     {
-      title: "Les Cours",
+      title: "Formations",
       url: "/admin/dashboard/cours",
       icon: BookText,
     },
@@ -113,18 +120,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: Users,
     },
     {
-      title: "Enseignants",
+      title: "Experts / Formateurs",
       url: "/admin/dashboard/teacher",
       icon: GraduationCap,
     },
     {
-      title: "actualités",
+      title: "Actualités & Insights",
       url: "/admin/dashboard/actualites",
       icon: Newspaper,
     },
 
     {
-      title: "Settings",
+      title: "Paramètres",
       url: "/admin/dashboard/settings",
       icon: Settings2,
     },
