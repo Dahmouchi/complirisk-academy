@@ -13,6 +13,11 @@ const Banner = () => {
     <>
       {" "}
       <section className="pt-32 relative  pb-16 md:pt-40 md:pb-24" id="Home">
+        <img
+          src="/pecb1.png"
+          alt="PECB"
+          className="w-40 h-auto lg:block hidden absolute top-[20%] right-10 z-10"
+        />
         <div className="container relative z-40">
           <div className="text-center max-w-4xl mx-auto mb-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
@@ -26,7 +31,10 @@ const Banner = () => {
               certifiantes et immédiatement opérationnelles{" "}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+            <div
+              id="nos-parcours"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full"
+            >
               <Button
                 onClick={() => router.push("/login")}
                 size="lg"

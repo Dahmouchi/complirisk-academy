@@ -255,7 +255,7 @@ export default function PackEntrepriseForm() {
   return (
     <section
       id="pack-entreprise"
-      className="py-24 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden"
+      className="pb-24 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden"
     >
       {/* Decorative blobs */}
       <div className="pointer-events-none absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />

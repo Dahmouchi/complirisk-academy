@@ -43,7 +43,7 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <Link
-                href="/"
+                href="https://www.instagram.com/complirisk.consult/"
                 className="bg-white/20 rounded-full p-2 text-white hover:bg-cream hover:text-primary duration-300"
               >
                 <Icon
@@ -51,12 +51,13 @@ const Footer = () => {
                   className="text-2xl inline-block"
                 />
               </Link>
+
               <Link
-                href="/"
+                href="https://www.linkedin.com/company/complirisk-consulting/"
                 className="bg-white/20 rounded-full p-2 text-white hover:bg-cream hover:text-primary duration-300"
               >
                 <Icon
-                  icon="tabler:brand-dribbble"
+                  icon="tabler:brand-linkedin"
                   className="text-2xl inline-block"
                 />
               </Link>
@@ -65,16 +66,7 @@ const Footer = () => {
                 className="bg-white/20 rounded-full p-2 text-white hover:bg-cream hover:text-primary duration-300"
               >
                 <Icon
-                  icon="tabler:brand-twitter-filled"
-                  className="text-2xl inline-block"
-                />
-              </Link>
-              <Link
-                href="/"
-                className="bg-white/20 rounded-full p-2 text-white hover:bg-cream hover:text-primary duration-300"
-              >
-                <Icon
-                  icon="tabler:brand-youtube-filled"
+                  icon="tabler:brand-facebook"
                   className="text-2xl inline-block"
                 />
               </Link>
@@ -119,7 +111,7 @@ const Footer = () => {
             className="hover:text-white"
           >
             {" "}
-            Build A Little Biz
+            CompliRisk Consulting
           </Link>
         </h3>
       </div>

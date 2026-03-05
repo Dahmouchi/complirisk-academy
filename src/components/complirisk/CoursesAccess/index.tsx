@@ -22,7 +22,7 @@ export default function CoursesAccess() {
           <div className="pt-4">
             <Link
               href="/login"
-              className="inline-flex items-center space-x-3 bg-blue-300  hover:bg-primary/90 text-primary font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="inline-flex items-center space-x-3 bg-blue-300  hover:bg-primary/90 hover:text-white text-primary font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <Icon icon="mdi:login" className="text-2xl" />
               <span>Se connecter pour accéder aux formations</span>

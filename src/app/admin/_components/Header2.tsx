@@ -107,7 +107,7 @@ const Header = () => {
     });
   }
   return (
-    <header className="flex h-16 rounded-lg border shadow-[-4px_5px_10px_0px_rgba(0,_0,_0,_0.1)]  mb-1 shrink-0 bg-white dark:bg-slate-900 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className="sticky top-0 z-50 flex h-16 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm backdrop-blur-md bg-white/95 dark:bg-slate-900/95 mb-1 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1 cursor-pointer" />
         <Separator

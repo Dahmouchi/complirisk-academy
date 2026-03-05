@@ -1,9 +1,6 @@
-import Companies from "@/components/complirisk/Companies";
-import NamesList from "@/components/complirisk/Courses";
 import Hero from "@/components/complirisk/Hero";
 import Mentor from "@/components/complirisk/Mentor";
 import Newsletter from "@/components/complirisk/Newsletter";
-import Testimonial from "@/components/complirisk/Testimonial";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import WhyChoose from "@/components/complirisk/WhyChoose/Index";
@@ -11,8 +8,10 @@ import Certifications from "@/components/complirisk/Certifications";
 import CoursesAccess from "@/components/complirisk/CoursesAccess";
 import CertificationTestimonials from "@/components/complirisk/CertificationTestimonials";
 import PackEntrepriseForm from "@/components/complirisk/PackEntrepriseForm";
+import { getFormateurs } from "@/actions/formateur";
 
-export default function Home() {
+export default async function Home() {
+  const formateurs = await getFormateurs();
   return (
     <main className="min-h-screen relative">
       <div
@@ -31,7 +30,7 @@ export default function Home() {
       {/*<NamesList /><Testimonial />*/}
       <WhyChoose />
       <Certifications />
-      <Mentor />
+      <Mentor formateurs={formateurs} />
       <CertificationTestimonials />
       <PackEntrepriseForm />
       <Newsletter />

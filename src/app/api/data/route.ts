@@ -9,11 +9,11 @@ import { TestimonialType } from "@/types/testimonial";
 import { FooterLinkType } from "@/types/footerlinks";
 
 const HeaderData: HeaderItem[] = [
-  { label: "Home", href: "/#Home" },
-  { label: "Courses", href: "/#Courses" },
-  { label: "Mentors", href: "/#mentors-section" },
-  { label: "Testimonial", href: "/#testimonial-section" },
-  { label: "Contact Us", href: "/#join-section" },
+  { label: "Acceuil", href: "/#Home" },
+  { label: "Nos Parcours", href: "/#nos-parcours" },
+  { label: "À Propos", href: "/#a-propos" },
+  { label: "Certifications", href: "/#certifications" },
+  { label: "Nos Formateurs", href: "/#mentors-section" },
 ];
 
 const CourseData: CourseType[] = [
@@ -267,22 +267,22 @@ const FooterLinkData: FooterLinkType[] = [
   {
     section: "Company",
     links: [
-      { label: "Home", href: "/#Home" },
-      { label: "Courses", href: "/#Courses" },
-      { label: "Mentors", href: "/#mentors-section" },
-      { label: "Testimonial", href: "/#testimonial-section" },
-      { label: "Join", href: "/#join-section" },
-      { label: "Contact Us", href: "/#contact" },
+      { label: "Accueil", href: "/#Home" },
+      { label: "Nos Formations", href: "/#" },
+      { label: "Nos Formateurs", href: "/#mentors-section" },
+      { label: "Témoignages", href: "/#testimonial-section" },
+      { label: "Rejoignez-nous", href: "/#join-section" },
+      { label: "Contactez-nous", href: "/#contact" },
     ],
   },
   {
     section: "Support",
     links: [
-      { label: "Help center", href: "/" },
-      { label: "Terms of service", href: "/" },
-      { label: "Legal", href: "/" },
-      { label: "Privacy Policy", href: "/" },
-      { label: "Status", href: "/" },
+      { label: "Centre d'aide", href: "/" },
+      { label: "Conditions d'utilisation", href: "/" },
+      { label: "Mentions légales", href: "/" },
+      { label: "Politique de confidentialité", href: "/" },
+      { label: "Statut", href: "/" },
     ],
   },
 ];
