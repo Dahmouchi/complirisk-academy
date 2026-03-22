@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import AnimationProvider from "../../providers/AnimationProvider";
 
 import { Poppins, Unbounded } from "next/font/google";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Poppins({
   variable: "--fontFamily",
@@ -45,7 +46,9 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} relative`}>
         <NextAuthProvider>
-          <AnimationProvider>{children}</AnimationProvider>
+          <AnimationProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </AnimationProvider>
         </NextAuthProvider>
 
         <AOSInit />

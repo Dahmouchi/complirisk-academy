@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function getQuizzesGroupedByMatiere(userId: string) {
   const userWithQuizzes = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
+    select: {
       grades: {
         include: {
           subjects: {
@@ -34,16 +34,22 @@ export async function getQuizzesGroupedByMatiere(userId: string) {
     return { data: [], message: "User not found" };
   }
 
-  // Group quizzes by subject (matière)
-  const grouped =
-    userWithQuizzes.grades?.[0]?.subjects.map((subject) => ({
-      matiereId: subject.id,
-      matiereName: subject.name,
-      quizzes: subject.courses.flatMap((course) => course.quizzes),
-    })) || [];
+  // Group quizzes by subject (matière) across all grades
+  const grouped: any[] = [];
+  
+  userWithQuizzes.grades.forEach((grade) => {
+    grade.subjects.forEach((subject) => {
+      grouped.push({
+        matiereId: subject.id,
+        matiereName: subject.name,
+        quizzes: subject.courses.flatMap((course) => course.quizzes),
+      });
+    });
+  });
 
   return { data: grouped };
 }
+
 
 export async function getQuizzesGroupedByMatiereandUser(
   userId: string,
@@ -51,11 +57,11 @@ export async function getQuizzesGroupedByMatiereandUser(
 ) {
   const userWithQuizzes = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
+    select: {
       grades: {
         include: {
           subjects: {
-            where: { handler: subjectId }, // ✅ Filter by subjectId
+            where: { handler: subjectId }, // ✅ Filter by subjectId (handler)
             include: {
               courses: {
                 include: {
@@ -81,16 +87,22 @@ export async function getQuizzesGroupedByMatiereandUser(
     return { data: [], message: "User not found" };
   }
 
-  // Group quizzes by subject (matière)
-  const grouped =
-    userWithQuizzes.grades?.[0]?.subjects.map((subject) => ({
-      matiereId: subject.id,
-      matiereName: subject.name,
-      quizzes: subject.courses.flatMap((course) => course.quizzes),
-    })) || [];
+  // Group quizzes by subject (matière) across all grades
+  const grouped: any[] = [];
+  
+  userWithQuizzes.grades.forEach((grade) => {
+    grade.subjects.forEach((subject) => {
+      grouped.push({
+        matiereId: subject.id,
+        matiereName: subject.name,
+        quizzes: subject.courses.flatMap((course) => course.quizzes),
+      });
+    });
+  });
 
   return { data: grouped };
 }
+
 
 export const saveQuizResult = async (data: {
   quizId: string;
@@ -98,6 +110,7 @@ export const saveQuizResult = async (data: {
   score: number;
   totalQuestions: number;
   percentage: number;
+  responses?: any;
 }) => {
   const existing = await prisma.quizResult.findFirst({
     where: { quizId: data.quizId, userId: data.userId },
@@ -106,9 +119,10 @@ export const saveQuizResult = async (data: {
 
   const attempts = existing ? existing.attempts + 1 : 1;
 
+  const { responses, ...quizData } = data;
   const result = await prisma.quizResult.create({
     data: {
-      ...data,
+      ...quizData,
       attempts,
     },
   });
@@ -118,6 +132,8 @@ export const saveQuizResult = async (data: {
       userId: data.userId,
       type: "COMPLETE_QUIZ",
       description: "Quiz terminé",
+      quizId: data.quizId,
+      meta: data.responses ? { responses: data.responses } : undefined,
     },
   });
 
@@ -993,5 +1009,28 @@ export async function validateQuizAnswers(
       success: false,
       error: "Erreur interne du serveur lors de la validation des réponses",
     };
+  }
+}
+
+export async function getQuizResponse(quizId: string, userId: string) {
+  try {
+    const activity = await prisma.userActivity.findFirst({
+      where: {
+        userId,
+        quizId,
+        type: "COMPLETE_QUIZ",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        meta: true,
+      },
+    });
+
+    return activity?.meta ? (activity.meta as any).responses : null;
+  } catch (error) {
+    console.error("Error fetching quiz response:", error);
+    return null;
   }
 }

@@ -74,7 +74,9 @@ export default function ExplorePage({
   initialCart,
 }: any) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"courses" | "explore">("explore");
+  const [activeTab, setActiveTab] = useState<"courses" | "explore" | "lives">(
+    "explore",
+  );
   const [exploreCategory, setExploreCategory] = useState("Tous");
   const [searchQuery, setSearchQuery] = useState("");
   const [isPending, startTransition] = useTransition();

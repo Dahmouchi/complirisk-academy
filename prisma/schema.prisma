@@ -399,6 +399,10 @@ model Formateur {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
+  // Auth relation — one Formateur = one User account
+  userId String? @unique // optional so existing rows aren't broken
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   // Relations
   grades Grade[] // Grades taught by this formateur
 }
@@ -611,6 +615,7 @@ model User {
   demandeInscription DemandeInscription[] // Registration requests
   cart               Cart?
   courseTeachers     CourseTeacher[]
+  formateur          Formateur? // ← reverse side of the 1-to-1 relation
 }
 
 model TeacherSubject {
@@ -699,6 +704,7 @@ enum Role {
   USER
   ADMIN
   TEACHER
+  FORMATEUR
 }
 
 enum StatutUser {
@@ -856,4 +862,16 @@ model DemandePackEntreprise {
   @@index([status])
   @@index([createdAt])
   @@index([emailProfessionnel])
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  excerpt   String?  @db.Text
+  imageUrl  String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

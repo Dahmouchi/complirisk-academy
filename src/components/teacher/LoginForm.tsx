@@ -72,11 +72,7 @@ const LoginForm = () => {
         <div className="pb-8">
           <div className="mt-5 w-full flex items-center justify-center ">
             <Link href="/" className="lg:flex">
-              <img
-                src="/compli/complirisk-academy.png"
-                alt=""
-                className="w-32 h-auto"
-              />
+              <img src="/compli/logo.png" alt="" className="w-44 h-auto" />
             </Link>
           </div>
         </div>
@@ -90,10 +86,10 @@ const LoginForm = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Identifiant</FormLabel>
+                  <FormLabel className="text-primary">Identifiant</FormLabel>
                   <FormControl>
                     <Input
-                      className="dark:bg-slate-900 text-white placeholder-slate-300"
+                      className="dark:bg-slate-900 text-primary placeholder-slate-300"
                       placeholder="Entrez votre identifiant"
                       {...field}
                     />
@@ -107,11 +103,11 @@ const LoginForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mot de passe</FormLabel>
+                  <FormLabel className="text-primary">Mot de passe</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        className="dark:bg-slate-900 text-white placeholder-slate-300"
+                        className="dark:bg-slate-900 text-primary placeholder-slate-300"
                         type={isView ? "text" : "password"}
                         id="password"
                         placeholder="Entrez votre mot de passe"

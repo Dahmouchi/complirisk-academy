@@ -14,6 +14,7 @@ const SettingsPage = async () => {
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
+      formateur: true,
       teacherSubjects: {
         include: {
           subject: {

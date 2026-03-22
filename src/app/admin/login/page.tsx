@@ -20,12 +20,12 @@ export default async function AuthButton() {
     >
       <div className="absolute top-0 w-full h-[16vh] flex items-center justify-center z-20">
         <div className="bg-gray-100/20 backdrop-blur-xs border-x-2 border-b-2 border-gray-200 h-full p-4 rounded-b-[8px] lg:w-1/3 w-full flex items-center justify-center text-center shadow-2xl">
-          <h1 className="text-4xl font-bold text-white  uppercase">
+          <h1 className="text-4xl font-bold text-primary  uppercase">
             Espace Administrateur
           </h1>
         </div>
       </div>
-      <div className="w-full h-full bg-black/20 absolute top-0"></div>
+      <div className="w-full h-full bg-white/20 absolute top-0"></div>
       <div className="rounded-[8px] bg-white/30 border-2 bg-opacity-50 px-16 py-10 shadow-lg backdrop-blur-xs max-sm:px-8">
         <div className="">
           <LoginForm />

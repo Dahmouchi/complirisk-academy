@@ -166,11 +166,14 @@ export async function updateTeacherInfo(
   prenom: string,
   email: string,
   phone: string,
+  bio?: string,
+  specialite?: string,
 ) {
   try {
-    // Check if the teacher exists
+    // Check if the teacher exists with linked formateur
     const teacher = await prisma.user.findUnique({
       where: { id: teacherId, role: "TEACHER" },
+      include: { formateur: true },
     });
 
     if (!teacher) {
@@ -205,6 +208,17 @@ export async function updateTeacherInfo(
         username: email, // Update username to match email
       },
     });
+
+    // Update linked Formateur bio & specialite if the record exists
+    if (teacher.formateur) {
+      await prisma.formateur.update({
+        where: { id: teacher.formateur.id },
+        data: {
+          ...(bio !== undefined && { bio }),
+          ...(specialite !== undefined && specialite !== "" && { specialite }),
+        },
+      });
+    }
 
     revalidatePath("/teacher/dashboard/settings");
     revalidatePath("/teacher/dashboard");

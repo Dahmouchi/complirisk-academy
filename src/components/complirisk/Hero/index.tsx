@@ -12,7 +12,10 @@ const Banner = () => {
   return (
     <>
       {" "}
-      <section className="pt-32 relative  pb-16 md:pt-40 md:pb-24" id="Home">
+      <section
+        className="pt-32 relative min-h-screen pb-16 md:pt-40 md:pb-24"
+        id="Home"
+      >
         <img
           src="/pecb1.png"
           alt="PECB"

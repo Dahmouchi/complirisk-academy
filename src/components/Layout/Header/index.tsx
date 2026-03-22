@@ -359,59 +359,34 @@ const Header = ({
           </div>
         </div>
 
-        {/* Sign In Modal */}
-        <AnimatePresence>
-          {isSignInOpen && (
-            <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsSignInOpen(false)}
-                className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-              />
-              <motion.div
-                ref={signInRef}
-                initial={{ y: "100%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: "100%", opacity: 0 }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden z-[101] p-6 sm:p-8"
-              >
-                <div className="sm:hidden flex justify-center mb-4">
-                  <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
-                </div>
-                <button
-                  onClick={() => setIsSignInOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                  aria-label="Close Sign In Modal"
-                >
-                  <Icon
-                    icon="material-symbols:close-rounded"
-                    width={24}
-                    height={24}
-                    className="text-gray-500"
-                  />
-                </button>
-                <div className="mt-4">
-                  <Signin />
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+      </header>
 
-        {/* Sign Up Modal */}
-        {isSignUpOpen && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50">
-            <div
-              ref={signUpRef}
-              className="relative mx-auto bg-white w-full max-w-md overflow-hidden rounded-2xl shadow-2xl px-8 pt-14 pb-8 text-center"
+      {/* Sign In Modal */}
+      <AnimatePresence>
+        {isSignInOpen && (
+          <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSignInOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              ref={signInRef}
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "100%", opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden z-[101] p-6 sm:p-8"
             >
+              <div className="sm:hidden flex justify-center mb-4">
+                <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
+              </div>
               <button
-                onClick={() => setIsSignUpOpen(false)}
+                onClick={() => setIsSignInOpen(false)}
                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="Close Sign Up Modal"
+                aria-label="Close Sign In Modal"
               >
                 <Icon
                   icon="material-symbols:close-rounded"
@@ -420,11 +395,37 @@ const Header = ({
                   className="text-gray-500"
                 />
               </button>
-              <SignUp />
-            </div>
+              <div className="mt-4">
+                <Signin />
+              </div>
+            </motion.div>
           </div>
         )}
-      </header>
+      </AnimatePresence>
+
+      {/* Sign Up Modal */}
+      {isSignUpOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-[100]">
+          <div
+            ref={signUpRef}
+            className="relative mx-auto bg-white w-full max-w-md overflow-hidden rounded-2xl shadow-2xl px-8 pt-14 pb-8 text-center"
+          >
+            <button
+              onClick={() => setIsSignUpOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Close Sign Up Modal"
+            >
+              <Icon
+                icon="material-symbols:close-rounded"
+                width={24}
+                height={24}
+                className="text-gray-500"
+              />
+            </button>
+            <SignUp />
+          </div>
+        </div>
+      )}
 
       {/* Mobile Drawer Overlay */}
       <AnimatePresence>

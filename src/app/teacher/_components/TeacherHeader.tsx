@@ -18,13 +18,9 @@ export default function TeacherHeader() {
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate.push("/teacher/dashboard")}
           >
-            <img
-              src="/compli/complirisk-academy.png"
-              className="w-24 h-auto"
-              alt=""
-            />
+            <img src="/compli/logo.png" className="w-36 h-auto" alt="" />
             <span className="hidden md:inline text-muted-foreground">
-              | Espace Instructeur
+              | Espace Formateur
             </span>
           </div>
           <div className="flex items-center gap-2">

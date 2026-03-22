@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import {
   Card,
@@ -31,6 +32,8 @@ import {
   Phone,
   Save,
   Shield,
+  BookOpen,
+  FileText,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import ResetPassword from "@/components/ResetPassword";
@@ -51,6 +54,8 @@ const settingsFormSchema = z.object({
     message: "Veuillez entrer une adresse email valide.",
   }),
   phone: z.string().optional(),
+  bio: z.string().optional(),
+  specialite: z.string().optional(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -70,6 +75,8 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
       prenom: user.prenom || "",
       email: user.email || "",
       phone: user.phone || "",
+      bio: user.formateur?.bio || "",
+      specialite: user.formateur?.specialite || "",
     },
   });
 
@@ -82,6 +89,8 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
         data.prenom,
         data.email,
         data.phone || "",
+        data.bio,
+        data.specialite,
       );
 
       if (result.success) {
@@ -107,6 +116,8 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
   const uniqueSubjects = Array.from(
     new Map(subjects.map((s: any) => [s.id, s])).values(),
   );
+
+  const hasFormateur = !!user.formateur;
 
   return (
     <div className="container max-w-5xl mx-auto px-4 py-8 space-y-8">
@@ -170,8 +181,23 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
                       Actif
                     </Badge>
                   )}
+                  {hasFormateur && user.formateur.specialite && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20"
+                    >
+                      <BookOpen className="h-3 w-3 mr-1" />
+                      {user.formateur.specialite}
+                    </Badge>
+                  )}
                 </div>
               </div>
+
+              {hasFormateur && user.formateur.bio && (
+                <p className="text-sm text-muted-foreground leading-relaxed italic border-l-2 border-primary/30 pl-3">
+                  {user.formateur.bio}
+                </p>
+              )}
 
               {uniqueSubjects.length > 0 && (
                 <div>
@@ -203,6 +229,7 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
       {/* Settings Form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Personal Info Card */}
           <Card className="border border-border/50 shadow-lg bg-gradient-to-br from-card to-card/50 backdrop-blur-sm overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
             <CardHeader>
@@ -311,6 +338,73 @@ export default function TeacherSettings({ user }: TeacherSettingsProps) {
               />
             </CardContent>
           </Card>
+
+          {/* Formateur Profile Card — only shown when a Formateur record is linked */}
+          {hasFormateur && (
+            <Card className="border border-border/50 shadow-lg bg-gradient-to-br from-card to-card/50 backdrop-blur-sm overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full blur-3xl -z-10" />
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-violet-500" />
+                  Profil Formateur
+                </CardTitle>
+                <CardDescription>
+                  Informations visibles sur la page publique des formateurs
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="specialite"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <BookOpen className="h-4 w-4 text-violet-500" />
+                        Spécialité
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Ex: Cybersécurité, Conformité réglementaire..."
+                          {...field}
+                          className="border-border/50 focus:border-violet-500 transition-colors"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Votre domaine d&apos;expertise principal
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-violet-500" />
+                        Biographie
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Présentez-vous en quelques lignes..."
+                          rows={5}
+                          {...field}
+                          className="border-border/50 focus:border-violet-500 transition-colors resize-none"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Courte présentation affichée sur votre profil public
+                        (optionnel)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          )}
 
           <div className="flex justify-end">
             <Button

@@ -50,7 +50,7 @@ const Teacher = ({ user }: any) => {
           name={user.name}
           prenom={user.prenom}
           role="Instructeur"
-          department="chez Cinq Cinq Sup"
+          department="chez CompliRisk Academy"
         />
 
         {/* Quick Actions */}

@@ -110,7 +110,9 @@ const IndexNewDash = ({
     );
   }, [matieres]);
 
-  const [activeTab, setActiveTab] = useState<"courses" | "explore">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "explore" | "lives">(
+    "courses",
+  );
 
   // Check if user has any approved grades
   const hasApprovedGrades = user.grades && user.grades.length > 0;
