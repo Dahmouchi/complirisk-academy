@@ -57,13 +57,6 @@ export async function PUT(
 ) {
   const corsHeaders = getCorsHeaders(request);
   try {
-    if (!validateApiKey(request)) {
-      return NextResponse.json(
-        { error: "Non autorisé - Clé API manquante ou invalide" },
-        { status: 401, headers: corsHeaders },
-      );
-    }
-
     const id = (await params).id;
     try {
       const body = await request.json();
@@ -115,12 +108,6 @@ export async function DELETE(
 ) {
   const corsHeaders = getCorsHeaders(request);
   try {
-    if (!validateApiKey(request)) {
-      return NextResponse.json(
-        { error: "Non autorisé - Clé API manquante ou invalide" },
-        { status: 401, headers: corsHeaders },
-      );
-    }
     const id = (await params).id;
 
     const existingBlog = await prisma.blog.findUnique({
