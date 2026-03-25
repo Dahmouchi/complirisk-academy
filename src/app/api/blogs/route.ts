@@ -48,7 +48,8 @@ export async function POST(request: Request) {
   const corsHeaders = getCorsHeaders(request);
   try {
     const body = await request.json();
-    const { title, content, imageUrl, published, slug, excerpt } = body;
+    const { title, content, imageUrl, published, slug, excerpt, videoUrl } =
+      body;
 
     if (!title || !content || !slug) {
       return NextResponse.json(
@@ -62,6 +63,7 @@ export async function POST(request: Request) {
         title,
         content,
         imageUrl,
+        videoUrl,
         slug,
         excerpt,
         published: published || false,

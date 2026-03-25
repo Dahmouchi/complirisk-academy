@@ -871,6 +871,7 @@ model Blog {
   content   String   @db.Text
   excerpt   String?  @db.Text
   imageUrl  String?
+  videoUrl  String?
   published Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -60,7 +60,7 @@ export async function PUT(
     const id = (await params).id;
     try {
       const body = await request.json();
-      const { title, content, imageUrl, published, slug, excerpt } = body;
+      const { title, content, imageUrl, published, slug, excerpt, videoUrl } = body;
 
       const existingBlog = await prisma.blog.findUnique({
         where: { id },
@@ -79,6 +79,7 @@ export async function PUT(
           title: title !== undefined ? title : existingBlog.title,
           content: content !== undefined ? content : existingBlog.content,
           imageUrl: imageUrl !== undefined ? imageUrl : existingBlog.imageUrl,
+          videoUrl: videoUrl !== undefined ? videoUrl : existingBlog.videoUrl,
           published:
             published !== undefined ? published : existingBlog.published,
           slug: slug !== undefined ? slug : existingBlog.slug,
