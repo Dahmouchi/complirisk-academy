@@ -29,6 +29,7 @@ export default function StudentLiveRoomPage() {
   const router = useRouter();
 
   const [token, setToken] = useState<string | null>(null);
+  const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [roomName, setRoomName] = useState<string | null>(null);
   const [status, setStatus] = useState<any>("LOADING");
   const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
@@ -50,6 +51,7 @@ export default function StudentLiveRoomPage() {
         setQuiz(res.quizzes || []);
         if (!token && res.token) {
           setToken(res.token);
+          setRoomUrl(res.url || null); // Set the URL from the response
           setRoomName(res.roomName);
         }
       } else {
@@ -186,7 +188,7 @@ export default function StudentLiveRoomPage() {
             <LiveKitRoom
               className="h-full w-full"
               token={token}
-              serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+              serverUrl={roomUrl || process.env.NEXT_PUBLIC_LIVEKIT_URL}
               connect={true}
               audio={true}
               screen={false}

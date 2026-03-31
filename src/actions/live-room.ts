@@ -1195,6 +1195,18 @@ export async function getLiveToken(liveRoomId: string) {
     return { success: false, error: "Unauthorized" };
   }
 
+  const livekitUrl = process.env.LIVEKIT_URL;
+  const apiKey = process.env.LIVEKIT_API_KEY;
+  const apiSecret = process.env.LIVEKIT_API_SECRET;
+
+  if (!livekitUrl || !apiKey || !apiSecret) {
+    console.error("LiveKit configuration missing in environment variables");
+    return { 
+      success: false, 
+      error: "Le serveur n'est pas configuré pour les sessions live. Veuillez vérifier les variables d'environnement." 
+    };
+  }
+
   // This mimics the API logic we wrote previously, but as a Server Action
   try {
     const liveRoom = await prisma.liveRoom.findUnique({
@@ -1232,8 +1244,8 @@ export async function getLiveToken(liveRoomId: string) {
     const { AccessToken } = await import("livekit-server-sdk");
 
     const token = new AccessToken(
-      process.env.LIVEKIT_API_KEY!,
-      process.env.LIVEKIT_API_SECRET!,
+      apiKey,
+      apiSecret,
       {
         identity: user.id,
         name: user.name || user.username || "Guest",

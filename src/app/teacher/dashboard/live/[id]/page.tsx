@@ -221,6 +221,7 @@ export default function LiveRoomPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [token, setToken] = useState<any>(null);
+  const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [roomName, setRoomName] = useState<any>(null);
   const [isTeacher, setIsTeacher] = useState(false);
   const [status, setStatus] = useState<string>("LOADING");
@@ -242,6 +243,7 @@ export default function LiveRoomPage() {
 
         if (res.success) {
           setToken(res.token);
+          setRoomUrl(res.url || null); // Set the URL from the response
           setRoomName(res.roomName);
           setIsTeacher(res.isTeacher || false);
           setStatus(res.status || "LOADING");
@@ -291,6 +293,7 @@ export default function LiveRoomPage() {
       const tokenRes = await getLiveToken(params.id as string);
       if (tokenRes.success && tokenRes.token) {
         setToken(tokenRes.token);
+        setRoomUrl(tokenRes.url || null); // Also update URL here if starting
       }
     } else {
       toast.error(res.error);
@@ -421,7 +424,7 @@ export default function LiveRoomPage() {
       <LiveKitRoom
         className="bg-slate-950"
         token={token}
-        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+        serverUrl={roomUrl || process.env.NEXT_PUBLIC_LIVEKIT_URL}
         connect={true}
         audio={true}
         video={true}

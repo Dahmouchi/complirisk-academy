@@ -47,6 +47,7 @@ export function LiveRoomClient({
   isTeacher,
 }: LiveRoomClientProps) {
   const [token, setToken] = useState<string>("");
+  const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -59,6 +60,7 @@ export function LiveRoomClient({
         const result = await getLiveToken(liveRoom.id);
         if (result.success && result.token) {
           setToken(result.token);
+          setRoomUrl(result.url || null);
         } else {
           setError(result.error || "Impossible de rejoindre le live");
         }
@@ -179,7 +181,7 @@ export function LiveRoomClient({
             video={isTeacher}
             audio={isTeacher}
             token={token}
-            serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+            serverUrl={roomUrl || process.env.NEXT_PUBLIC_LIVEKIT_URL}
             connect={true}
             data-lk-theme="default"
             style={{ height: "100%" }}
