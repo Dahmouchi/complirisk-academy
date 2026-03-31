@@ -15,7 +15,10 @@ const page = async () => {
 
   return (
     <>
-      <IndexNewDashLive matieres={user.grade?.subjects} user={user} />
+      <IndexNewDashLive
+        matieres={user.grades?.flatMap((g: any) => g.subjects) || []}
+        user={user}
+      />
       {/*<IndexCinq matieres={user.grade?.subjects} user={user} />
       <ModernStudentSpace user = {user} quizzes = {quizzes.data}/>
       <StudentDashboard user={user} quizzes={quizzes.data} stats={stats} />*/}

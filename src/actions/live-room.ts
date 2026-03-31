@@ -747,8 +747,9 @@ export async function getStudentLiveRooms(userId: string) {
       prisma.liveRoom.findMany({
         where: {
           gradeId: {
-            in: gradeIds
+            in: gradeIds,
           },
+          status: "LIVE",
         },
         include: {
           teacher: {

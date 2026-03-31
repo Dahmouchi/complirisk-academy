@@ -7,7 +7,7 @@ import LivesView from "./LivesView";
 
 const IndexNewDashLive = ({ matieres, user }: any) => {
   const [activeTab, setActiveTab] = useState<"courses" | "explore" | "lives">(
-    "courses",
+    "lives",
   );
   const [liveRooms, setLiveRooms] = useState<any>({
     live: [],
@@ -20,7 +20,7 @@ const IndexNewDashLive = ({ matieres, user }: any) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user?.registerCode && user?.id) {
+    if (user?.id) {
       loadLiveRooms();
     } else {
       setLoading(false);
@@ -35,7 +35,11 @@ const IndexNewDashLive = ({ matieres, user }: any) => {
       setLiveRooms(rooms);
 
       // Load registrations
-      const allLives = [...rooms.live, ...rooms.scheduled];
+      const allLives = [
+        ...rooms.live,
+        ...rooms.scheduled,
+        ...(rooms.past || []),
+      ];
       const registrations = await Promise.all(
         allLives.map((live) => isUserRegistered(live.id, user.id)),
       );
@@ -46,8 +50,10 @@ const IndexNewDashLive = ({ matieres, user }: any) => {
           .map((live) => live.id),
       );
       setRegisteredLives(registered);
+      setLoading(false);
     } catch (error) {
       console.error("Error loading live rooms:", error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }

@@ -122,7 +122,6 @@ const LivePanel = ({
                   return (
                     <div
                       key={live.id}
-                      onClick={() => handleLiveClick(live.id)}
                       className="relative overflow-hidden rounded-[6px] p-4 border-2 border-red-500 shadow-red-200 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
                       style={{
                         background: `linear-gradient(to bottom right, ${hexToRgba(subjectColor, 0.2)}, ${hexToRgba(subjectColor, 0.05)})`,

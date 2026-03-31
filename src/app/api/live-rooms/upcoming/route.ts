@@ -1,11 +1,37 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/nextAuth";
 
 export async function GET(request: Request) {
   try {
-    // Fetch all upcoming and live sessions
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    // Get user's grades
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        grades: {
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!user?.grades || user.grades.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    const gradeIds = user.grades.map((g) => g.id);
+
+    // Fetch upcoming and live sessions filtered by user's grades
     const liveRooms = await prisma.liveRoom.findMany({
       where: {
+        gradeId: {
+          in: gradeIds,
+        },
         OR: [
           { status: "LIVE" },
           {

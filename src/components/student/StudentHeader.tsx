@@ -15,6 +15,7 @@ import {
   Megaphone,
   Globe,
   Plus,
+  Video,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -41,7 +42,7 @@ interface StudentHeaderProps {
 const mobileNavItems = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
   { icon: BookOpen, label: "Formations", href: "/dashboard/courses" },
-  { icon: Globe, label: "Website", href: "/" },
+  { icon: Video, label: "Lives", href: "/dashboard/live" },
   { icon: User, label: "Profil", href: "/dashboard/profile" },
 ];
 

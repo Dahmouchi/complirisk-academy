@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { hash } from "bcrypt";
+import { syncTeacherSubjects } from "@/actions/grads";
 
 interface CreateFormateurInput {
   fullName: string;
@@ -89,6 +90,17 @@ export async function createFormateur(data: CreateFormateurInput) {
 
         return [formateur, user];
       });
+
+      // Sync teacher subjects for any initial grades (unlikely during creation but good for consistency)
+      // Actually, if we just created a formateur they don't have grades yet usually.
+      // But let's check just in case.
+      const grades = await prisma.grade.findMany({
+        where: { formateurId: formateur.id },
+        select: { id: true },
+      });
+      for (const g of grades) {
+        await syncTeacherSubjects(g.id, formateur.id);
+      }
 
       revalidatePath("/admin/dashboard/teacher");
       return { success: true, formateur };
@@ -330,6 +342,15 @@ export async function createFormateurAccount(
         formateur: { connect: { id: data.formateurId } },
       },
     });
+
+    // When a formateur account is created, sync all their already assigned grades
+    const grades = await prisma.grade.findMany({
+      where: { formateurId: data.formateurId },
+      select: { id: true },
+    });
+    for (const g of grades) {
+      await syncTeacherSubjects(g.id, data.formateurId);
+    }
 
     revalidatePath("/admin/dashboard/formateurs");
 

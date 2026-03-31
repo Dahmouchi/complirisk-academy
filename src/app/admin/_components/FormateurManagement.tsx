@@ -254,6 +254,7 @@ function CreateFormateurDialog({
         specialite,
         image: imageUrl || undefined,
         // account fields (only sent when filled)
+        nom: fullName,
         username: username || undefined,
         email: email || undefined,
         password: password || undefined,

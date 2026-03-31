@@ -44,7 +44,7 @@ export default function MatieresPage({ niveauxx, classe, subject }: any) {
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedNiveau, setSelectedNiveau] = useState<string>(
-    "cmk1e7ue6000h0sroci9i2ev2",
+    "cmnejx9n400000sc0xim2f0ht",
   );
   const [selectedGrade, setSelectedGrade] = useState<string>("all");
   const router = useRouter();

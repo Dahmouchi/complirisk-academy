@@ -23,6 +23,7 @@ import {
   Video,
   ChevronLeft,
   ChevronRight,
+  GraduationCap,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -270,6 +271,7 @@ const LivesView = ({
   const allLiveRooms = [
     ...(liveRooms.live || []),
     ...(liveRooms.scheduled || []),
+    ...(liveRooms.past || []),
   ];
   const uniqueSubjects = Array.from(
     new Map(
@@ -544,41 +546,70 @@ const LivesView = ({
             </div>
           </div>
 
-          {filteredLiveRooms.length === 0 ? (
-            <div className="text-center">
-              <div className="px-4 space-y-4 grid grid-cols-1 md:grid-cols-2 gap-2">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="rounded-xl border bg-card p-5 animate-pulse"
-                  >
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="h-10 w-10 rounded-full bg-muted shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 w-3/4 rounded bg-muted" />
-                        <div className="h-3 w-1/2 rounded bg-muted" />
-                      </div>
-                      <div className="h-5 w-16 rounded-full bg-muted" />
+          {loading ? (
+            <div className="px-4 space-y-4 grid grid-cols-1 md:grid-cols-2 gap-2">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border bg-card p-5 animate-pulse"
+                >
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="h-10 w-10 rounded-full bg-muted shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-3/4 rounded bg-muted" />
+                      <div className="h-3 w-1/2 rounded bg-muted" />
                     </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-full rounded bg-muted" />
-                      <div className="h-3 w-5/6 rounded bg-muted" />
-                      <div className="h-3 w-2/3 rounded bg-muted" />
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <div className="h-7 w-20 rounded-full bg-muted" />
-                      <div className="h-7 w-24 rounded-full bg-muted" />
-                    </div>
+                    <div className="h-5 w-16 rounded-full bg-muted" />
                   </div>
-                ))}
+                  <div className="space-y-2">
+                    <div className="h-3 w-full rounded bg-muted" />
+                    <div className="h-3 w-5/6 rounded bg-muted" />
+                    <div className="h-3 w-2/3 rounded bg-muted" />
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <div className="h-7 w-20 rounded-full bg-muted" />
+                    <div className="h-7 w-24 rounded-full bg-muted" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : !user?.grades || user.grades.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center px-4 bg-secondary/20 rounded-3xl border border-dashed border-muted-foreground/20">
+              <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 text-primary shadow-inner">
+                <GraduationCap className="w-12 h-12" />
               </div>
+              <h2 className="text-3xl font-bold mb-4">Prêt à commencer ?</h2>
+              <p className="text-muted-foreground max-w-md mb-10 text-lg">
+                Vous n&apos;avez pas encore de Norme assigné. Rejoignez
+                l&apos;un de nos programmes pour débloquer vos sessions live et
+                contenus exclusifs.
+              </p>
+              <Button
+                onClick={() => router.push("/dashboard/courses")}
+                className="group bg-primary hover:bg-primary/90 text-primary-foreground px-16 py-2 h-auto text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 flex items-center gap-3"
+              >
+                Parcourir les cours
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          ) : filteredLiveRooms.length === 0 ? (
+            <div className="text-center py-20 bg-secondary/10 rounded-2xl border border-dashed border-border/50">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+                <Filter className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">
+                Aucune session trouvée
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Aucun live ne correspond à vos critères de recherche.
+              </p>
               {(searchQuery || activeCategory !== "All") && (
                 <button
                   onClick={() => {
                     setSearchQuery("");
                     setActiveCategory("All");
                   }}
-                  className="mt-4 text-primary hover:underline"
+                  className="text-primary font-medium hover:underline flex items-center gap-2 mx-auto"
                 >
                   Réinitialiser les filtres
                 </button>
@@ -587,7 +618,7 @@ const LivesView = ({
           ) : (
             <div>
               {/* Live Rooms Section organized by Subject */}
-              {user.registerCode && !loading && (
+              {!loading && (
                 <div className="">
                   {/* Group lives by subject */}
                   {(() => {
@@ -604,7 +635,7 @@ const LivesView = ({
                               id: "no-subject",
                               name: "Sans matière",
                             },
-                            upcomingLive: null,
+                            upcomingLives: [],
                             recordedLives: [],
                           };
                         }
@@ -614,16 +645,7 @@ const LivesView = ({
                           room.status === "LIVE" ||
                           room.status === "SCHEDULED"
                         ) {
-                          // For upcoming, keep only the next one (earliest startsAt)
-                          if (
-                            !acc[subjectId].upcomingLive ||
-                            (room.startsAt &&
-                              acc[subjectId].upcomingLive.startsAt &&
-                              new Date(room.startsAt) <
-                                new Date(acc[subjectId].upcomingLive.startsAt))
-                          ) {
-                            acc[subjectId].upcomingLive = room;
-                          }
+                          acc[subjectId].upcomingLives.push(room);
                         } else if (room.status === "ENDED") {
                           acc[subjectId].recordedLives.push(room);
                         }
@@ -631,6 +653,21 @@ const LivesView = ({
                         return acc;
                       },
                       {},
+                    );
+
+                    // Sort upcoming lives by startsAt ascending
+                    Object.values(roomsBySubject).forEach(
+                      (subjectData: any) => {
+                        subjectData.upcomingLives.sort((a: any, b: any) => {
+                          const dateA = a.startsAt
+                            ? new Date(a.startsAt).getTime()
+                            : 0;
+                          const dateB = b.startsAt
+                            ? new Date(b.startsAt).getTime()
+                            : 0;
+                          return dateA - dateB;
+                        });
+                      },
                     );
 
                     // Sort recorded lives by endedAt descending (most recent first)
@@ -664,32 +701,26 @@ const LivesView = ({
                             </h2>
                           </div>
 
-                          {/* Upcoming/Next Live */}
-                          {subjectData.upcomingLive && (
-                            <div className="mb-6">
+                          {/* Upcoming/Next Lives */}
+                          {subjectData.upcomingLives.length > 0 && (
+                            <div className="mb-6 space-y-4">
                               <div className="flex items-center gap-2 mb-3">
                                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                                   <Video className="w-4 h-4" />
-                                  <span>Prochain Live</span>
+                                  <span>Prochains Lives</span>
                                 </div>
-                                {subjectData.upcomingLive.status === "LIVE" && (
-                                  <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-red-500/20 text-red-600 rounded-full">
-                                    <span className="relative flex h-2 w-2">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-                                    </span>
-                                    EN DIRECT
-                                  </span>
-                                )}
                               </div>
-                              <StudentLiveCardWithTiming
-                                isProgrammed={true}
-                                room={subjectData.upcomingLive}
-                                userId={user.id}
-                                isRegistered={registeredLives.has(
-                                  subjectData.upcomingLive.id,
-                                )}
-                              />
+                              <div className="grid grid-cols-1 gap-4">
+                                {subjectData.upcomingLives.map((live: any) => (
+                                  <StudentLiveCardWithTiming
+                                    key={live.id}
+                                    isProgrammed={true}
+                                    room={live}
+                                    userId={user.id}
+                                    isRegistered={registeredLives.has(live.id)}
+                                  />
+                                ))}
+                              </div>
                             </div>
                           )}
 
@@ -711,7 +742,7 @@ const LivesView = ({
                           )}
 
                           {/* Empty state for subject with no lives */}
-                          {!subjectData.upcomingLive &&
+                          {!subjectData.upcomingLives.length &&
                             subjectData.recordedLives.length === 0 && (
                               <div className="text-center py-8 bg-secondary/30 rounded-lg">
                                 <p className="text-sm text-muted-foreground">

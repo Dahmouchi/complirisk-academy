@@ -63,6 +63,74 @@ export async function getNiveau() {
   return { success: true, data: niveau };
 }
 
+export async function syncTeacherSubjects(gradeId: string, formateurId: string | null) {
+  try {
+    if (!formateurId || formateurId === "none") {
+      // If no formateur linked, remove all TeacherSubject records for this grade
+      await prisma.teacherSubject.deleteMany({
+        where: { gradeId },
+      });
+      return;
+    }
+
+    // Find the user ID associated with this formateur
+    const formateur = await prisma.formateur.findUnique({
+      where: { id: formateurId },
+      select: { userId: true },
+    });
+
+    if (!formateur || !formateur.userId) {
+      // If formateur doesn't have a linked user, we can't link subjects as a "teacher" (User)
+      // but we should probably clear old links if the new formateur has no user
+      await prisma.teacherSubject.deleteMany({
+        where: { gradeId },
+      });
+      return;
+    }
+
+    const userId = formateur.userId;
+
+    // Get all subjects for this grade
+    const subjects = await prisma.subject.findMany({
+      where: { gradeId },
+      select: { id: true },
+    });
+
+    // Remove links that are not for this teacher for this grade
+    await prisma.teacherSubject.deleteMany({
+      where: {
+        gradeId,
+        teacherId: { not: userId },
+      },
+    });
+
+    // Add missing links for this teacher
+    if (subjects.length > 0) {
+      await prisma.$transaction(
+        subjects.map((sub) =>
+          prisma.teacherSubject.upsert({
+            where: {
+              teacherId_subjectId_gradeId: {
+                teacherId: userId,
+                subjectId: sub.id,
+                gradeId: gradeId,
+              },
+            },
+            create: {
+              teacherId: userId,
+              subjectId: sub.id,
+              gradeId: gradeId,
+            },
+            update: {},
+          }),
+        ),
+      );
+    }
+  } catch (error) {
+    console.error("Error syncing teacher subjects:", error);
+  }
+}
+
 //---------------------------------------------- classes --------------------------------------------------
 
 export async function createClasse(
@@ -89,10 +157,14 @@ export async function createClasse(
       handler,
       price,
       documents: documentUrl,
-      niveauId: "cmk1e7ue6000h0sroci9i2ev2",
+      niveauId: "cmnejx9n400000sc0xim2f0ht",
       formateurId: formateurId === "none" ? null : formateurId,
     },
   });
+
+  // Sync teacher subjects
+  await syncTeacherSubjects(niveau.id, formateurId || null);
+
   return { success: true, data: niveau };
   // or return a success value instead
 }
@@ -125,6 +197,9 @@ export async function updateClasse(
       ...(documentUrl !== undefined && { documents: documentUrl }),
     },
   });
+
+  // Sync teacher subjects
+  await syncTeacherSubjects(id, formateurId || null);
 
   return { success: true, data: updatedGrade };
 }
@@ -164,6 +239,15 @@ export async function createSubject(
     },
   });
 
+  // Sync teacher subjects for the grade if it has a formateur
+  const grade = await prisma.grade.findUnique({
+    where: { id: gradeId },
+    select: { formateurId: true },
+  });
+  if (grade?.formateurId) {
+    await syncTeacherSubjects(gradeId, grade.formateurId);
+  }
+
   return { success: true, data: subject };
 }
 
@@ -193,6 +277,15 @@ export async function updateSubject(
       description,
     },
   });
+
+  // Sync teacher subjects for the grade if it has a formateur
+  const grade = await prisma.grade.findUnique({
+    where: { id: gradeId },
+    select: { formateurId: true },
+  });
+  if (grade?.formateurId) {
+    await syncTeacherSubjects(gradeId, grade.formateurId);
+  }
 
   return { success: true, data: updatedSubject };
 }
